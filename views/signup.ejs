@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account — AquaGuard</title>
+  <meta name="description" content="Register a new user account for AquaGuard water quality analytics.">
+  <link rel="stylesheet" href="/styles/global.css">
+  <style>
+    .auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
+    .auth-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+      padding: 2.5rem; width: 100%; max-width: 440px; box-shadow: var(--shadow); position: relative; overflow: hidden;
+    }
+    .auth-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--green), var(--accent)); }
+    .auth-header { text-align: center; margin-bottom: 2rem; }
+    .auth-logo { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .auth-title { font-size: 1.6rem; font-weight: 800; color: var(--white); }
+    .auth-sub { font-size: 0.85rem; color: var(--muted); margin-top: 0.25rem; }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label { display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 0.4rem; }
+    .form-control {
+      width: 100%; padding: 0.75rem 1rem; background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      border-radius: var(--r); color: var(--white); font-family: inherit; font-size: 0.95rem; transition: var(--t);
+    }
+    .form-control:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 10px rgba(0,242,254,0.2); }
+    .auth-btn { width: 100%; padding: 0.85rem; background: var(--green); color: var(--bg); font-weight: 700; border: none; border-radius: var(--r); cursor: pointer; font-size: 1rem; margin-top: 1rem; transition: var(--t); }
+    .auth-btn:hover { background: #00e0a5; transform: translateY(-2px); box-shadow: 0 0 20px rgba(6,214,160,0.3); }
+    .auth-footer { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--muted); }
+    .auth-footer a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .alert-msg { padding: 0.75rem; border-radius: var(--r); font-size: 0.85rem; margin-bottom: 1rem; display: none; }
+    .alert-msg.error { background: rgba(255,87,87,0.15); border: 1px solid var(--danger); color: var(--danger); }
+    .alert-msg.success { background: rgba(6,214,160,0.15); border: 1px solid var(--green); color: var(--green); }
+  </style>
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card fu">
+    <div class="auth-header">
+      <div class="auth-logo">💧</div>
+      <h1 class="auth-title">Create Account</h1>
+      <p class="auth-sub">Join AquaGuard Water Monitoring Network</p>
+    </div>
+
+    <div id="alertBox" class="alert-msg"></div>
+
+    <form id="signupForm">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" class="form-control" placeholder="Alex Morgan" required>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" class="form-control" placeholder="alex@aquaguard.org" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" class="form-control" placeholder="Minimum 6 characters" minlength="6" required>
+      </div>
+
+      <button type="submit" class="auth-btn">Register Account</button>
+    </form>
+
+    <div class="auth-footer">
+      Already have an account? <a href="/login">Sign In</a> • <a href="/fwater">Return Home</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('signupForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const alertBox = document.getElementById('alertBox');
+    alertBox.style.display = 'none';
+
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+
+    try {
+      const res = await fetch('/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        alertBox.className = 'alert-msg success';
+        alertBox.textContent = 'Account created successfully! Redirecting to login...';
+        alertBox.style.display = 'block';
+        setTimeout(() => window.location.href = '/login', 1500);
+      } else {
+        alertBox.className = 'alert-msg error';
+        alertBox.textContent = data.message || 'Registration failed.';
+        alertBox.style.display = 'block';
+      }
+    } catch (err) {
+      alertBox.className = 'alert-msg error';
+      alertBox.textContent = 'Connection error. Please try again.';
+      alertBox.style.display = 'block';
+    }
+  });
+</script>
+</body>
+</html>

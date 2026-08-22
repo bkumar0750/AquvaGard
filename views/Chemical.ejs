@@ -1,117 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chemical Parameters</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/styles/chemical.css">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chemical Parameters — AquaGuard</title>
+  <meta name="description" content="Enter chemical water quality measurements — DO, BOD, COD, Ammonia, Nitrate, Nitrite, Phosphate, Chlorite.">
+  <link rel="stylesheet" href="/styles/global.css">
+  <style>
+    .form-hero { position:relative; padding:calc(var(--nav-h) + 3rem) 2rem 2.5rem; background:linear-gradient(160deg,#040f23 0%,#0a2547 60%,#001635 100%); overflow:hidden; }
+    .form-hero .fh-orb { position:absolute; border-radius:50%; filter:blur(60px); pointer-events:none; animation:float 7s ease-in-out infinite; }
+    .form-hero .fh-orb1 { width:250px; height:250px; background:rgba(130,90,230,0.1); top:-40px; right:10%; animation-delay:0s; }
+    .form-hero .fh-orb2 { width:160px; height:160px; background:rgba(0,180,216,0.07); bottom:-20px; left:5%; animation-delay:2s; }
+    .form-hero-inner { position:relative; z-index:2; max-width:700px; }
+    .breadcrumb { display:flex; align-items:center; gap:0.5rem; font-size:0.78rem; color:var(--muted); margin-bottom:1.25rem; }
+    .breadcrumb a { color:var(--muted); transition:color 0.2s; } .breadcrumb a:hover { color:var(--accent); } .breadcrumb span { color:var(--accent); }
+    .form-hero h1 { font-size:clamp(1.7rem,4vw,2.4rem); font-weight:800; margin:0.5rem 0 0.6rem; }
+    .form-hero p { color:var(--muted); font-size:0.92rem; max-width:500px; }
+    .form-hero-wave { position:absolute; bottom:0; left:0; width:100%; z-index:1; }
+    .form-hero-wave svg { display:block; }
+    .form-page { padding:3rem 1.5rem 5rem; }
+    .form-container { max-width:760px; margin:0 auto; }
+    .form-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); padding:2.25rem; box-shadow:var(--shadow); position:relative; overflow:hidden; }
+    .form-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,#9b72ff,#6a4fcf); }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.1rem; }
+    @media(max-width:540px){ .form-grid{ grid-template-columns:1fr; } }
+    .full { grid-column:1/-1; }
+    .param-unit { position:absolute; right:1rem; top:50%; transform:translateY(-50%); font-size:0.75rem; color:var(--muted); font-family:'Roboto Mono',monospace; pointer-events:none; }
+    .form-actions { display:flex; gap:1rem; margin-top:1.25rem; }
+    .form-actions .btn { flex:1; justify-content:center; }
+    .result-msg { display:none; padding:1rem 1.2rem; border-radius:10px; font-size:0.88rem; margin-bottom:1.25rem; }
+    .result-msg.success { background:rgba(6,214,160,0.1); border:1px solid rgba(6,214,160,0.3); color:var(--green); }
+    .result-msg.error { background:rgba(239,71,111,0.1); border:1px solid rgba(239,71,111,0.3); color:var(--danger); }
+    .divider { height:1px; background:var(--border); margin:1.5rem 0; }
+    .section-sub { font-size:0.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem; }
+    .section-sub::after { content:''; flex:1; height:1px; background:var(--border); }
+    .tips-box { background:rgba(130,90,230,0.06); border:1px solid rgba(130,90,230,0.2); border-radius:var(--r); padding:1rem 1.25rem; margin-top:1.5rem; }
+    .tips-box h4 { font-size:0.8rem; font-weight:700; color:#9b72ff; margin-bottom:0.5rem; }
+    .tips-box ul { list-style:none; display:flex; flex-direction:column; gap:0.3rem; }
+    .tips-box ul li { font-size:0.78rem; color:var(--muted); display:flex; align-items:flex-start; gap:0.5rem; }
+    .tips-box ul li::before { content:'⚗️'; flex-shrink:0; font-size:0.75rem; }
+  </style>
 </head>
+<body>
+<nav class="navbar scrolled" id="navbar">
+  <a href="/fwater" class="nav-brand"><div class="nav-logo">💧</div><span class="nav-name">Aqua<span>Guard</span></span></a>
+  <ul class="nav-links" id="navLinks">
+    <li class="nav-dd"><button>Data Entry</button><div class="dd-menu"><a href="/physical">🧪 Physical</a><a href="/chemical" style="color:var(--accent)">⚗️ Chemical</a><a href="/biological">🦠 Biological</a><a href="/environmental">🌿 Environmental</a><a href="/air">💨 Air Quality</a></div></li>
+    <li class="nav-dd"><a href="#">WQI</a><div class="dd-menu"><a href="/w6swqi">Simple WQI</a><a href="/w4nsfwqi">NSF-WQI</a><a href="/w5wawqi">WA-WQI</a><a href="/w1ccmewqi">CCME-WQI</a><a href="/w3iwqi">Irrigation-WQI</a><a href="/w2gwqi">Ground-WQI</a></div></li>
+    <li><a href="/AQI">AQI</a></li><li><a href="/parameters">Parameters</a></li>
+  </ul>
+  <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')"><span></span><span></span><span></span></button>
+</nav>
 
-<body class="bg-gray-100">
-    <!-- Back to Home Button -->
-    <div class="back-button-container">
-        <button class="back-button" onclick="goBackHome()">&#8592; Back to Home</button>
-    </div>
+<div class="form-hero">
+  <div class="fh-orb fh-orb1"></div>
+  <div class="fh-orb fh-orb2"></div>
+  <div class="form-hero-inner fu">
+    <div class="breadcrumb"><a href="/fwater">Dashboard</a> <span>›</span> <a href="/fwater#enter-data">Data Entry</a> <span>›</span> <span>Chemical</span></div>
+    <span class="badge badge-cyan" style="background:rgba(130,90,230,0.12);color:#9b72ff;border-color:rgba(130,90,230,0.3)">⚗️ Chemical Parameters</span>
+    <h1 style="margin-top:0.75rem">Chemical Data <span class="g-text">Entry</span></h1>
+    <p>Enter chemical water quality measurements — DO, BOD, COD, ammonia, nitrates, phosphate, and more.</p>
+  </div>
+  <div class="form-hero-wave">
+    <svg viewBox="0 0 1440 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,25 C240,50 480,0 720,25 C960,50 1200,0 1440,25 L1440,50 L0,50 Z" fill="#0a192f"/>
+    </svg>
+  </div>
+</div>
 
-    <div class="container mx-auto p-6">
-        <h2 class="text-3xl font-bold text-gray-700 mb-6">Chemical Parameters</h2>
-
-        <!-- Form Box -->
-        <div class="bg-white shadow-md rounded-lg p-6">
-            <!-- Inside <form> tag, set action attribute to route for backend -->
-<form class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="chemical-parameters-form" action="/chemical" method="POST">
-    <!-- Sample ID -->
-    <div class="form-group">
-        <label for="sampleID" class="block text-gray-700 font-semibold mb-2">Sample ID</label>
-        <input type="text" id="sampleID" name="sampleID" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter Sample ID">
-    </div>
-
-    <!-- Dissolved Oxygen (DO) -->
-    <div class="form-group">
-        <label for="do" class="block text-gray-700 font-semibold mb-2">Dissolved Oxygen (DO)</label>
-        <input type="number" step="0.01" id="do" name="do" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter DO">
-    </div>
-
-    <!-- Biochemical Oxygen Demand (BOD) -->
-    <div class="form-group">
-        <label for="bod" class="block text-gray-700 font-semibold mb-2">Biochemical Oxygen Demand (BOD)</label>
-        <input type="number" step="0.01" id="bod" name="bod" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter BOD">
-    </div>
-
-    <!-- Chemical Oxygen Demand (COD) -->
-    <div class="form-group">
-        <label for="cod" class="block text-gray-700 font-semibold mb-2">Chemical Oxygen Demand (COD)</label>
-        <input type="number" step="0.01" id="cod" name="cod" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter COD">
-    </div>
-
-    <!-- NH3 -->
-    <div class="form-group">
-        <label for="nh3" class="block text-gray-700 font-semibold mb-2">NH3</label>
-        <input type="number" step="0.01" id="nh3" name="nh3" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter NH3">
-    </div>
-    
-    <!-- NO3 -->
-    <div class="form-group">
-        <label for="no3" class="block text-gray-700 font-semibold mb-2">NO3</label>
-        <input type="number" step="0.01" id="no3" name="no3" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter NO3">
-    </div>
-
-    <!-- NO2 -->
-    <div class="form-group">
-        <label for="no2" class="block text-gray-700 font-semibold mb-2">NO2</label>
-        <input type="number" step="0.01" id="no2" name="no2" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter NO2">
-    </div>
-
-    <!-- Phosphate -->
-    <div class="form-group">
-        <label for="phosphate" class="block text-gray-700 font-semibold mb-2">Phosphate</label>
-        <input type="number" step="0.01" id="phosphate" name="phosphate" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter Phosphate">
-    </div>
-
-    <!-- Chlorite -->
-    <div class="form-group">
-        <label for="chlorite" class="block text-gray-700 font-semibold mb-2">Chlorite</label>
-        <input type="number" step="0.01" id="chlorite" name="chlorite" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter Chlorite">
-    </div>
-
-
-    <!-- Save and Reset Buttons -->
-    <div class="form-group sm:col-span-2 flex justify-between">
-        <button type="submit" class="save-button w-full sm:w-auto py-2 px-4 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300">Save</button>
-        <button type="reset" class="reset-button w-full sm:w-auto py-2 px-4 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">Reset</button>
-    </div>
-</form>
-
+<div class="form-page">
+  <div class="form-container">
+    <div class="form-card fu-1">
+      <div class="result-msg" id="resultMsg"></div>
+      <p class="section-sub">Sample Identification</p>
+      <form id="chemForm" onsubmit="submitForm(event)">
+        <div class="form-group">
+          <label class="form-label">Sample ID *</label>
+          <input type="text" name="sampleID" class="form-control" placeholder="e.g. WS-2024-001" required>
+          <span class="form-hint">Must match an existing sample ID from Physical data</span>
         </div>
+        <div class="divider"></div>
+        <p class="section-sub">Chemical Measurements</p>
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">Dissolved Oxygen (DO) *</label><div style="position:relative;"><input type="number" step="0.01" min="0" name="do" class="form-control" placeholder="8.0" required><span class="param-unit">mg/L</span></div></div>
+          <div class="form-group"><label class="form-label">BOD *</label><div style="position:relative;"><input type="number" step="0.01" min="0" name="bod" class="form-control" placeholder="2.0" required><span class="param-unit">mg/L</span></div></div>
+          <div class="form-group"><label class="form-label">COD *</label><div style="position:relative;"><input type="number" step="0.01" min="0" name="cod" class="form-control" placeholder="10.0" required><span class="param-unit">mg/L</span></div></div>
+          <div class="form-group"><label class="form-label">Ammonia (NH₃) *</label><div style="position:relative;"><input type="number" step="0.001" min="0" name="nh3" class="form-control" placeholder="0.5" required><span class="param-unit">mg/L</span></div></div>
+          <div class="form-group"><label class="form-label">Nitrate (NO₃) *</label><div style="position:relative;"><input type="number" step="0.01" min="0" name="no3" class="form-control" placeholder="5.0" required><span class="param-unit">mg/L</span></div></div>
+          <div class="form-group"><label class="form-label">Nitrite (NO₂) *</label><div style="position:relative;"><input type="number" step="0.001" min="0" name="no2" class="form-control" placeholder="0.1" required><span class="param-unit">mg/L</span></div></div>
+          <div class="form-group"><label class="form-label">Phosphate *</label><div style="position:relative;"><input type="number" step="0.001" min="0" name="phosphate" class="form-control" placeholder="0.5" required><span class="param-unit">mg/L</span></div></div>
+          <div class="form-group"><label class="form-label">Chlorite *</label><div style="position:relative;"><input type="number" step="0.01" min="0" name="chlorite" class="form-control" placeholder="1.0" required><span class="param-unit">mg/L</span></div></div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="submitBtn"><span>💾 Save Data</span><span class="spinner" style="display:none;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;"></span></button>
+          <button type="reset" class="btn btn-ghost">↺ Reset</button>
+          <a href="/fwater" class="btn btn-ghost">← Dashboard</a>
+        </div>
+      </form>
+      <div class="tips-box">
+        <h4>📌 Chemical Standards (WHO)</h4>
+        <ul>
+          <li>Dissolved Oxygen (DO) should be ≥ 6 mg/L for healthy aquatic ecosystems.</li>
+          <li>BOD &lt; 3 mg/L indicates clean water; BOD &gt; 10 mg/L indicates heavy pollution.</li>
+          <li>Nitrate limit for drinking water: 50 mg/L (WHO) / 10 mg/L (EPA).</li>
+        </ul>
+      </div>
     </div>
+  </div>
+</div>
 
-    <!-- JavaScript for Back Button, Save, and Reset -->
-    <script>
-        function goBackHome() {
-            window.location.href = 'fwater'; // Assuming index.html is the home page
-        }
-
-        function saveFormData() {
-            const sampleID = document.getElementById('sampleID').value;
-            const doVal = document.getElementById('do').value;
-            const bod = document.getElementById('bod').value;
-            const cod = document.getElementById('cod').value;
-            const nh3 = document.getElementById('nh3').value;
-            const no3 = document.getElementById('no3').value;
-            const no2 = document.getElementById('no2').value;
-            const phosphate = document.getElementById('phosphate').value;
-            const chlorite = document.getElementById('chlorite').value;
-
-            if (sampleID && doVal && bod && cod && nh3 && no3 && no2 && phosphate && chlorite) {
-                alert(`Data saved:\nSample ID: ${sampleID}\nDO: ${doVal}\nBOD: ${bod}\nCOD: ${cod}\nNH3: ${nh3}\nNO3-: ${no3}\nNO2-: ${no2}\nPhosphate: ${phosphate}\nChlorite: ${chlorite}`);
-                document.getElementById('chemical-parameters-form').reset();
-            } else {
-                alert('Please fill in all fields before saving.');
-            }
-        }
-    </script>
+<footer class="footer"><p>© 2025 <strong>AquaGuard</strong> — Water Pollution Analysis System</p></footer>
+<script>
+  window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>10));
+  async function submitForm(e) {
+    e.preventDefault();
+    const form=e.target,btn=document.getElementById('submitBtn'),msg=document.getElementById('resultMsg');
+    btn.disabled=true;btn.querySelector('span').style.display='none';btn.querySelector('.spinner').style.display='block';msg.style.display='none';
+    try {
+      const res=await fetch('/chemical',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(form)))});
+      if(res.ok||res.redirected){msg.className='result-msg success';msg.innerHTML='✅ Chemical data saved successfully!';msg.style.display='block';form.reset();setTimeout(()=>msg.style.display='none',3500);}
+      else{const r=await res.json();msg.className='result-msg error';msg.innerHTML='⚠️ '+(r.message||'Error saving data.');msg.style.display='block';}
+    }catch(err){msg.className='result-msg error';msg.innerHTML='⚠️ Network error.';msg.style.display='block';}
+    finally{btn.disabled=false;btn.querySelector('span').style.display='';btn.querySelector('.spinner').style.display='none';}
+  }
+</script>
 </body>
-
 </html>

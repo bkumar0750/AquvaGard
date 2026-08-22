@@ -1,28 +1,58 @@
+// routes/environmental.js
 const express = require('express');
 const router = express.Router();
-const EnvironmentalData = require('../models/EnvironmentalData'); // Ensure correct model import
+const supabase = require('../config/database');
 
-// POST route to save environmental parameters
+// In-memory fallback cache when Supabase is unreachable or using placeholder credentials
+const fallbackEnvironmentalData = [];
+
+// POST — Save environmental parameters
 router.post('/', async (req, res) => {
+    const { sampleID, radiological, noise, soil, waste } = req.body;
+    const newRecord = {
+        id: Date.now(),
+        sample_id: sampleID || `SMP-${Math.floor(1000 + Math.random() * 9000)}`,
+        radiological: parseFloat(radiological) || 0,
+        noise: parseFloat(noise) || 0,
+        soil: parseFloat(soil) || 0,
+        waste: parseFloat(waste) || 0,
+        created_at: new Date().toISOString()
+    };
+
     try {
-        const { sampleID, radiological, noise, soil, waste } = req.body;
-        const environmentalData = new EnvironmentalData({ sampleID, radiological, noise, soil, waste });
-        await environmentalData.save();
-        res.redirect('/fwater'); // Redirect after saving
+        const { data, error } = await supabase
+            .from('environmental_data')
+            .insert([{
+                sample_id: newRecord.sample_id,
+                radiological: newRecord.radiological,
+                noise: newRecord.noise,
+                soil: newRecord.soil,
+                waste: newRecord.waste
+            }]);
+
+        if (error) throw error;
     } catch (error) {
-        console.error("Error saving environmental data:", error);
-        res.status(500).json({ message: 'Error saving environmental data', error });
+        console.warn('⚠️ Supabase environmental_data insert failed. Using local in-memory store:', error.message || error);
+        fallbackEnvironmentalData.unshift(newRecord);
     }
+
+    res.redirect('/fwater');
 });
 
-// GET route to retrieve and display environmental data
-router.get('/', async (req, res) => {  
+// GET — Retrieve and display environmental data
+router.get('/', async (req, res) => {
     try {
-        const environmentalData = await EnvironmentalData.find(); // Fetch data from MongoDB
-        res.render('odi', { environmentalData }); // Pass environmentalData to EJS
+        const { data: environmentalData, error } = await supabase
+            .from('environmental_data')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        res.render('odi', { environmentalData: environmentalData && environmentalData.length > 0 ? environmentalData : fallbackEnvironmentalData });
     } catch (error) {
-        console.error("Error fetching environmental data:", error);
-        res.status(500).send("Error fetching environmental data.");
+        console.warn('⚠️ Supabase environmental_data query failed, falling back to local memory store:', error.message || error);
+        res.render('odi', { environmentalData: fallbackEnvironmentalData });
     }
 });
 

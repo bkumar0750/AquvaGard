@@ -1,280 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Water Conductivity Measurement</title>
-    <style>
-        :root {
-            --primary: #2F4F4F;
-            --primary-light: #3a5f5f;
-            --secondary: #778899;
-            --accent: #20B2AA;
-            --light-bg: #f5f5f5;
-            --dark-text: #2d3748;
-            --border-color: #e0e0e0;
-            --white: #ffffff;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--light-bg);
-            color: var(--dark-text);
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 30px;
-            background: var(--white);
-            border-radius: 10px;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            color: var(--primary);
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 2.2rem;
-            border-bottom: 2px solid var(--accent);
-            padding-bottom: 10px;
-        }
-
-        p {
-            margin-bottom: 20px;
-            font-size: 1.1rem;
-        }
-
-        .info-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: #e3f2fd;
-            border-left: 4px solid var(--primary);
-            border-radius: 0 5px 5px 0;
-            transition: all 0.3s ease;
-        }
-
-        .info-section p:last-child {
-            margin-bottom: 0;
-        }
-
-        .btn {
-            display: block;
-            margin: 25px auto;
-            padding: 12px 25px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .btn:hover {
-            background-color: var(--primary-light);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-
-        /* Back button */
-        .back-button-container {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-        }
-
-        .back-button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .back-button:hover {
-            background-color: var(--primary-light);
-            transform: translateX(-3px);
-        }
-
-        /* Highlight important terms */
-        .highlight {
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .feature-list {
-            margin: 20px 0;
-            padding-left: 20px;
-        }
-
-        .feature-list li {
-            margin-bottom: 10px;
-        }
-
-        .definition-box {
-            background-color: #e1f5fe;
-            border-left: 4px solid var(--accent);
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 0 5px 5px 0;
-        }
-
-        .definition-title {
-            font-weight: bold;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-
-        .sensor-image {
-            width: 100%;
-            max-width: 500px;
-            margin: 20px auto;
-            display: block;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-        }
-
-        .formula {
-            font-family: 'Courier New', monospace;
-            background-color: #f5f5f5;
-            padding: 8px 12px;
-            border-radius: 4px;
-            display: inline-block;
-            margin: 10px 0;
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .container {
-                margin: 15px;
-                padding: 20px;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .back-button-container {
-                position: relative;
-                top: auto;
-                left: auto;
-                margin-bottom: 15px;
-            }
-            
-            .back-button {
-                position: relative;
-                margin: 0 auto 20px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Electrical Conductivity & Specific Conductance — AquaGuard Parameter Guide</title>
+  <meta name="description" content="Guide to Electrical Conductivity (EC) and Specific Conductance (SpCond) in water monitoring and salinity calculation.">
+  <link rel="stylesheet" href="/styles/global.css">
+  <style>
+    .param-page { padding: calc(var(--nav-h) + 2.5rem) 1.5rem 5rem; min-height: 100vh; }
+    .param-container { max-width: 900px; margin: 0 auto; }
+    .param-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+      padding: 2.5rem; box-shadow: var(--shadow); position: relative; overflow: hidden;
+    }
+    .param-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--cyan)); }
+    .param-meta { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0 2rem; }
+    .meta-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--r); padding: 0.85rem 1.25rem; flex: 1; min-width: 180px; }
+    .meta-lbl { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .meta-val { font-size: 1.2rem; font-weight: 700; color: var(--accent); font-family: 'Roboto Mono', monospace; }
+    .content-sec { line-height: 1.8; color: var(--light); margin-bottom: 1.5rem; }
+    .content-sec h2 { font-size: 1.25rem; color: var(--white); margin: 1.5rem 0 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+  </style>
 </head>
 <body>
-    <!-- Back to Home Button -->
-    <div class="back-button-container">
-        <button class="back-button" onclick="goBackHome()">&#8592; Back to Parameters</button>
+<nav class="navbar scrolled" id="navbar">
+  <a href="/fwater" class="nav-brand"><div class="nav-logo">💧</div><span class="nav-name">Aqua<span>Guard</span></span></a>
+  <ul class="nav-links" id="navLinks">
+    <li class="nav-dd"><button>Data Entry</button><div class="dd-menu"><a href="/physical">🧪 Physical</a><a href="/chemical">⚗️ Chemical</a><a href="/biological">🦠 Biological</a><a href="/environmental">🌿 Environmental</a><a href="/air">💨 Air Quality</a></div></li>
+    <li class="nav-dd"><a href="#">WQI</a><div class="dd-menu"><a href="/w6swqi">Simple WQI</a><a href="/w4nsfwqi">NSF-WQI</a><a href="/w5wawqi">WA-WQI</a><a href="/w1ccmewqi">CCME-WQI</a></div></li>
+    <li><a href="/treatment">Treatment</a></li><li><a href="/AQI">AQI</a></li><li><a href="/parameters" style="color:var(--accent)">Parameters</a></li><li><a href="/information">Data Info</a></li>
+  </ul>
+  <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="param-page">
+  <div class="param-container">
+    <a href="/parameters" class="btn btn-ghost" style="margin-bottom:1.5rem">← Back to Parameters Directory</a>
+    <div class="param-card fu">
+      <span class="badge badge-cyan">Physical Parameter</span>
+      <h1 style="font-size:2.2rem;font-weight:800;color:var(--white);margin-top:0.5rem">Electrical Conductivity (EC)</h1>
+      <div class="param-meta">
+        <div class="meta-box"><div class="meta-lbl">Unit</div><div class="meta-val">µS/cm or mS/cm</div></div>
+        <div class="meta-box"><div class="meta-lbl">Drinking Water</div><div class="meta-val">200 - 800 µS/cm</div></div>
+        <div class="meta-box"><div class="meta-lbl">Seawater EC</div><div class="meta-val">~ 50,000 µS/cm</div></div>
+      </div>
+      <div class="content-sec">
+        <h2>Overview</h2>
+        <p>Electrical Conductivity measures the ability of water to pass an electric current, which is directly proportional to the concentration of dissolved inorganic ions (such as sodium, calcium, chloride, and nitrate).</p>
+        <h2>Specific Conductance</h2>
+        <p>Because conductivity increases with temperature (~2% per °C), <strong>Specific Conductance</strong> normalizes raw EC readings to a standard temperature of 25°C for reliable historical comparison.</p>
+      </div>
     </div>
-
-    <div class="container">
-        <h1>Water Conductivity Measurement</h1>
-        
-        <div class="definition-box">
-            <div class="definition-title">Electrical Conductivity</div>
-            <p>A measure of water's ability to conduct an electric current due to the presence of dissolved ions. It serves as a key indicator of water quality and mineral content.</p>
-        </div>
-
-        <p>Conductivity measurements provide valuable insights into water purity, salinity, and the concentration of dissolved substances in aquatic environments.</p>
-
-        <button class="btn" onclick="toggleInfo()">Show Technical Details</button>
-        
-        <div class="info-section" id="moreInfo" style="display: none;">
-            <h2>Fundamentals of Conductivity</h2>
-            <ul class="feature-list">
-                <li><span class="highlight">Ionic content:</span> More dissolved ions result in higher conductivity</li>
-                <li><span class="highlight">Temperature dependence:</span> Conductivity increases ~2% per °C rise (typically normalized to 25°C)</li>
-                <li><span class="highlight">Water type variations:</span>
-                    <ul>
-                        <li>Ultrapure water: 0.055 μS/cm</li>
-                        <li>Distilled water: 0.5-5 μS/cm</li>
-                        <li>Drinking water: 50-1000 μS/cm</li>
-                        <li>Seawater: ≈50,000 μS/cm (50 mS/cm)</li>
-                    </ul>
-                </li>
-            </ul>
-
-            <h2>Measurement Principle</h2>
-            <p>Conductivity measurement follows <span class="highlight">Ohm's Law</span>:</p>
-            <div class="formula">Conductance (G) = 1 / Resistance (R)</div>
-            <p>Where resistance is measured by applying a voltage and measuring the resulting current between electrodes.</p>
-
-            <img src="images/conductivity-sensor.jpg" alt="Conductivity measurement sensor" class="sensor-image">
-
-            <h2>Measurement Techniques</h2>
-            <ul class="feature-list">
-                <li><span class="highlight">Contacting conductivity cells:</span> Two or four electrodes measure current through solution</li>
-                <li><span class="highlight">Inductive (toroidal) sensors:</span> Contactless measurement for high conductivity or dirty waters</li>
-                <li><span class="highlight">Cell constant:</span> Electrode geometry factor (typically 0.1, 1.0, or 10 cm⁻¹) that determines measurement range</li>
-            </ul>
-
-            <h2>Units and Conversions</h2>
-            <ul class="feature-list">
-                <li>SI unit: Siemens per meter (S/m)</li>
-                <li>Common units:
-                    <ul>
-                        <li>Microsiemens per centimeter (μS/cm) - for freshwater</li>
-                        <li>Millisiemens per centimeter (mS/cm) - for brackish/seawater</li>
-                    </ul>
-                </li>
-                <li>Conversions:
-                    <ul>
-                        <li>1 mS/cm = 1000 μS/cm</li>
-                        <li>1 S/m = 10 mS/cm</li>
-                    </ul>
-                </li>
-            </ul>
-
-            <h2>Environmental Applications</h2>
-            <ul class="feature-list">
-                <li>Water quality monitoring</li>
-                <li>Salinity estimation</li>
-                <li>Groundwater studies</li>
-                <li>Industrial process control</li>
-                <li>Wastewater treatment monitoring</li>
-                <li>Aquaculture management</li>
-            </ul>
-        </div>
-    </div>
-
-    <script>
-        function goBackHome() {
-            window.location.href = 'parameters';
-        }
-
-        function toggleInfo() {
-            const info = document.getElementById("moreInfo");
-            const button = document.querySelector(".btn");
-            
-            if (info.style.display === "none") {
-                info.style.display = "block";
-                button.textContent = "Hide Technical Details";
-            } else {
-                info.style.display = "none";
-                button.textContent = "Show Technical Details";
-            }
-        }
-    </script>
+  </div>
+</div>
+<footer class="footer"><p>© 2025 <strong>AquaGuard</strong> — Water Quality Parameter Guide</p></footer>
+<script>window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10));</script>
 </body>
 </html>

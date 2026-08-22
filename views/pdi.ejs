@@ -1,284 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Physical Data Information</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #2F4F4F;
-            --primary-light: #3a5f5f;
-            --secondary: #778899;
-            --accent: #20B2AA;
-            --light-bg: #f5f5f5;
-            --dark-text: #2d3748;
-            --border-color: #e0e0e0;
-            --critical: #e53e3e;
-            --warning: #dd6b20;
-            --safe: #38a169;
-        }
-
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--light-bg);
-            color: var(--dark-text);
-            margin: 0;
-            padding: 20px;
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-            padding: 25px;
-            overflow-x: auto;
-        }
-
-        h2 {
-            font-family: 'Poppins', sans-serif;
-            color: var(--primary);
-            margin-bottom: 25px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--border-color);
-            font-weight: 700;
-            font-size: 28px;
-            white-space: nowrap;
-        }
-
-        .back-button-container {
-            margin-bottom: 25px;
-        }
-
-        .back-button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 6px;
-            box-shadow: 0 2px 10px rgba(47, 79, 79, 0.3);
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            font-weight: 500;
-        }
-
-        .back-button:hover {
-            background: linear-gradient(135deg, var(--primary-light), var(--primary));
-            box-shadow: 0 4px 15px rgba(47, 79, 79, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .back-button::before {
-            content: "←";
-            margin-right: 8px;
-            font-size: 18px;
-        }
-
-        table {
-            width: 100%;
-            table-layout: fixed;
-            border-collapse: collapse;
-            margin: 25px 0;
-            font-size: 16px;
-        }
-
-        th, td {
-            padding: 12px 15px;
-            border: 1px solid var(--border-color);
-            text-align: left;
-            vertical-align: top;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-        }
-
-        th {
-            background-color: var(--primary);
-            color: white;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 14px;
-            letter-spacing: 0.5px;
-            position: sticky;
-            top: 0;
-        }
-
-        /* Adjusted column widths */
-        th:nth-child(1), td:nth-child(1) { width: 80px; }   /* Serial No */
-        th:nth-child(2), td:nth-child(2) { width: 120px; }  /* Sample ID */
-        th:nth-child(3), td:nth-child(3) { width: 100px; }  /* pH Value */
-        th:nth-child(4), td:nth-child(4) { width: 140px; }  /* Temperature */
-        th:nth-child(5), td:nth-child(5) { width: 120px; }  /* Turbidity */
-        th:nth-child(6), td:nth-child(6) { width: 150px; }  /* Conductivity */
-        th:nth-child(7), td:nth-child(7) { width: 180px; }  /* TDS */
-        th:nth-child(8), td:nth-child(8) { width: 140px; } /* Date */
-
-        tr:nth-child(even) {
-            background-color: #f8fafc;
-        }
-
-        tr:hover {
-            background-color: #f1f5f9;
-        }
-
-        .text-content {
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            line-clamp: 3;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-height: 4.5em;
-            line-height: 1.5em;
-        }
-
-        .no-data {
-            text-align: center;
-            padding: 20px;
-            color: var(--secondary);
-            font-style: italic;
-        }
-
-        /* Value indicators */
-        .value-critical {
-            color: var(--critical);
-            font-weight: 700;
-            background-color: rgba(229, 62, 62, 0.1);
-        }
-
-        .value-warning {
-            color: var(--warning);
-            font-weight: 600;
-        }
-
-        .value-safe {
-            color: var(--safe);
-            font-weight: 600;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-            
-            th, td {
-                padding: 8px 10px;
-                font-size: 14px;
-            }
-            
-            /* Adjust column widths for mobile */
-            th:nth-child(1), td:nth-child(1) { width: 60px; }
-            th:nth-child(2), td:nth-child(2) { width: 100px; }
-            th:nth-child(3), td:nth-child(3) { width: 80px; }
-            th:nth-child(6), td:nth-child(6) { width: 120px; }
-            th:nth-child(8), td:nth-child(8) { width: 120px; }
-
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Physical Data Records — AquaGuard</title>
+  <meta name="description" content="View physical water quality data records — pH, Temperature, Turbidity, Conductivity, TDS.">
+  <link rel="stylesheet" href="/styles/global.css">
+  <style>
+    .data-page { padding: calc(var(--nav-h) + 2.5rem) 1.5rem 4rem; min-height: 100vh; }
+    .data-container { max-width: 1200px; margin: 0 auto; }
+    .data-header { margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .table-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+      padding: 1.5rem; overflow-x: auto; box-shadow: var(--shadow);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    th, td { padding: 0.85rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+    th {
+      background: rgba(0,180,216,0.1); color: var(--accent); font-weight: 700;
+      text-transform: uppercase; font-size: 0.73rem; letter-spacing: 0.08em; white-space: nowrap;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.03); }
+    .val-critical { color: var(--danger); font-weight: 700; }
+    .val-warning  { color: var(--warn); font-weight: 600; }
+    .val-safe     { color: var(--green); font-weight: 600; }
+    .no-data { text-align: center; padding: 2.5rem; color: var(--muted); font-style: italic; }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Back to Home Button -->
-        <div class="back-button-container">
-            <button class="back-button" onclick="goBackHome()">Back to Home</button>
-        </div>
+<nav class="navbar scrolled" id="navbar">
+  <a href="/fwater" class="nav-brand"><div class="nav-logo">💧</div><span class="nav-name">Aqua<span>Guard</span></span></a>
+  <ul class="nav-links" id="navLinks">
+    <li class="nav-dd"><button>Data Entry</button><div class="dd-menu"><a href="/physical">🧪 Physical</a><a href="/chemical">⚗️ Chemical</a><a href="/biological">🦠 Biological</a><a href="/environmental">🌿 Environmental</a><a href="/air">💨 Air Quality</a></div></li>
+    <li><a href="/parameters">Parameters</a></li><li><a href="/information">Data Info</a></li>
+  </ul>
+  <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')"><span></span><span></span><span></span></button>
+</nav>
 
-        <h2>Physical Data Records</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>No.</th>
-                    <th>Sample ID</th>
-                    <th>pH Value</th>
-                    <th>Temperature (°C)</th>
-                    <th>Turbidity (NTU)</th>
-                    <th>Conductivity (µS/cm)</th>
-                    <th>Total Dissolved Solids (TDS)</th>
-                    <th>Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% if (typeof physicalData !== 'undefined' && physicalData.length > 0) { %>        
-                    <% physicalData.forEach((data,index) => { %>
-                        <tr>
-                            <td><div class="text-content"><%= index + 1 %></div></td>
-                            <td><div class="text-content"><%= data.sampleID %></div></td>
-                            <td class="physical-value" data-type="ph" data-value="<%= data.phValue %>">
-                                <div class="text-content"><%= data.phValue %></div>
-                            </td>
-                            <td class="physical-value" data-type="temp" data-value="<%= data.temperature %>">
-                                <div class="text-content"><%= data.temperature %></div>
-                            </td>
-                            <td class="physical-value" data-type="turbidity" data-value="<%= data.turbidity %>">
-                                <div class="text-content"><%= data.turbidity %></div>
-                            </td>
-                            <td class="physical-value" data-type="conductivity" data-value="<%= data.conductivity %>">
-                                <div class="text-content"><%= data.conductivity %></div>
-                            </td>
-                            <td class="physical-value" data-type="tds" data-value="<%= data.tds %>">
-                                <div class="text-content"><%= data.tds %></div>
-                            </td>
-                            <td><div class="text-content"><%= new Date(data.date).toDateString() %></div></td>
-
-                        </tr>
-                    <% }); %>
-                <% } else { %>
-                    <tr><td colspan="8" class="no-data">No physical data available</td></tr>
-                <% } %>
-            </tbody>
-        </table>
+<div class="data-page">
+  <div class="data-container">
+    <div class="data-header fu">
+      <div>
+        <span class="badge badge-cyan">🧪 Physical Data</span>
+        <h1 style="font-size:1.9rem;margin-top:0.5rem">Physical Data <span class="g-text">Records</span></h1>
+      </div>
+      <a href="/information" class="btn btn-ghost">← Back to Data Info</a>
     </div>
 
-    <script>
-        function goBackHome() {
-            window.location.href = '/information';
-        }
+    <div class="table-card fu-1">
+      <table>
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Sample ID</th>
+            <th>pH Value</th>
+            <th>Temp (°C)</th>
+            <th>Turbidity (NTU)</th>
+            <th>Conductivity (µS/cm)</th>
+            <th>TDS (mg/L)</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (typeof physicalData !== 'undefined' && physicalData.length > 0) { %>
+            <% physicalData.forEach((data, index) => { %>
+              <tr>
+                <td style="color:var(--muted)"><%= index + 1 %></td>
+                <td><strong style="color:var(--white)"><%= data.sampleID %></strong></td>
+                <td class="ph-cell" data-val="<%= data.phValue %>"><%= data.phValue %></td>
+                <td class="temp-cell" data-val="<%= data.temperature %>"><%= data.temperature %> °C</td>
+                <td class="turb-cell" data-val="<%= data.turbidity %>"><%= data.turbidity %> NTU</td>
+                <td><%= data.conductivity %> µS/cm</td>
+                <td><%= data.tds %> mg/L</td>
+                <td style="color:var(--muted)"><%= new Date(data.date).toLocaleDateString() %></td>
+              </tr>
+            <% }); %>
+          <% } else { %>
+            <tr><td colspan="8" class="no-data">No physical data records found.</td></tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
-        document.addEventListener('DOMContentLoaded', function() {
-            // Apply classification
-            const physicalValues = document.querySelectorAll('.physical-value');
-            
-            physicalValues.forEach(cell => {
-                const value = parseFloat(cell.getAttribute('data-value')) || 0;
-                const type = cell.getAttribute('data-type');
-                let className = '';
-                
-                if (type === 'ph') {
-                    className = value < 6.5 || value > 8.5 ? 'value-critical' : 
-                               value < 7.0 || value > 8.0 ? 'value-warning' : 'value-safe';
-                } else if (type === 'temp') {
-                    className = value < 0 || value > 30 ? 'value-critical' : 
-                               value < 5 || value > 25 ? 'value-warning' : 'value-safe';
-                } else if (type === 'turbidity') {
-                    className = value > 10 ? 'value-critical' : 
-                               value > 5 ? 'value-warning' : 'value-safe';
-                } else if (type === 'conductivity') {
-                    className = value > 1000 ? 'value-critical' : 
-                               value > 500 ? 'value-warning' : 'value-safe';
-                } else if (type === 'tds') {
-                    className = value > 500 ? 'value-critical' : 
-                               value > 300 ? 'value-warning' : 'value-safe';
-                }
-                
-                if (className) {
-                    cell.classList.add(className);
-                }
-            });
+<footer class="footer"><p>© 2025 <strong>AquaGuard</strong> — Water Pollution Analysis System</p></footer>
 
-            // Make table rows interactive
-            const rows = document.querySelectorAll('tbody tr');
-            rows.forEach(row => {
-                row.addEventListener('click', function() {
-                    rows.forEach(r => r.classList.remove('active-row'));
-                    this.classList.add('active-row');
-                });
-            });
-        });
-    </script>
+<script>
+  window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10));
+
+  document.querySelectorAll('.ph-cell').forEach(c => {
+    const v = parseFloat(c.dataset.val);
+    if (v < 6.5 || v > 8.5) c.classList.add('val-critical');
+    else if (v < 7.0 || v > 8.0) c.classList.add('val-warning');
+    else c.classList.add('val-safe');
+  });
+</script>
 </body>
 </html>

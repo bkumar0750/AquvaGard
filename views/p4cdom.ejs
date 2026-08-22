@@ -1,259 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CDOM & fDOM Monitoring</title>
-    <style>
-        :root {
-            --primary: #2F4F4F;
-            --primary-light: #3a5f5f;
-            --secondary: #778899;
-            --accent: #20B2AA;
-            --light-bg: #f5f5f5;
-            --dark-text: #2d3748;
-            --border-color: #e0e0e0;
-            --white: #ffffff;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CDOM & fDOM Monitoring — AquaGuard Parameter Guide</title>
+  <meta name="description" content="Comprehensive guide on Chromophoric Dissolved Organic Matter (CDOM) and Fluorescent Dissolved Organic Matter (fDOM) monitoring.">
+  <link rel="stylesheet" href="/styles/global.css">
+  <style>
+    .param-page { padding: calc(var(--nav-h) + 2.5rem) 1.5rem 5rem; min-height: 100vh; }
+    .param-container { max-width: 900px; margin: 0 auto; }
+    .param-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+      padding: 2.5rem; box-shadow: var(--shadow); position: relative; overflow: hidden;
+    }
+    .param-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #ffd166, var(--accent)); }
+    
+    .param-meta { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0 2rem; }
+    .meta-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--r); padding: 0.85rem 1.25rem; flex: 1; min-width: 180px; }
+    .meta-lbl { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .meta-val { font-size: 1.2rem; font-weight: 700; color: #ffd166; font-family: 'Roboto Mono', monospace; }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--light-bg);
-            color: var(--dark-text);
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 30px;
-            background: var(--white);
-            border-radius: 10px;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            color: var(--primary);
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 2.2rem;
-            border-bottom: 2px solid var(--accent);
-            padding-bottom: 10px;
-        }
-
-        p {
-            margin-bottom: 20px;
-            font-size: 1.1rem;
-        }
-
-        .info-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: #eaf2ff;
-            border-left: 4px solid var(--primary);
-            border-radius: 0 5px 5px 0;
-            transition: all 0.3s ease;
-        }
-
-        .info-section p:last-child {
-            margin-bottom: 0;
-        }
-
-        .btn {
-            display: block;
-            margin: 25px auto;
-            padding: 12px 25px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .btn:hover {
-            background-color: var(--primary-light);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-
-        /* Back button */
-        .back-button-container {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-        }
-
-        .back-button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .back-button:hover {
-            background-color: var(--primary-light);
-            transform: translateX(-3px);
-        }
-
-        /* Highlight important terms */
-        .highlight {
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .feature-list {
-            margin: 20px 0;
-            padding-left: 20px;
-        }
-
-        .feature-list li {
-            margin-bottom: 10px;
-        }
-
-        .definition-box {
-            background-color: #f0f8ff;
-            border-left: 4px solid var(--accent);
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 0 5px 5px 0;
-        }
-
-        .definition-title {
-            font-weight: bold;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-
-        .sensor-image {
-            width: 100%;
-            max-width: 500px;
-            margin: 20px auto;
-            display: block;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .container {
-                margin: 15px;
-                padding: 20px;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .back-button-container {
-                position: relative;
-                top: auto;
-                left: auto;
-                margin-bottom: 15px;
-            }
-            
-            .back-button {
-                position: relative;
-                margin: 0 auto 20px;
-            }
-        }
-    </style>
+    .content-sec { line-height: 1.8; color: var(--light); margin-bottom: 1.5rem; }
+    .content-sec h2 { font-size: 1.25rem; color: var(--white); margin: 1.5rem 0 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+  </style>
 </head>
 <body>
-    <!-- Back to Home Button -->
-    <div class="back-button-container">
-        <button class="back-button" onclick="goBackHome()">&#8592; Back to Parameters</button>
-    </div>
+<nav class="navbar scrolled" id="navbar">
+  <a href="/fwater" class="nav-brand"><div class="nav-logo">💧</div><span class="nav-name">Aqua<span>Guard</span></span></a>
+  <ul class="nav-links" id="navLinks">
+    <li class="nav-dd"><button>Data Entry</button><div class="dd-menu"><a href="/physical">🧪 Physical</a><a href="/chemical">⚗️ Chemical</a><a href="/biological">🦠 Biological</a><a href="/environmental">🌿 Environmental</a><a href="/air">💨 Air Quality</a></div></li>
+    <li class="nav-dd"><a href="#">WQI</a><div class="dd-menu"><a href="/w6swqi">Simple WQI</a><a href="/w4nsfwqi">NSF-WQI</a><a href="/w5wawqi">WA-WQI</a><a href="/w1ccmewqi">CCME-WQI</a></div></li>
+    <li><a href="/treatment">Treatment</a></li><li><a href="/AQI">AQI</a></li><li><a href="/parameters" style="color:var(--accent)">Parameters</a></li><li><a href="/information">Data Info</a></li>
+  </ul>
+  <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')"><span></span><span></span><span></span></button>
+</nav>
 
-    <div class="container">
-        <h1>CDOM & fDOM Monitoring</h1>
+<div class="param-page">
+  <div class="param-container">
+    <a href="/parameters" class="btn btn-ghost" style="margin-bottom:1.5rem">← Back to Parameters Directory</a>
+
+    <div class="param-card fu">
+      <span class="badge badge-warn" style="background:rgba(255,209,102,0.15);color:#ffd166;border-color:rgba(255,209,102,0.3)">Optical / Chemical Parameter</span>
+      <h1 style="font-size:2.2rem;font-weight:800;color:var(--white);margin-top:0.5rem">CDOM & fDOM Monitoring</h1>
+      
+      <div class="param-meta">
+        <div class="meta-box"><div class="meta-lbl">Parameter Type</div><div class="meta-val">Dissolved Organic Matter</div></div>
+        <div class="meta-box"><div class="meta-lbl">Optical Wavelength</div><div class="meta-val">370nm Exc / 460nm Em</div></div>
+        <div class="meta-box"><div class="meta-lbl">Key Application</div><div class="meta-val">TOC & Disinfection Precursor</div></div>
+      </div>
+
+      <div class="content-sec">
+        <h2>What is CDOM & fDOM?</h2>
+        <p><strong>CDOM (Chromophoric Dissolved Organic Matter)</strong> absorbs UV and visible light, giving natural waters a tea-like yellowish-brown hue. <strong>fDOM (Fluorescent Dissolved Organic Matter)</strong> is the fraction of CDOM that fluoresces when excited by UV light, enabling real-time optical tracking of organic carbon.</p>
         
-        <div class="definition-box">
-            <div class="definition-title">CDOM (Chromophoric Dissolved Organic Matter)</div>
-            <p>Organic matter in water that strongly absorbs ultraviolet (UV) and visible light, giving water a yellow-brown color. Also known as Colored Dissolved Organic Matter.</p>
-        </div>
-
-        <div class="definition-box">
-            <div class="definition-title">fDOM (Fluorescent Dissolved Organic Matter)</div>
-            <p>The fraction of CDOM that fluoresces when exposed to light, serving as a fast and efficient method to track dissolved organic matter (DOM) in natural waters.</p>
-        </div>
-
-        <p>These parameters are crucial for understanding water quality, as they influence light penetration, microbial activity, and chemical processes in aquatic ecosystems.</p>
-
-        <button class="btn" onclick="toggleInfo()">Show Measurement Details</button>
+        <h2>Ecosystem & Health Significance</h2>
+        <p>CDOM controls light penetration in aquatic ecosystems, shielding organisms from harmful UV rays while simultaneously limiting photosynthetic activity. In drinking water utilities, high CDOM levels indicate potential precursors for carcinogenic disinfection byproducts (trihalomethanes/THMs) during chlorination.</p>
         
-        <div class="info-section" id="moreInfo" style="display: none;">
-            <h2>Why Measure CDOM/fDOM?</h2>
-            <ul class="feature-list">
-                <li><span class="highlight">Ecosystem health:</span> Affects submerged aquatic vegetation and coral reefs by limiting light penetration</li>
-                <li><span class="highlight">Pollution tracking:</span> Helps monitor wastewater discharge by detecting Total Organic Carbon (TOC)</li>
-                <li><span class="highlight">Water movement:</span> Indicates the dispersion and transport of water masses</li>
-                <li><span class="highlight">Hydrological studies:</span> Useful for research on river flow dynamics and floodplain interactions</li>
-                <li><span class="highlight">Carbon cycling:</span> Plays a key role in the global carbon cycle</li>
-            </ul>
+        <h2>Monitoring Technologies</h2>
+        <p>Modern in-situ optical fluorometers excite water samples at ~370 nm wavelength and measure fluorescence emission at ~460 nm to deliver continuous, real-time TOC estimates without liquid reagents.</p>
+      </div>
 
-            <h2>Measurement Techniques</h2>
-            <p>Modern monitoring systems measure fDOM using <span class="highlight">in-situ fluorescence sensors</span> that:</p>
-            <ul class="feature-list">
-                <li>Excite organic matter with specific wavelengths (typically ~370nm)</li>
-                <li>Measure emitted fluorescence (~460nm)</li>
-                <li>Provide real-time, high-resolution data</li>
-                <li>Are calibrated against standard reference materials</li>
-            </ul>
-
-            <img src="images/cdom-sensor.jpg" alt="CDOM measurement sensor" class="sensor-image">
-
-            <h2>Environmental Significance</h2>
-            <p>CDOM/fDOM levels can indicate:</p>
-            <ul class="feature-list">
-                <li>Watershed characteristics and land use</li>
-                <li>Seasonal variations in organic matter inputs</li>
-                <li>Potential presence of disinfection byproduct precursors</li>
-                <li>Changes in water source or mixing patterns</li>
-            </ul>
-
-            <h2>Applications</h2>
-            <ul class="feature-list">
-                <li>Drinking water treatment monitoring</li>
-                <li>Coastal and estuarine research</li>
-                <li>Wetland and peatland studies</li>
-                <li>Climate change research</li>
-                <li>Harmful algal bloom investigations</li>
-            </ul>
-        </div>
+      <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;margin-top:2rem">
+        <h3 style="color:var(--accent);font-size:1.1rem;margin-bottom:0.5rem">🌊 Primary Applications</h3>
+        <p style="font-size:0.9rem;color:var(--muted)">Estuarine water mixing studies, raw water intake protection, wastewater effluent tracking, and global carbon cycle research.</p>
+      </div>
     </div>
+  </div>
+</div>
 
-    <script>
-        function goBackHome() {
-            window.location.href = 'parameters';
-        }
+<footer class="footer"><p>© 2025 <strong>AquaGuard</strong> — Water Quality Parameter Guide</p></footer>
 
-        function toggleInfo() {
-            const info = document.getElementById("moreInfo");
-            const button = document.querySelector(".btn");
-            
-            if (info.style.display === "none") {
-                info.style.display = "block";
-                button.textContent = "Hide Measurement Details";
-            } else {
-                info.style.display = "none";
-                button.textContent = "Show Measurement Details";
-            }
-        }
-    </script>
+<script>
+  window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10));
+</script>
 </body>
 </html>

@@ -1,236 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blue-Green Algae (Cyanobacteria)</title>
-    <style>
-        :root {
-            --primary: #2F4F4F;
-            --primary-light: #3a5f5f;
-            --secondary: #778899;
-            --accent: #20B2AA;
-            --light-bg: #f5f5f5;
-            --dark-text: #2d3748;
-            --border-color: #e0e0e0;
-            --white: #ffffff;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blue-Green Algae (Cyanobacteria) — AquaGuard Parameter Guide</title>
+  <meta name="description" content="Comprehensive analysis of Blue-Green Algae (Cyanobacteria), harmful algal blooms (HABs), microcystin toxins, and fluorometric monitoring.">
+  <link rel="stylesheet" href="/styles/global.css">
+  <style>
+    .param-page { padding: calc(var(--nav-h) + 2.5rem) 1.5rem 5rem; min-height: 100vh; }
+    .param-container { max-width: 900px; margin: 0 auto; }
+    .param-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+      padding: 2.5rem; box-shadow: var(--shadow); position: relative; overflow: hidden;
+    }
+    .param-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--green), var(--accent)); }
+    
+    .param-meta { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0 2rem; }
+    .meta-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--r); padding: 0.85rem 1.25rem; flex: 1; min-width: 180px; }
+    .meta-lbl { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .meta-val { font-size: 1.2rem; font-weight: 700; color: var(--green); font-family: 'Roboto Mono', monospace; }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--light-bg);
-            color: var(--dark-text);
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 30px;
-            background: var(--white);
-            border-radius: 10px;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            color: var(--primary);
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 2.2rem;
-            border-bottom: 2px solid var(--accent);
-            padding-bottom: 10px;
-        }
-
-        p {
-            margin-bottom: 20px;
-            font-size: 1.1rem;
-        }
-
-        .info-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: #eaf2ff;
-            border-left: 4px solid var(--primary);
-            border-radius: 0 5px 5px 0;
-            transition: all 0.3s ease;
-        }
-
-        .info-section p:last-child {
-            margin-bottom: 0;
-        }
-
-        .btn {
-            display: block;
-            margin: 25px auto;
-            padding: 12px 25px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .btn:hover {
-            background-color: var(--primary-light);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-
-        /* Back button */
-        .back-button-container {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-        }
-
-        .back-button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .back-button:hover {
-            background-color: var(--primary-light);
-            transform: translateX(-3px);
-        }
-
-        /* Highlight important terms */
-        .highlight {
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .feature-list {
-            margin: 20px 0;
-            padding-left: 20px;
-        }
-
-        .feature-list li {
-            margin-bottom: 10px;
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .container {
-                margin: 15px;
-                padding: 20px;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .back-button-container {
-                position: relative;
-                top: auto;
-                left: auto;
-                margin-bottom: 15px;
-            }
-            
-            .back-button {
-                position: relative;
-                margin: 0 auto 20px;
-            }
-        }
-    </style>
+    .content-sec { line-height: 1.8; color: var(--light); margin-bottom: 1.5rem; }
+    .content-sec h2 { font-size: 1.25rem; color: var(--white); margin: 1.5rem 0 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+  </style>
 </head>
 <body>
-    <!-- Back to Home Button -->
-    <div class="back-button-container">
-        <button class="back-button" onclick="goBackHome()">&#8592; Back to Parameters</button>
-    </div>
+<nav class="navbar scrolled" id="navbar">
+  <a href="/fwater" class="nav-brand"><div class="nav-logo">💧</div><span class="nav-name">Aqua<span>Guard</span></span></a>
+  <ul class="nav-links" id="navLinks">
+    <li class="nav-dd"><button>Data Entry</button><div class="dd-menu"><a href="/physical">🧪 Physical</a><a href="/chemical">⚗️ Chemical</a><a href="/biological">🦠 Biological</a><a href="/environmental">🌿 Environmental</a><a href="/air">💨 Air Quality</a></div></li>
+    <li class="nav-dd"><a href="#">WQI</a><div class="dd-menu"><a href="/w6swqi">Simple WQI</a><a href="/w4nsfwqi">NSF-WQI</a><a href="/w5wawqi">WA-WQI</a><a href="/w1ccmewqi">CCME-WQI</a></div></li>
+    <li><a href="/treatment">Treatment</a></li><li><a href="/AQI">AQI</a></li><li><a href="/parameters" style="color:var(--accent)">Parameters</a></li><li><a href="/information">Data Info</a></li>
+  </ul>
+  <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')"><span></span><span></span><span></span></button>
+</nav>
 
-    <div class="container">
-        <h1>Blue-Green Algae (Cyanobacteria)</h1>
-        <p>
-            <span class="highlight">Blue-green algae (BGA)</span>, scientifically known as cyanobacteria, are photosynthetic microorganisms that can range in color from blues and greens to reds and blacks. Despite their name, they are not true algae but rather a type of bacteria capable of photosynthesis.
-        </p>
-        <p>
-            While BGA can play a beneficial role in aquatic ecosystems by fixing nitrogen and carbon, they become problematic when overabundant, potentially depleting dissolved oxygen levels and producing harmful toxins.
-        </p>
+<div class="param-page">
+  <div class="param-container">
+    <a href="/parameters" class="btn btn-ghost" style="margin-bottom:1.5rem">← Back to Parameters Directory</a>
 
-        <button class="btn" onclick="toggleInfo()">Show Detailed Information</button>
+    <div class="param-card fu">
+      <span class="badge badge-green">Biological Parameter</span>
+      <h1 style="font-size:2.2rem;font-weight:800;color:var(--white);margin-top:0.5rem">Blue-Green Algae (Cyanobacteria)</h1>
+      
+      <div class="param-meta">
+        <div class="meta-box"><div class="meta-lbl">Organism Type</div><div class="meta-val">Cyanobacteria</div></div>
+        <div class="meta-box"><div class="meta-lbl">WHO Alert Level 1</div><div class="meta-val">20,000 cells/mL</div></div>
+        <div class="meta-box"><div class="meta-lbl">Key Toxin</div><div class="meta-val">Microcystin</div></div>
+      </div>
+
+      <div class="content-sec">
+        <h2>Overview</h2>
+        <p>Blue-Green Algae (BGA), or Cyanobacteria, are photosynthetic bacteria that naturally inhabit aquatic ecosystems. Under elevated nutrient concentrations (excess phosphorus and nitrogen) and warm water temperatures, BGA rapidly proliferates into Harmful Algal Blooms (HABs).</p>
         
-        <div class="info-section" id="moreInfo" style="display: none;">
-            <h2>Ecological Impact</h2>
-            <p>
-                Monitoring BGA is critically important because they pose serious threats to:
-            </p>
-            <ul class="feature-list">
-                <li>Water quality and ecosystem stability</li>
-                <li>Surface drinking water supplies</li>
-                <li>Public health through toxin production</li>
-                <li>Recreational water safety</li>
-                <li>Aquatic life through oxygen depletion</li>
-            </ul>
+        <h2>Toxins & Public Health Concerns</h2>
+        <p>Cyanobacteria produce potent hepatotoxins and neurotoxins (such as microcystins, cylindrospermopsin, and anatoxins) that pose severe health hazards to human drinking water safety, livestock, and domestic animals.</p>
+        
+        <h2>Real-Time Fluorometric Monitoring</h2>
+        <p>Modern water monitoring utilizes <em>in vivo</em> fluorometry to measure phycocyanin pigment fluorescence in real-time, enabling early warnings before surface scum formations occur.</p>
+      </div>
 
-            <h2>Detection and Measurement</h2>
-            <p>
-                Modern monitoring systems measure blue-green algae in real-time using <span class="highlight">in vivo fluorometry</span>. This advanced technique:
-            </p>
-            <ul class="feature-list">
-                <li>Directly detects the fluorescence of specific pigments in living algal cells</li>
-                <li>Determines relative algal biomass with high accuracy</li>
-                <li>Provides immediate results for rapid response</li>
-                <li>Is not affected by interference from chlorophyll or turbidity</li>
-            </ul>
-
-            <h2>Harmful Algal Blooms (HABs)</h2>
-            <p>
-                When conditions are favorable (warm water, abundant nutrients), BGA can multiply rapidly, forming harmful algal blooms:
-            </p>
-            <ul class="feature-list">
-                <li>Can produce potent toxins (microcystins, cylindrospermopsin, etc.)</li>
-                <li>Create surface scums that block sunlight</li>
-                <li>Deplete oxygen when they die and decompose</li>
-                <li>Disrupt aquatic food webs</li>
-            </ul>
-
-            <h2>Prevention and Management</h2>
-            <p>
-                Effective BGA management strategies include:
-            </p>
-            <ul class="feature-list">
-                <li>Nutrient control (reducing phosphorus and nitrogen inputs)</li>
-                <li>Regular monitoring and early detection systems</li>
-                <li>Public education about bloom conditions</li>
-                <li>Water treatment adjustments during bloom events</li>
-            </ul>
-        </div>
+      <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;margin-top:2rem">
+        <h3 style="color:var(--accent);font-size:1.1rem;margin-bottom:0.5rem">🌿 Management & Mitigation</h3>
+        <p style="font-size:0.9rem;color:var(--muted)">Nutrient load reduction in watersheds, artificial reservoir aeration, ultrasound treatment, and activated carbon filtration are widely used to control cyanobacterial blooms.</p>
+      </div>
     </div>
+  </div>
+</div>
 
-    <script>
-        function goBackHome() {
-            window.location.href = 'parameters';
-        }
+<footer class="footer"><p>© 2025 <strong>AquaGuard</strong> — Water Quality Parameter Guide</p></footer>
 
-        function toggleInfo() {
-            const info = document.getElementById("moreInfo");
-            const button = document.querySelector(".btn");
-            
-            if (info.style.display === "none") {
-                info.style.display = "block";
-                button.textContent = "Hide Detailed Information";
-            } else {
-                info.style.display = "none";
-                button.textContent = "Show Detailed Information";
-            }
-        }
-    </script>
+<script>
+  window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10));
+</script>
 </body>
 </html>

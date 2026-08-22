@@ -1,113 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Biological Parameters</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/styles/biological.css">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biological Parameters — AquaGuard</title>
+  <meta name="description" content="Enter biological water quality measurements — Total Coliform, Fecal Coliform, Algal Count, Pathogens.">
+  <link rel="stylesheet" href="/styles/global.css">
+  <style>
+    .form-hero { position:relative; padding:calc(var(--nav-h) + 3rem) 2rem 2.5rem; background:linear-gradient(160deg,#040f23 0%,#0a2d1e 60%,#001a10 100%); overflow:hidden; }
+    .form-hero .fh-orb { position:absolute; border-radius:50%; filter:blur(60px); pointer-events:none; animation:float 7s ease-in-out infinite; }
+    .form-hero .fh-orb1 { width:250px; height:250px; background:rgba(6,214,160,0.1); top:-40px; right:10%; animation-delay:0s; }
+    .form-hero .fh-orb2 { width:160px; height:160px; background:rgba(0,180,216,0.06); bottom:-20px; left:5%; animation-delay:2s; }
+    .form-hero-inner { position:relative; z-index:2; max-width:700px; }
+    .breadcrumb { display:flex; align-items:center; gap:0.5rem; font-size:0.78rem; color:var(--muted); margin-bottom:1.25rem; }
+    .breadcrumb a { color:var(--muted); transition:color 0.2s; } .breadcrumb a:hover { color:var(--accent); } .breadcrumb span { color:var(--green); }
+    .form-hero h1 { font-size:clamp(1.7rem,4vw,2.4rem); font-weight:800; margin:0.5rem 0 0.6rem; }
+    .form-hero p { color:var(--muted); font-size:0.92rem; max-width:500px; }
+    .form-hero-wave { position:absolute; bottom:0; left:0; width:100%; z-index:1; }
+    .form-hero-wave svg { display:block; }
+    .form-page { padding:3rem 1.5rem 5rem; }
+    .form-container { max-width:700px; margin:0 auto; }
+    .form-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); padding:2.25rem; box-shadow:var(--shadow); position:relative; overflow:hidden; }
+    .form-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--green),#00c8b4); }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.1rem; }
+    @media(max-width:540px){ .form-grid{ grid-template-columns:1fr; } }
+    .param-unit { position:absolute; right:1rem; top:50%; transform:translateY(-50%); font-size:0.75rem; color:var(--muted); font-family:'Roboto Mono',monospace; pointer-events:none; }
+    .form-actions { display:flex; gap:1rem; margin-top:1.25rem; }
+    .form-actions .btn { flex:1; justify-content:center; }
+    .result-msg { display:none; padding:1rem 1.2rem; border-radius:10px; font-size:0.88rem; margin-bottom:1.25rem; }
+    .result-msg.success { background:rgba(6,214,160,0.1); border:1px solid rgba(6,214,160,0.3); color:var(--green); }
+    .result-msg.error { background:rgba(239,71,111,0.1); border:1px solid rgba(239,71,111,0.3); color:var(--danger); }
+    .divider { height:1px; background:var(--border); margin:1.5rem 0; }
+    .section-sub { font-size:0.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem; }
+    .section-sub::after { content:''; flex:1; height:1px; background:var(--border); }
+    .tips-box { background:rgba(6,214,160,0.06); border:1px solid rgba(6,214,160,0.2); border-radius:var(--r); padding:1rem 1.25rem; margin-top:1.5rem; }
+    .tips-box h4 { font-size:0.8rem; font-weight:700; color:var(--green); margin-bottom:0.5rem; }
+    .tips-box ul { list-style:none; display:flex; flex-direction:column; gap:0.3rem; }
+    .tips-box ul li { font-size:0.78rem; color:var(--muted); display:flex; align-items:flex-start; gap:0.5rem; }
+    .tips-box ul li::before { content:'🦠'; flex-shrink:0; font-size:0.75rem; }
+  </style>
 </head>
+<body>
+<nav class="navbar scrolled" id="navbar">
+  <a href="/fwater" class="nav-brand"><div class="nav-logo">💧</div><span class="nav-name">Aqua<span>Guard</span></span></a>
+  <ul class="nav-links" id="navLinks">
+    <li class="nav-dd"><button>Data Entry</button><div class="dd-menu"><a href="/physical">🧪 Physical</a><a href="/chemical">⚗️ Chemical</a><a href="/biological" style="color:var(--green)">🦠 Biological</a><a href="/environmental">🌿 Environmental</a><a href="/air">💨 Air Quality</a></div></li>
+    <li><a href="/AQI">AQI</a></li><li><a href="/parameters">Parameters</a></li>
+  </ul>
+  <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')"><span></span><span></span><span></span></button>
+</nav>
 
-<body class="bg-gray-100">
-    <!-- Back to Home Button -->
-    <div class="back-button-container mb-4">
-        <button class="back-button px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600" onclick="goBackHome()">&#8592; Back to Home</button>
-    </div>
+<div class="form-hero">
+  <div class="fh-orb fh-orb1"></div>
+  <div class="fh-orb fh-orb2"></div>
+  <div class="form-hero-inner fu">
+    <div class="breadcrumb"><a href="/fwater">Dashboard</a> <span>›</span> <a href="/fwater#enter-data">Data Entry</a> <span>›</span> <span>Biological</span></div>
+    <span class="badge badge-green">🦠 Biological Parameters</span>
+    <h1 style="margin-top:0.75rem">Biological Data <span class="g-text">Entry</span></h1>
+    <p>Record biological contamination indicators — coliform counts, algal density, and pathogen presence.</p>
+  </div>
+  <div class="form-hero-wave">
+    <svg viewBox="0 0 1440 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,25 C240,50 480,0 720,25 C960,50 1200,0 1440,25 L1440,50 L0,50 Z" fill="#0a192f"/>
+    </svg>
+  </div>
+</div>
 
-    <div class="container mx-auto p-6">
-        <h2 class="text-3xl font-bold text-gray-700 mb-6">Biological Parameters</h2>
-
-        <!-- Form Box -->
-        <div class="bg-white shadow-md rounded-lg p-6">
-            <form class="grid grid-cols-1 sm:grid-cols-2 gap-6" id="biological-parameters-form" onsubmit="saveFormData(event)">
-                <!-- Sample ID -->
-                <div class="form-group">
-                    <label for="sampleID" class="block text-gray-700 font-semibold mb-2">Sample ID</label>
-                    <input type="text" id="sampleID" name="sampleID" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter Sample ID">
-                </div>
-
-                <!-- Coliform Bacteria -->
-                <div class="form-group">
-                    <label for="coliform" class="block text-gray-700 font-semibold mb-2">Coliform Bacteria (MPN/100mL)</label>
-                    <input type="number" step="0.01" id="coliform" name="coliform" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter Coliform Bacteria Count">
-                </div>
-
-                <!-- Fecal Coliform -->
-                <div class="form-group">
-                    <label for="fecalColiform" class="block text-gray-700 font-semibold mb-2">Fecal Coliform (MPN/100mL)</label>
-                    <input type="number" step="0.01" id="fecalColiform" name="fecalColiform" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter Fecal Coliform Count">
-                </div>
-
-                <!-- Algal Count -->
-                <div class="form-group">
-                    <label for="algalCount" class="block text-gray-700 font-semibold mb-2">Algal Count (cells/mL)</label>
-                    <input type="number" step="0.01" id="algalCount" name="algalCount" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter Algal Count">
-                </div>
-
-                <!-- Pathogens -->
-                <div class="form-group">
-                    <label for="pathogens" class="block text-gray-700 font-semibold mb-2">Pathogens (MPN/100mL)</label>
-                    <input type="number" step="0.01" id="pathogens" name="pathogens" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Enter Pathogen Count">
-                </div>
-
-                <!-- Save and Reset Buttons -->
-                <div class="form-group sm:col-span-2 flex justify-between">
-                    <button type="submit" class="save-button w-full sm:w-auto py-2 px-4 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300">Save</button>
-                    <button type="reset" class="reset-button w-full sm:w-auto py-2 px-4 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300">Reset</button>
-                </div>
-            </form>
+<div class="form-page">
+  <div class="form-container">
+    <div class="form-card fu-1">
+      <div class="result-msg" id="resultMsg"></div>
+      <p class="section-sub">Sample Identification</p>
+      <form id="bioForm" onsubmit="submitForm(event)">
+        <div class="form-group">
+          <label class="form-label">Sample ID *</label>
+          <input type="text" name="sampleID" class="form-control" placeholder="e.g. WS-2024-001" required>
         </div>
+        <div class="divider"></div>
+        <p class="section-sub">Biological Measurements</p>
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">Total Coliform *</label><div style="position:relative"><input type="number" step="1" min="0" name="coliform" class="form-control" placeholder="100" required><span class="param-unit">CFU/100mL</span></div></div>
+          <div class="form-group"><label class="form-label">Fecal Coliform *</label><div style="position:relative"><input type="number" step="1" min="0" name="fecalColiform" class="form-control" placeholder="10" required><span class="param-unit">CFU/100mL</span></div></div>
+          <div class="form-group"><label class="form-label">Algal Count *</label><div style="position:relative"><input type="number" step="1" min="0" name="algalCount" class="form-control" placeholder="500" required><span class="param-unit">cells/mL</span></div></div>
+          <div class="form-group"><label class="form-label">Pathogens *</label><div style="position:relative"><input type="number" step="1" min="0" name="pathogens" class="form-control" placeholder="0" required><span class="param-unit">per 100mL</span></div></div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="submitBtn"><span>💾 Save Data</span><span class="spinner" style="display:none;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite"></span></button>
+          <button type="reset" class="btn btn-ghost">↺ Reset</button>
+          <a href="/fwater" class="btn btn-ghost">← Dashboard</a>
+        </div>
+      </form>
+      <div class="tips-box">
+        <h4>📌 Biological Standards (WHO/EPA)</h4>
+        <ul>
+          <li>Total Coliform must be 0 CFU/100mL in drinking water (WHO).</li>
+          <li>Fecal Coliform &gt; 200 CFU/100mL indicates water unsafe for recreation.</li>
+          <li>Algal counts &gt; 2000 cells/mL may signal early-stage bloom conditions.</li>
+        </ul>
+      </div>
     </div>
+  </div>
+</div>
 
-    <!-- JavaScript for Back Button and Save Function -->
-    <script>
-        function goBackHome() {
-            window.location.href = 'fwater'; // Adjust this URL as necessary
-        }
-
-        function saveFormData(event) {
-            event.preventDefault(); // Prevent the default form submission
-
-            const sampleID = document.getElementById('sampleID').value;
-            const coliform = document.getElementById('coliform').value;
-            const fecalColiform = document.getElementById('fecalColiform').value;
-            const algalCount = document.getElementById('algalCount').value;
-            const pathogens = document.getElementById('pathogens').value;
-
-            if (sampleID && coliform && fecalColiform && algalCount && pathogens) {
-                // Use Fetch API to submit the data to the server
-                fetch('/biological', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        sampleID,
-                        coliform,
-                        fecalColiform,
-                        algalCount,
-                        pathogens
-                    })
-                })
-                .then(response => {
-                    if (response.ok) {
-                        alert('Data saved successfully!');
-                        document.getElementById('biological-parameters-form').reset();
-                        window.location.href = '/fwater'; // Redirect after successful save
-                    } else {
-                        alert('Error saving data');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error saving data');
-                });
-            } else {
-                alert('Please fill in all fields before saving.');
-            }
-        }
-    </script>
+<footer class="footer"><p>© 2025 <strong>AquaGuard</strong> — Water Pollution Analysis System</p></footer>
+<script>
+  window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>10));
+  async function submitForm(e){
+    e.preventDefault();
+    const form=e.target,btn=document.getElementById('submitBtn'),msg=document.getElementById('resultMsg');
+    btn.disabled=true;btn.querySelector('span').style.display='none';btn.querySelector('.spinner').style.display='block';msg.style.display='none';
+    try{
+      const res=await fetch('/biological',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(form)))});
+      if(res.ok||res.redirected){msg.className='result-msg success';msg.innerHTML='✅ Biological data saved!';msg.style.display='block';form.reset();setTimeout(()=>msg.style.display='none',3500);}
+      else{const r=await res.json();msg.className='result-msg error';msg.innerHTML='⚠️ '+(r.message||'Error.');msg.style.display='block';}
+    }catch(err){msg.className='result-msg error';msg.innerHTML='⚠️ Network error.';msg.style.display='block';}
+    finally{btn.disabled=false;btn.querySelector('span').style.display='';btn.querySelector('.spinner').style.display='none';}
+  }
+</script>
 </body>
-
 </html>

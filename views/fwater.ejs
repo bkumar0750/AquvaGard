@@ -1,539 +1,398 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Water Quality Monitoring</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <link rel="stylesheet" href="/styles/fwater.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AquaGuard — Dashboard</title>
+  <meta name="description" content="Water Pollution Analysis Dashboard — monitor water quality parameters, indices, and environmental data.">
+  <link rel="stylesheet" href="/styles/global.css">
+  <style>
+    /* ── NAVBAR override for dark transparent start ── */
+    .navbar { background: transparent; }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      background: linear-gradient(160deg,#040f23 0%,#0a2850 40%,#001a3a 100%);
+    }
+    #particles { position:absolute; inset:0; pointer-events:none; z-index:0; }
+    .particle { position:absolute; border-radius:50%; background:rgba(0,180,216,0.35); animation:float 15s ease-in-out infinite; }
+    .hero-content { position:relative; z-index:2; text-align:center; max-width:780px; padding:2rem; }
+    .hero-badge { display:inline-flex; align-items:center; gap:0.5rem; padding:0.45rem 1.1rem; background:rgba(0,180,216,0.12); border:1px solid rgba(0,180,216,0.3); border-radius:50px; font-size:0.8rem; font-weight:600; color:var(--accent); margin-bottom:1.5rem; }
+    .hero-badge::before { content:''; display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--green); animation:pulse-glow 2s ease infinite; }
+    .hero h1 { font-size:clamp(2.2rem,6vw,4rem); font-weight:800; line-height:1.1; margin-bottom:1.25rem; }
+    .hero h1 span { display:block; color:var(--accent); }
+    .hero p { color:var(--muted); font-size:1.05rem; max-width:520px; margin:0 auto 2.25rem; }
+    .hero-btns { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+    .hero-wave { position:absolute; bottom:0; left:0; width:100%; z-index:1; }
+    .hero-wave svg { display:block; }
+
+    /* ── STATS BAR ── */
+    .stats-bar { background:var(--surface); border-bottom:1px solid var(--border); }
+    .stats-inner { max-width:1100px; margin:0 auto; padding:1.25rem 2rem; display:grid; grid-template-columns:repeat(4,1fr); gap:1px; }
+    @media(max-width:640px){ .stats-inner{ grid-template-columns:repeat(2,1fr); } }
+    .stat-item { text-align:center; padding:0.5rem 1rem; }
+    .stat-item + .stat-item { border-left:1px solid var(--border); }
+    @media(max-width:640px){ .stat-item:nth-child(2n+1) + .stat-item{ border-left:1px solid var(--border); } .stat-item:nth-child(2n-1){ border-left:none; } }
+    .stat-val { font-size:1.6rem; font-weight:800; color:var(--accent); font-family:'Roboto Mono',monospace; display:block; }
+    .stat-label { font-size:0.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; }
+
+    /* ── SECTIONS ── */
+    .section { padding:5rem 2rem; }
+    .section-alt { background:var(--surface); }
+    .container { max-width:1100px; margin:0 auto; }
+
+    /* ── NAV CARDS GRID ── */
+    .nav-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:1.25rem; }
+    .nav-card {
+      background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg);
+      padding:1.75rem; display:flex; flex-direction:column; gap:1rem;
+      transition:all 0.3s; text-decoration:none; cursor:pointer;
+    }
+    .nav-card:hover { border-color:var(--border-h); box-shadow:var(--glow); transform:translateY(-5px); }
+    .nav-card-icon { width:52px; height:52px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; }
+    .nc-blue { background:rgba(0,180,216,0.15); }
+    .nc-green { background:rgba(6,214,160,0.15); }
+    .nc-purple { background:rgba(130,90,230,0.15); }
+    .nc-orange { background:rgba(255,140,60,0.15); }
+    .nc-red { background:rgba(239,71,111,0.15); }
+    .nc-teal { background:rgba(0,200,180,0.15); }
+    .nav-card h3 { font-size:1rem; font-weight:700; color:var(--white); }
+    .nav-card p { font-size:0.82rem; color:var(--muted); flex:1; }
+    .nav-card .arrow { align-self:flex-end; color:var(--accent); font-size:0.9rem; font-weight:700; transition:transform 0.2s; }
+    .nav-card:hover .arrow { transform:translateX(4px); }
+
+    /* ── DATA CATEGORIES ── */
+    .cat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; }
+    .cat-card { background:var(--bg); border:1px solid var(--border); border-radius:var(--r); padding:1.25rem; text-align:center; transition:all 0.3s; text-decoration:none; }
+    .cat-card:hover { border-color:var(--border-h); box-shadow:var(--glow); transform:translateY(-3px); }
+    .cat-icon { font-size:2rem; margin-bottom:0.75rem; }
+    .cat-card h4 { color:var(--white); font-size:0.95rem; font-weight:700; margin-bottom:0.3rem; }
+    .cat-card p { color:var(--muted); font-size:0.78rem; }
+
+    /* ── GALLERY ── */
+    .gallery-wrap { position:relative; overflow:hidden; border-radius:var(--r-lg); }
+    .gallery-track { display:flex; transition:transform 0.5s ease; }
+    .gallery-slide { min-width:100%; position:relative; height:420px; }
+    .gallery-slide img { width:100%; height:100%; object-fit:cover; }
+    .gallery-slide::after { content:''; position:absolute; inset:0; background:linear-gradient(to top,rgba(10,25,47,0.8) 0%,transparent 60%); }
+    .slide-caption { position:absolute; bottom:1.5rem; left:1.75rem; z-index:2; }
+    .slide-caption h4 { color:var(--white); font-size:1rem; font-weight:700; }
+    .slide-caption p { color:var(--muted); font-size:0.82rem; }
+    .gallery-nav { display:flex; justify-content:center; gap:0.75rem; margin-top:1.25rem; }
+    .g-btn { width:42px; height:42px; border-radius:50%; background:var(--surface); border:1px solid var(--border); color:var(--text); font-size:1rem; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; }
+    .g-btn:hover { border-color:var(--accent); color:var(--accent); box-shadow:var(--glow); }
+
+    /* ── CTA ── */
+    .cta-section {
+      padding:5rem 2rem;
+      background:linear-gradient(135deg,#061828 0%,#0a2547 50%,#061828 100%);
+      text-align:center; position:relative; overflow:hidden;
+    }
+    .cta-section::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:600px; height:600px; border-radius:50%; background:radial-gradient(circle,rgba(0,180,216,0.08),transparent 70%); pointer-events:none; }
+    .cta-section h2 { font-size:clamp(1.75rem,4vw,2.75rem); margin-bottom:1rem; }
+    .cta-section p { color:var(--muted); max-width:500px; margin:0 auto 2rem; font-size:1rem; }
+    .cta-btns { display:flex; gap:1rem; justify-content:center; flex-wrap:wrap; }
+
+    /* ── FULL FOOTER ── */
+    .full-footer {
+      background:var(--surface); border-top:1px solid var(--border);
+      padding:3rem 2rem 1.5rem;
+    }
+    .footer-inner { max-width:1100px; margin:0 auto; display:grid; grid-template-columns:2fr 1fr 1fr; gap:2.5rem; margin-bottom:2rem; }
+    @media(max-width:640px){ .footer-inner{ grid-template-columns:1fr; } }
+    .footer-brand h3 { font-size:1.1rem; font-weight:800; color:var(--white); margin-bottom:0.5rem; }
+    .footer-brand h3 span { color:var(--accent); }
+    .footer-brand p { color:var(--muted); font-size:0.85rem; line-height:1.7; }
+    .footer-col h4 { font-size:0.8rem; font-weight:700; color:var(--white); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:1rem; }
+    .footer-col ul { list-style:none; display:flex; flex-direction:column; gap:0.5rem; }
+    .footer-col ul a { color:var(--muted); font-size:0.85rem; transition:color 0.2s; }
+    .footer-col ul a:hover { color:var(--accent); }
+    .footer-bottom { max-width:1100px; margin:0 auto; padding-top:1.5rem; border-top:1px solid var(--border); text-align:center; color:var(--muted); font-size:0.82rem; }
+    .footer-bottom strong { color:var(--accent); }
+  </style>
 </head>
-<body class="relative">
-    <!-- Floating particles -->
-    <div id="particles"></div>
-    
-    <!-- Navigation -->
-    <nav class="navbar fixed w-full z-50 py-4 px-8 flex justify-between items-center">
-        <div class="text-white font-bold text-2xl">Water Analysis</div>
-        
-        <div class="nav-links hidden md:flex space-x-8">
-            <div class="dropdown relative">
-                <a href="#" class="dropbtn text-white hover:text-secondary transition">Water Quality Parameters</a>
-                <div class="dropdown-content absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                    <a href="Physical" class="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-primary">Physical Parameter</a>
-                    <a href="Chemical" class="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-primary">Chemical Parameter</a>
-                    <a href="Biological" class="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-primary">Biological Parameter</a>
-                    <a href="Environmental" class="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-primary">Other Environmental Parameter</a>
-                </div>
-            </div>
+<body>
 
-            <a href="treatment" class="text-white hover:text-secondary transition">Water Treatment</a>
-           
-            <div class="dropdown relative">
-                <a href="#" class="dropbtn text-white hover:text-secondary transition">Water Quality Index</a>
-                <div class="dropdown-content absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                    <a href="w6swqi" class="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-primary">Simple WQI</a>
-                    <a href="w4nsfwqi" class="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-primary">NSF-WQI</a>
-                    <a href="w5wawqi" class="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-primary">WA-WQI</a>
-                    <a href="w1ccmewqi" class="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-primary">CCME-WQI</a>
-                    <a href="w3iwqi" class="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-primary">Irrigation-WQI</a>
-                    <a href="w2gwqi" class="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-primary">Ground-WQI</a>
-                    <a href="w7delphiwqi" class="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-primary">DELPHI-WQI</a>
-                    <a href="w8minewqi" class="block px-4 py-2 text-gray-800 hover:bg-primary hover:text-primary">Mine-WQI</a>
+<!-- ── NAVBAR ── -->
+<nav class="navbar" id="navbar">
+  <a href="/fwater" class="nav-brand">
+    <div class="nav-logo">💧</div>
+    <span class="nav-name">Aqua<span>Guard</span></span>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li class="nav-dd">
+      <button>Data Entry</button>
+      <div class="dd-menu">
+        <a href="/physical">🧪 Physical</a>
+        <a href="/chemical">⚗️ Chemical</a>
+        <a href="/biological">🦠 Biological</a>
+        <a href="/environmental">🌿 Environmental</a>
+        <a href="/air">💨 Air Quality</a>
+      </div>
+    </li>
+    <li class="nav-dd">
+      <a href="#">WQI Calculators</a>
+      <div class="dd-menu">
+        <a href="/w6swqi">Simple WQI</a>
+        <a href="/w4nsfwqi">NSF-WQI</a>
+        <a href="/w5wawqi">WA-WQI</a>
+        <a href="/w1ccmewqi">CCME-WQI</a>
+        <a href="/w3iwqi">Irrigation-WQI</a>
+        <a href="/w2gwqi">Ground-WQI</a>
+        <a href="/w7delphiwqi">DELPHI-WQI</a>
+        <a href="/w8minewqi">Mine-WQI</a>
+      </div>
+    </li>
+    <li><a href="/treatment">Treatment</a></li>
+    <li><a href="/AQI">AQI</a></li>
+    <li><a href="/parameters">Parameters</a></li>
+    <li><a href="/information">Data Info</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
 
-                </div>
-            </div>
-            
-            <a href="Air" class="text-white hover:text-secondary transition">Air Quality Parameter</a>
-            <a href="AQI" class="text-white hover:text-secondary transition">Air Quality Index</a>
-            <a href="information" class="text-white hover:text-secondary transition">Data Information</a>
-            <a href="parameters" class="text-white hover:text-secondary transition">Parameters</a>
+<!-- ── HERO ── -->
+<section class="hero">
+  <div id="particles"></div>
+  <div class="hero-content">
+    <div class="hero-badge fu">🟢 Live Monitoring Active</div>
+    <h1 class="fu-1">Protect Our<span>Water Resources</span></h1>
+    <p class="fu-2">Comprehensive water pollution analysis platform — monitor physical, chemical, biological, and environmental parameters in real time.</p>
+    <div class="hero-btns fu-3">
+      <a href="#enter-data" class="btn btn-primary btn-lg">📊 Enter Data</a>
+      <a href="#about" class="btn btn-outline btn-lg">Learn More</a>
+    </div>
+  </div>
+  <div class="hero-wave">
+    <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z" fill="#0a192f"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ── STATS BAR ── -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item"><span class="stat-val">5</span><span class="stat-label">Parameter Categories</span></div>
+    <div class="stat-item"><span class="stat-val">21+</span><span class="stat-label">Measurable Parameters</span></div>
+    <div class="stat-item"><span class="stat-val">8</span><span class="stat-label">WQI Methods</span></div>
+    <div class="stat-item"><span class="stat-val">100%</span><span class="stat-label">Cloud-backed</span></div>
+  </div>
+</div>
+
+<!-- ── ABOUT ── -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="sec-title">
+      <span class="sec-label">About the Platform</span>
+      <h2>What is <span class="g-text">Water Pollution?</span></h2>
+      <p>Water pollution is the contamination of water bodies by harmful substances — one of today's most critical environmental challenges affecting ecosystems, wildlife, and human health.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;" class="about-grid">
+      <img src="/images/image1.png" alt="Water Pollution" style="border-radius:var(--r-lg);box-shadow:var(--shadow-lg);width:100%;object-fit:cover;max-height:360px;">
+      <div>
+        <h3 style="margin-bottom:1rem;font-size:1.3rem;">Understanding Water Contamination</h3>
+        <p style="color:var(--muted);margin-bottom:1.25rem;line-height:1.8;">Water pollution occurs when harmful substances contaminate a water body, degrading quality and rendering it toxic to humans or the environment. Our platform provides a comprehensive tool for analysis.</p>
+        <div style="display:flex;flex-direction:column;gap:0.75rem;">
+          <div style="display:flex;align-items:center;gap:0.75rem;"><span style="color:var(--green);font-size:1.1rem;">✔</span><span style="color:var(--muted);font-size:0.9rem;">Chemical pollution from factories and agriculture</span></div>
+          <div style="display:flex;align-items:center;gap:0.75rem;"><span style="color:var(--green);font-size:1.1rem;">✔</span><span style="color:var(--muted);font-size:0.9rem;">Microbiological contamination from untreated sewage</span></div>
+          <div style="display:flex;align-items:center;gap:0.75rem;"><span style="color:var(--green);font-size:1.1rem;">✔</span><span style="color:var(--muted);font-size:0.9rem;">Nutrient pollution causing harmful algal blooms</span></div>
+          <div style="display:flex;align-items:center;gap:0.75rem;"><span style="color:var(--green);font-size:1.1rem;">✔</span><span style="color:var(--muted);font-size:0.9rem;">Radiological and noise pollution in water bodies</span></div>
         </div>
-        
-        <!-- Mobile menu button -->
-        <button class="md:hidden text-white focus:outline-none" id="mobile-menu-button">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-        </button>
-    </nav>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- Hero Section -->
-    <section class="hero flex items-center justify-center relative overflow-hidden">
-        <div class="hero-content text-center text-white max-w-4xl mx-4 animate__animated animate__fadeIn">
-            <h1 class="text-5xl font-bold mb-6">Protect Our Water Resources</h1>
-            <p class="text-xl mb-8">Join the global movement against water pollution and ensure clean water for future generations</p>
-            <div class="flex justify-center space-x-4">
-                <a href="#about" class="bg-secondary text-primary px-8 py-3 rounded-full font-semibold hover:bg-yellow-600 transition transform hover:scale-105">
-                    Learn More
-                </a>
-                <a href="#effects" class="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:bg-yellow-600 transition transform hover:scale-105">
-                    Explore Effects
-                </a>
-            </div>
-        </div>
-        
-        <!-- Scrolling indicator -->
-        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-            </svg>
-        </div>
-        
-        <!-- Water wave -->
-        <div class="water-wave"></div>
-    </section>
+<!-- ── DATA ENTRY SECTION ── -->
+<section class="section section-alt" id="enter-data">
+  <div class="container">
+    <div class="sec-title">
+      <span class="sec-label">Data Collection</span>
+      <h2>Enter <span class="g-text">Sample Data</span></h2>
+      <p>Select a parameter category to submit new water quality measurements to the database.</p>
+    </div>
+    <div class="nav-grid">
+      <a href="/physical" class="nav-card">
+        <div class="nav-card-icon nc-blue">🧪</div>
+        <h3>Physical Parameters</h3>
+        <p>pH, Temperature, Turbidity, Conductivity, Total Dissolved Solids (TDS)</p>
+        <span class="arrow">Enter Data →</span>
+      </a>
+      <a href="/chemical" class="nav-card">
+        <div class="nav-card-icon nc-purple">⚗️</div>
+        <h3>Chemical Parameters</h3>
+        <p>DO, BOD, COD, Ammonia, Nitrate, Nitrite, Phosphate, Chlorite</p>
+        <span class="arrow">Enter Data →</span>
+      </a>
+      <a href="/biological" class="nav-card">
+        <div class="nav-card-icon nc-green">🦠</div>
+        <h3>Biological Parameters</h3>
+        <p>Coliform, Fecal Coliform, Algal Count, Pathogens</p>
+        <span class="arrow">Enter Data →</span>
+      </a>
+      <a href="/environmental" class="nav-card">
+        <div class="nav-card-icon nc-teal">🌿</div>
+        <h3>Environmental Parameters</h3>
+        <p>Radiological levels, Noise, Soil contamination, Waste</p>
+        <span class="arrow">Enter Data →</span>
+      </a>
+      <a href="/air" class="nav-card">
+        <div class="nav-card-icon nc-orange">💨</div>
+        <h3>Air Quality Parameters</h3>
+        <p>PM, SO₂, NO₂, CO, O₃, Lead, VOCs</p>
+        <span class="arrow">Enter Data →</span>
+      </a>
+      <a href="/information" class="nav-card">
+        <div class="nav-card-icon nc-red">📂</div>
+        <h3>Data Information</h3>
+        <p>View stored samples, search by ID, and explore data records</p>
+        <span class="arrow">View Records →</span>
+      </a>
+    </div>
+  </div>
+</section>
 
-    <!-- About Section -->
-    <section id="about" class="py-20 bg-white relative overflow-hidden">
-        <div class="container mx-auto px-6 max-w-6xl">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-primary mb-4 animate__animated animate__fadeIn">What is Water Pollution?</h2>
-                <div class="w-24 h-1 bg-secondary mx-auto mb-8"></div>
-                <p class="text-lg text-gray-700 max-w-3xl mx-auto animate__animated animate__fadeIn animate__delay-1s">
-                    Water pollution is the contamination of water bodies like rivers, oceans, and lakes by harmful substances. 
-                    It is one of the most significant environmental issues today, affecting aquatic ecosystems, wildlife, and human health.
-                </p>
-            </div>
-            
-            <div class="flex flex-col md:flex-row items-center gap-12">
-                <div class="md:w-1/2 animate__animated animate__fadeInLeft">
-                    <img src="/images/image1.png" alt="Water Pollution" class="rounded-xl shadow-xl w-full h-auto object-cover transform transition hover:scale-105 duration-500">
-                </div>
-                <div class="md:w-1/2 animate__animated animate__fadeInRight">
-                    <div class="bg-gray-50 p-8 rounded-xl shadow-lg">
-                        <h3 class="text-2xl font-semibold text-primary mb-4">Understanding Water Contamination</h3>
-                        <p class="text-gray-700 mb-6">
-                            Water pollution occurs when harmful substances—often chemicals or microorganisms—contaminate a stream, river, lake, ocean, aquifer, or other body of water, degrading water quality and rendering it toxic to humans or the environment.
-                        </p>
-                        <ul class="space-y-3">
-                            <li class="flex items-start">
-                                <svg class="w-5 h-5 text-secondary mt-1 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                </svg>
-                                <span>Chemical pollution from factories and agriculture</span>
-                            </li>
-                            <li class="flex items-start">
-                                <svg class="w-5 h-5 text-secondary mt-1 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                </svg>
-                                <span>Microbiological contamination from untreated sewage</span>
-                            </li>
-                            <li class="flex items-start">
-                                <svg class="w-5 h-5 text-secondary mt-1 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                </svg>
-                                <span>Nutrient pollution causing algal blooms</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+<!-- ── WQI SECTION ── -->
+<section class="section">
+  <div class="container">
+    <div class="sec-title">
+      <span class="sec-label">Water Quality Index</span>
+      <h2>WQI <span class="g-text">Calculators</span></h2>
+      <p>Eight scientifically validated water quality index methods for comprehensive water quality assessment.</p>
+    </div>
+    <div class="cat-grid">
+      <a href="/w6swqi" class="cat-card"><div class="cat-icon">📐</div><h4>Simple WQI</h4><p>Basic scoring method</p></a>
+      <a href="/w4nsfwqi" class="cat-card"><div class="cat-icon">🏛️</div><h4>NSF-WQI</h4><p>National Sanitation Foundation</p></a>
+      <a href="/w5wawqi" class="cat-card"><div class="cat-icon">⚖️</div><h4>WA-WQI</h4><p>Weighted arithmetic</p></a>
+      <a href="/w1ccmewqi" class="cat-card"><div class="cat-icon">🍁</div><h4>CCME-WQI</h4><p>Canadian model</p></a>
+      <a href="/w3iwqi" class="cat-card"><div class="cat-icon">🌾</div><h4>Irrigation-WQI</h4><p>Agricultural use</p></a>
+      <a href="/w2gwqi" class="cat-card"><div class="cat-icon">⛏️</div><h4>Ground-WQI</h4><p>Groundwater quality</p></a>
+      <a href="/w7delphiwqi" class="cat-card"><div class="cat-icon">🎯</div><h4>DELPHI-WQI</h4><p>Expert consensus</p></a>
+      <a href="/w8minewqi" class="cat-card"><div class="cat-icon">🏭</div><h4>Mine-WQI</h4><p>Mining pollution</p></a>
+    </div>
+  </div>
+</section>
 
-    <!-- Effects of Water Pollution -->
-    <section id="effects" class="py-20 bg-gray-50 relative overflow-hidden">
-        <div class="container mx-auto px-6 max-w-6xl">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-primary mb-4">Effects of Water Pollution</h2>
-                <div class="w-24 h-1 bg-secondary mx-auto mb-8"></div>
-                <p class="text-lg text-gray-700 max-w-3xl mx-auto">
-                    Water pollution has far-reaching consequences that impact ecosystems, human health, and economies worldwide.
-                </p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Card 1 -->
-                <div class="card bg-white rounded-xl overflow-hidden shadow-lg transform transition hover:-translate-y-2 duration-300 animate__animated animate__fadeInUp">
-                    <div class="relative overflow-hidden h-48">
-                        <img src="/images/image2.png" alt="Aquatic Life" class="card-img w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
-                        <div class="absolute bottom-0 left-0 p-6 text-white">
-                            <h3 class="text-xl font-bold">Harm to Aquatic Life</h3>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-700">
-                            Polluted water disrupts aquatic ecosystems and threatens marine species with extinction. Contaminants can cause reproductive issues, genetic mutations, and mass die-offs in fish populations.
-                        </p>
-                        <div class="mt-4">
-                            <a href="#" class="text-secondary font-semibold hover:underline">Learn more →</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Card 2 -->
-                <div class="card bg-white rounded-xl overflow-hidden shadow-lg transform transition hover:-translate-y-2 duration-300 animate__animated animate__fadeInUp animate__delay-1s">
-                    <div class="relative overflow-hidden h-48">
-                        <img src="/images/imag3.png" alt="Human Health" class="card-img w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
-                        <div class="absolute bottom-0 left-0 p-6 text-white">
-                            <h3 class="text-xl font-bold">Impact on Human Health</h3>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-700">
-                            Contaminated water can cause deadly diseases like cholera and dysentery, affecting millions worldwide. Long-term exposure leads to cancer, developmental issues, and organ damage.
-                        </p>
-                        <div class="mt-4">
-                            <a href="#" class="text-secondary font-semibold hover:underline">Learn more →</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Card 3 -->
-                <div class="card bg-white rounded-xl overflow-hidden shadow-lg transform transition hover:-translate-y-2 duration-300 animate__animated animate__fadeInUp animate__delay-2s">
-                    <div class="relative overflow-hidden h-48">
-                        <img src="/images/image4.png" alt="Economy" class="card-img w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-70"></div>
-                        <div class="absolute bottom-0 left-0 p-6 text-white">
-                            <h3 class="text-xl font-bold">Economic Consequences</h3>
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <p class="text-gray-700">
-                            Water pollution affects industries like fishing and tourism, leading to significant economic losses. Treatment costs for contaminated water burden municipalities and taxpayers.
-                        </p>
-                        <div class="mt-4">
-                            <a href="#" class="text-secondary font-semibold hover:underline">Learn more →</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Floating decorative elements -->
-        <div class="absolute top-20 left-10 w-16 h-10 bg-secondary opacity-20 rounded-full filter blur-xl animate-pulse"></div>
-        <div class="absolute bottom-10 right-10 w-24 h-10 bg-accent opacity-15 rounded-full filter blur-xl animate-pulse delay-300"></div>
-    </section>
+<!-- ── GALLERY ── -->
+<section class="section section-alt" id="gallery">
+  <div class="container">
+    <div class="sec-title">
+      <span class="sec-label">Field Documentation</span>
+      <h2>Sample <span class="g-text">Gallery</span></h2>
+      <p>Visual documentation of water pollution samples and field research at IIT KGP.</p>
+    </div>
+    <div class="gallery-wrap">
+      <div class="gallery-track" id="galleryTrack"></div>
+    </div>
+    <div class="gallery-nav">
+      <button class="g-btn" id="prevBtn">←</button>
+      <button class="g-btn" id="nextBtn">→</button>
+    </div>
+  </div>
+</section>
 
-     <!-- gallery -->
-    <section id="water-pollution-gallery" class="gallery-section">
-        <h1>Water Pollution Sample Gallery</h1>
-        <p>Explore the impacts of water pollution through these images</p>
-        
-        <div class="gallery-container">
-            <div class="gallery-track">
-                <!-- Slides will be inserted here by JavaScript -->
-            </div>
-        </div>
-        
-        <div class="gallery-nav">
-            <button id="prevBtn" class="gallery-btn">Previous</button>
-            <button id="nextBtn" class="gallery-btn">Next</button>
-        </div>
-    </section>
+<!-- ── CTA ── -->
+<div class="cta-section">
+  <h2 class="g-text">Ready to Analyse Water Quality?</h2>
+  <p>Start entering sample data now and generate professional water quality index reports instantly.</p>
+  <div class="cta-btns">
+    <a href="/physical" class="btn btn-primary btn-lg">🧪 Start Data Entry</a>
+    <a href="/parameters" class="btn btn-outline btn-lg">📖 View Parameters</a>
+  </div>
+</div>
 
-    <!-- Call to Action -->
-    <section class="py-16 bg-primary text-black relative overflow-hidden">
-        <div class="container mx-auto px-6 max-w-6xl text-center">
-            <h2 class="text-3xl md:text-4xl font-bold text-black mb-6">Ready to Make a Difference?</h2>
-            <p class="text-xl mb-8 max-w-3xl mx-auto">
-                Join our community of water quality advocates and help protect our most precious resource.
-            </p>
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="#" class="bg-secondary text-primary px-8 py-3 rounded-full font-semibold hover:bg-yellow-600 transition transform hover:scale-105">
-                    Get Involved
-                </a>
-                <a href="#" class="border-2 border-white text-black px-8 py-3 rounded-full font-semibold hover:bg-yellow-600 hover:text-primary transition transform hover:scale-105">
-                    Learn About Solutions
-                </a>
-            </div>
-        </div>
-        
-        <!-- Water wave at bottom -->
-        <div class="water-wave"></div>
-    </section>
+<!-- ── FOOTER ── -->
+<footer class="full-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <h3>Aqua<span>Guard</span></h3>
+      <p>A comprehensive water pollution analysis platform developed at IIT KGP for scientific water quality monitoring and assessment.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Data Entry</h4>
+      <ul>
+        <li><a href="/physical">Physical</a></li>
+        <li><a href="/chemical">Chemical</a></li>
+        <li><a href="/biological">Biological</a></li>
+        <li><a href="/environmental">Environmental</a></li>
+        <li><a href="/air">Air Quality</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Tools</h4>
+      <ul>
+        <li><a href="/parameters">Parameters</a></li>
+        <li><a href="/AQI">AQI Calculator</a></li>
+        <li><a href="/treatment">Treatment</a></li>
+        <li><a href="/information">Data Info</a></li>
+        <li><a href="/w6swqi">WQI Tools</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 <strong>AquaGuard</strong> — Water Pollution Analysis System &nbsp;·&nbsp; Made with ♥ for a cleaner planet</p>
+  </div>
+</footer>
 
-    <!-- Footer 
-    <footer class="bg-dark text-white py-12 relative">
-        <div class="container mx-auto px-6 max-w-6xl">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <h3 class="text-xl font-bold mb-4">AquaGuard</h3>
-                    <p class="text-gray-400">Protecting water resources through science, education, and community action.</p>
-                </div>
-                <div>
-                    <h4 class="font-semibold mb-4">Quick Links</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Home</a></li>
-                        <li><a href="#about" class="text-gray-400 hover:text-white transition">About</a></li>
-                        <li><a href="#effects" class="text-gray-400 hover:text-white transition">Effects</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Solutions</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-semibold mb-4">Resources</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Research Papers</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Water Quality Data</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">Educational Materials</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition">API Documentation</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-semibold mb-4">Contact Us</h4>
-                    <address class="text-gray-400 not-italic">
-                        <p>123 Water Way</p>
-                        <p>Clean City, CC 12345</p>
-                        <p>Email: info@aquaguard.org</p>
-                        <p>Phone: (123) 456-7890</p>
-                    </address>
-                </div>
-            </div>
-            -->
-            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-500">
-                <p>&copy; 2025 Water Analysis. All rights reserved.</p>
-                <p class="mt-2">Made with ♥ for a cleaner planet</p>
-            </div>
-        </div>
-    </footer>
+<style>
+  @media(max-width:768px){
+    .about-grid{ grid-template-columns:1fr !important; }
+  }
+</style>
 
-    <script>
-        // Create floating particles
-        function createParticles() {
-            const container = document.getElementById('particles');
-            const colors = ['rgba(255, 255, 255, 0.6)', 'rgba(200, 230, 255, 0.5)', 'rgba(230, 240, 255, 0.4)'];
-            
-            for (let i = 0; i < 50; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                particle.style.left = Math.random() * 100 + 'vw';
-                particle.style.bottom = -Math.random() * 100 + 'px';
-                particle.style.width = Math.random() * 15 + 5 + 'px';
-                particle.style.height = particle.style.width;
-                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.animationDuration = Math.random() * 20 + 10 + 's';
-                particle.style.animationDelay = Math.random() * 10 + 's';
-                container.appendChild(particle);
-            }
-        }
-        
-        // Background image slideshow for hero section
-        function heroSlideshow() {
-            const hero = document.querySelector('.hero');
-            const images = [
-                '/images/bg1.jpg',
-                '/images/bg2.jpg',
-                '/images/bg3.jpg'
-            ];
-            let current = 0;
-            
-            setInterval(() => {
-                current = (current + 1) % images.length;
-                hero.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4)), url('${images[current]}')`;
-            }, 5000);
-        }
-        
-        // Navbar scroll effect
-        function navbarScroll() {
-            const navbar = document.querySelector('.navbar');
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 50) {
-                    navbar.classList.add('scrolled');
-                } else {
-                    navbar.classList.remove('scrolled');
-                }
-            });
-        }
-        
-        // Mobile menu toggle
-        function mobileMenu() {
-            const button = document.getElementById('mobile-menu-button');
-            const menu = document.querySelector('.nav-links');
-            
-            button.addEventListener('click', () => {
-                menu.classList.toggle('hidden');
-            });
-        }
-        
-        // Smooth scrolling for anchor links
-        function smoothScroll() {
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    const targetId = this.getAttribute('href');
-                    const targetElement = document.querySelector(targetId);
-                    
-                    if (targetElement) {
-                        window.scrollTo({
-                            top: targetElement.offsetTop - 80,
-                            behavior: 'smooth'
-                        });
-                        
-                        // Close mobile menu if open
-                        document.querySelector('.nav-links').classList.add('hidden');
-                    }
-                });
-            });
-        }
-        
-        // Initialize animations when elements come into view
-        function initAnimations() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animate__animated', 'animate__fadeInUp');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1 });
-            
-            document.querySelectorAll('.animate-on-scroll').forEach(element => {
-                observer.observe(element);
-            });
-        }
-        
-        // Initialize all functions when DOM loads
-        document.addEventListener('DOMContentLoaded', () => {
-            createParticles();
-            heroSlideshow();
-            navbarScroll();
-            mobileMenu();
-            smoothScroll();
-            initAnimations();
-        });
+<script>
+  // Navbar scroll
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => { navbar.classList.toggle('scrolled', window.scrollY > 40); });
 
+  // Particles
+  (() => {
+    const c = document.getElementById('particles');
+    for (let i = 0; i < 40; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const s = Math.random() * 12 + 4;
+      p.style.cssText = `width:${s}px;height:${s}px;left:${Math.random()*100}vw;top:${Math.random()*100}%;opacity:${Math.random()*0.5+0.1};animation-duration:${Math.random()*20+10}s;animation-delay:${Math.random()*10}s;`;
+      c.appendChild(p);
+    }
+  })();
 
-        // gallery image
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const galleryTrack = document.querySelector('.gallery-track');
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            
-            // Water pollution images with captions
-            const slides = [
-                {
-                    image: '/images/pollu1.jpg',
-                    caption: 'Drain water Gate 2 IIT KGP'
-                },
-                {
-                    image: '/images/pollu2.jpg',
-                    caption: 'Gate 2 IIT KGP'
-                },
-                {
-                    image: '/images/pollu3.jpg',
-                    caption: 'Chemical Reagent Lab'
-                },
-                {
-                    image: '/images/pollu4.jpg',
-                    caption: 'Near to Food Studio '
-                },
-                {
-                    image: '/images/pollu5.jpg',
-                    caption: 'Urban sewage polluting Drain'
-                },
-                {
-                    image: '/images/pollu1.jpg',
-                    caption: 'Drain water Gate 2 IIT KGP'
-                },
-                {
-                    image: '/images/pollu2.jpg',
-                    caption: 'Gate 2 IIT KGP'
-                },
-                {
-                    image: '/images/pollu3.jpg',
-                    caption: 'Chemical Reagent Lab'
-                }
-            ];
-            
-            // Create slides
-            slides.forEach((slide, index) => {
-                const slideElement = document.createElement('div');
-                slideElement.className = 'gallery-slide';
-                slideElement.innerHTML = `
-                    <img src="${slide.image}" alt="Water pollution image ${index + 1}">
-                    <div class="slide-caption">${slide.caption}</div>
-                `;
-                galleryTrack.appendChild(slideElement);
-            });
-            
-            // Clone first and last slides for infinite loop
-            const firstSlide = galleryTrack.firstElementChild.cloneNode(true);
-            const lastSlide = galleryTrack.lastElementChild.cloneNode(true);
-            
-            galleryTrack.appendChild(firstSlide);
-            galleryTrack.insertBefore(lastSlide, galleryTrack.firstElementChild);
-            
-            let currentIndex = 1;
-            const slideCount = slides.length;
-            const slideWidth = 100; // Percentage
-            
-            // Position the gallery at the first real slide
-            galleryTrack.style.transform = `translateX(-${currentIndex * slideWidth}%)`;
-            
-            // Auto slide every 5 seconds
-            let autoSlide = setInterval(nextSlide, 5000);
-            
-            function nextSlide() {
-                currentIndex++;
-                galleryTrack.style.transition = 'transform 0.5s ease-in-out';
-                galleryTrack.style.transform = `translateX(-${currentIndex * slideWidth}%)`;
-                
-                // If we've reached the cloned first slide, reset without animation
-                if (currentIndex === slideCount + 1) {
-                    setTimeout(() => {
-                        galleryTrack.style.transition = 'none';
-                        currentIndex = 1;
-                        galleryTrack.style.transform = `translateX(-${currentIndex * slideWidth}%)`;
-                    }, 500);
-                }
-                
-                resetAutoSlide();
-            }
-            
-            function prevSlide() {
-                currentIndex--;
-                galleryTrack.style.transition = 'transform 0.5s ease-in-out';
-                galleryTrack.style.transform = `translateX(-${currentIndex * slideWidth}%)`;
-                
-                // If we've reached the cloned last slide, reset without animation
-                if (currentIndex === 0) {
-                    setTimeout(() => {
-                        galleryTrack.style.transition = 'none';
-                        currentIndex = slideCount;
-                        galleryTrack.style.transform = `translateX(-${currentIndex * slideWidth}%)`;
-                    }, 500);
-                }
-                
-                resetAutoSlide();
-            }
-            
-            function resetAutoSlide() {
-                clearInterval(autoSlide);
-                autoSlide = setInterval(nextSlide, 5000);
-            }
-            
-            // Button event listeners
-            nextBtn.addEventListener('click', nextSlide);
-            prevBtn.addEventListener('click', prevSlide);
-            
-            // Touch support for mobile devices
-            let touchStartX = 0;
-            let touchEndX = 0;
-            
-            galleryTrack.addEventListener('touchstart', (e) => {
-                touchStartX = e.changedTouches[0].screenX;
-            }, {passive: true});
-            
-            galleryTrack.addEventListener('touchend', (e) => {
-                touchEndX = e.changedTouches[0].screenX;
-                handleSwipe();
-            }, {passive: true});
-            
-            function handleSwipe() {
-                if (touchEndX < touchStartX - 50) {
-                    nextSlide();
-                }
-                if (touchEndX > touchStartX + 50) {
-                    prevSlide();
-                }
-            }
-        });
-    </script>
+  // Gallery
+  (() => {
+    const slides = [
+      { image:'/images/pollu1.jpg', caption:'Drain water — Gate 2 IIT KGP', loc:'IIT Kharagpur' },
+      { image:'/images/pollu2.jpg', caption:'Polluted drain near Gate 2',    loc:'IIT Kharagpur' },
+      { image:'/images/pollu3.jpg', caption:'Chemical Reagent Lab',           loc:'Research Lab' },
+      { image:'/images/pollu4.jpg', caption:'Near Food Studio',               loc:'IIT Campus' },
+      { image:'/images/pollu5.jpg', caption:'Urban sewage polluting drain',   loc:'Field Study' },
+    ];
+    const track = document.getElementById('galleryTrack');
+    slides.forEach(s => {
+      const el = document.createElement('div');
+      el.className = 'gallery-slide';
+      el.innerHTML = `<img src="${s.image}" alt="${s.caption}"><div class="slide-caption"><h4>${s.caption}</h4><p>📍 ${s.loc}</p></div>`;
+      track.appendChild(el);
+    });
+    // clone for infinite loop
+    track.appendChild(track.firstElementChild.cloneNode(true));
+    track.insertBefore(track.lastElementChild.cloneNode(true), track.firstElementChild);
+    let idx = 1;
+    const go = (n) => { idx += n; track.style.transition='transform 0.5s ease'; track.style.transform=`translateX(-${idx*100}%)`; };
+    track.addEventListener('transitionend', () => {
+      if (idx >= slides.length+1){ idx=1; track.style.transition='none'; track.style.transform=`translateX(-100%)`; }
+      if (idx <= 0){ idx=slides.length; track.style.transition='none'; track.style.transform=`translateX(-${slides.length*100}%)`; }
+    });
+    document.getElementById('nextBtn').onclick = () => go(1);
+    document.getElementById('prevBtn').onclick = () => go(-1);
+    track.style.transform = `translateX(-100%)`;
+    setInterval(() => go(1), 5000);
+  })();
+</script>
 </body>
 </html>

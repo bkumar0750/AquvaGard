@@ -1,257 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Air Quality Parameters</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/styles/air.css">
-    <style>
-        .error-message {
-            display: none;
-            color: #ef4444;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-        }
-        .loading-spinner {
-            display: none;
-        }
-    </style>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Air Quality Parameters — AquaGuard</title>
+  <meta name="description" content="Enter air quality measurements near water sampling sites — PM, SO₂, NO₂, CO, O₃, Lead, VOCs.">
+  <link rel="stylesheet" href="/styles/global.css">
+  <style>
+    .form-hero { position:relative; padding:calc(var(--nav-h) + 3rem) 2rem 2.5rem; background:linear-gradient(160deg,#040f23 0%,#0d1a0a 60%,#1a1200 100%); overflow:hidden; }
+    .form-hero .fh-orb { position:absolute; border-radius:50%; filter:blur(60px); pointer-events:none; animation:float 7s ease-in-out infinite; }
+    .form-hero .fh-orb1 { width:250px; height:250px; background:rgba(255,140,60,0.1); top:-40px; right:10%; animation-delay:0s; }
+    .form-hero .fh-orb2 { width:160px; height:160px; background:rgba(255,209,102,0.06); bottom:-20px; left:5%; animation-delay:2.5s; }
+    .form-hero-inner { position:relative; z-index:2; max-width:700px; }
+    .breadcrumb { display:flex; align-items:center; gap:0.5rem; font-size:0.78rem; color:var(--muted); margin-bottom:1.25rem; }
+    .breadcrumb a { color:var(--muted); transition:color 0.2s; } .breadcrumb a:hover { color:var(--warn); } .breadcrumb span { color:var(--warn); }
+    .form-hero h1 { font-size:clamp(1.7rem,4vw,2.4rem); font-weight:800; margin:0.5rem 0 0.6rem; }
+    .form-hero p { color:var(--muted); font-size:0.92rem; max-width:500px; }
+    .form-hero-wave { position:absolute; bottom:0; left:0; width:100%; z-index:1; }
+    .form-hero-wave svg { display:block; }
+    .form-page { padding:3rem 1.5rem 5rem; }
+    .form-container { max-width:720px; margin:0 auto; }
+    .form-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); padding:2.25rem; box-shadow:var(--shadow); position:relative; overflow:hidden; }
+    .form-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,#ff8c3c,#ffd166); }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.1rem; }
+    @media(max-width:540px){ .form-grid{ grid-template-columns:1fr; } }
+    .param-unit { position:absolute; right:1rem; top:50%; transform:translateY(-50%); font-size:0.75rem; color:var(--muted); font-family:'Roboto Mono',monospace; pointer-events:none; }
+    .form-actions { display:flex; gap:1rem; margin-top:1.25rem; }
+    .form-actions .btn { flex:1; justify-content:center; }
+    .result-msg { display:none; padding:1rem 1.2rem; border-radius:10px; font-size:0.88rem; margin-bottom:1.25rem; }
+    .result-msg.success { background:rgba(6,214,160,0.1); border:1px solid rgba(6,214,160,0.3); color:var(--green); }
+    .result-msg.error { background:rgba(239,71,111,0.1); border:1px solid rgba(239,71,111,0.3); color:var(--danger); }
+    .divider { height:1px; background:var(--border); margin:1.5rem 0; }
+    .section-sub { font-size:0.72rem; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem; }
+    .section-sub::after { content:''; flex:1; height:1px; background:var(--border); }
+    .tips-box { background:rgba(255,140,60,0.06); border:1px solid rgba(255,140,60,0.2); border-radius:var(--r); padding:1rem 1.25rem; margin-top:1.5rem; }
+    .tips-box h4 { font-size:0.8rem; font-weight:700; color:#ff8c3c; margin-bottom:0.5rem; }
+    .tips-box ul { list-style:none; display:flex; flex-direction:column; gap:0.3rem; }
+    .tips-box ul li { font-size:0.78rem; color:var(--muted); display:flex; align-items:flex-start; gap:0.5rem; }
+    .tips-box ul li::before { content:'💨'; flex-shrink:0; font-size:0.75rem; }
+  </style>
 </head>
+<body>
+<nav class="navbar scrolled" id="navbar">
+  <a href="/fwater" class="nav-brand"><div class="nav-logo">💧</div><span class="nav-name">Aqua<span>Guard</span></span></a>
+  <ul class="nav-links" id="navLinks">
+    <li class="nav-dd"><button>Data Entry</button><div class="dd-menu"><a href="/physical">🧪 Physical</a><a href="/chemical">⚗️ Chemical</a><a href="/biological">🦠 Biological</a><a href="/environmental">🌿 Environmental</a><a href="/air" style="color:var(--warn)">💨 Air Quality</a></div></li>
+    <li><a href="/AQI">AQI</a></li><li><a href="/parameters">Parameters</a></li>
+  </ul>
+  <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')"><span></span><span></span><span></span></button>
+</nav>
 
-<body class="bg-gray-100">
-    <!-- Back to Home Button -->
-    <div class="back-button-container mb-4">
-        <button class="back-button px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600" onclick="goBackHome()">&#8592; Back to Home</button>
-    </div>
+<div class="form-hero">
+  <div class="fh-orb fh-orb1"></div>
+  <div class="fh-orb fh-orb2"></div>
+  <div class="form-hero-inner fu">
+    <div class="breadcrumb"><a href="/fwater">Dashboard</a> <span>›</span> <a href="/fwater#enter-data">Data Entry</a> <span>›</span> <span>Air Quality</span></div>
+    <span class="badge badge-warn">💨 Air Quality Parameters</span>
+    <h1 style="margin-top:0.75rem">Air Quality <span class="g-text">Entry</span></h1>
+    <p>Record ambient air quality measurements at or near the water sampling site — particulates, gases, and lead levels.</p>
+  </div>
+  <div class="form-hero-wave">
+    <svg viewBox="0 0 1440 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,25 C240,50 480,0 720,25 C960,50 1200,0 1440,25 L1440,50 L0,50 Z" fill="#0a192f"/>
+    </svg>
+  </div>
+</div>
 
-    <div class="container mx-auto p-6">
-        <h2 class="text-3xl font-bold text-gray-700 mb-6">Air Quality Parameters</h2>
-
-        <!-- Error Message Container -->
-        <div id="form-error" class="hidden mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700"></div>
-
-        <!-- Form Box -->
-        <div class="bg-white shadow-md rounded-lg p-6">
-            <form id="air-quality-parameters-form" class="grid grid-cols-1 md:grid-cols-2 gap-6" onsubmit="saveFormData(event)">
-                <!-- Sample ID -->
-                <div class="form-group">
-                    <label for="sampleID" class="block text-gray-700 font-semibold mb-2">Sample ID *</label>
-                    <input type="text" id="sampleID" name="sampleID" required
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                           placeholder="Enter Sample ID">
-                    <div id="sampleID-error" class="error-message"></div>
-                </div>
-                
-                <!-- Particulate Matter -->
-                <div class="form-group">
-                    <label for="pm" class="block text-gray-700 font-semibold mb-2">Particulate Matter (PM1/PM2.5) (µg/m³) *</label>
-                    <input type="number" step="0.01" id="pm" name="pm" required min="0"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                           placeholder="Enter PM levels">
-                    <div id="pm-error" class="error-message"></div>
-                </div>
-                
-                <!-- SO2 -->
-                <div class="form-group">
-                    <label for="so2" class="block text-gray-700 font-semibold mb-2">SO₂ (µg/m³) *</label>
-                    <input type="number" step="0.01" id="so2" name="so2" required min="0"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                           placeholder="Enter SO₂ levels">
-                    <div id="so2-error" class="error-message"></div>
-                </div>
-
-                <!-- NO2 -->
-                <div class="form-group">
-                    <label for="no2" class="block text-gray-700 font-semibold mb-2">NO₂ (µg/m³) *</label>
-                    <input type="number" step="0.01" id="no2" name="no2" required min="0"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                           placeholder="Enter NO₂ levels">
-                    <div id="no2-error" class="error-message"></div>
-                </div>
-
-                <!-- CO -->
-                <div class="form-group">
-                    <label for="co" class="block text-gray-700 font-semibold mb-2">CO (µg/m³) *</label>
-                    <input type="number" step="0.01" id="co" name="co" required min="0"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                           placeholder="Enter CO levels">
-                    <div id="co-error" class="error-message"></div>
-                </div>
-
-                <!-- O3 -->
-                <div class="form-group">
-                    <label for="o3" class="block text-gray-700 font-semibold mb-2">O₃ (µg/m³) *</label>
-                    <input type="number" step="0.01" id="o3" name="o3" required min="0"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                           placeholder="Enter O₃ levels">
-                    <div id="o3-error" class="error-message"></div>
-                </div>
-
-                <!-- Lead -->
-                <div class="form-group">
-                    <label for="lead" class="block text-gray-700 font-semibold mb-2">Lead (Pb) (µg/m³) *</label>
-                    <input type="number" step="0.01" id="lead" name="lead" required min="0"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                           placeholder="Enter Lead levels">
-                    <div id="lead-error" class="error-message"></div>
-                </div>
-
-                <!-- VOCs -->
-                <div class="form-group">
-                    <label for="vocs" class="block text-gray-700 font-semibold mb-2">VOCs (µg/m³) *</label>
-                    <input type="number" step="0.01" id="vocs" name="vocs" required min="0"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                           placeholder="Enter VOC levels">
-                    <div id="vocs-error" class="error-message"></div>
-                </div>
-
-                <!-- Form Actions -->
-                <div class="form-actions md:col-span-2 flex justify-between items-center">
-                    <button type="submit" id="submit-btn" class="save-button px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
-                        <span id="submit-text">Save Data</span>
-                        <span id="submit-spinner" class="loading-spinner ml-2">
-                            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                        </span>
-                    </button>
-                    <button type="reset" class="reset-button px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
-                        Clear Form
-                    </button>
-                </div>
-            </form>
+<div class="form-page">
+  <div class="form-container">
+    <div class="form-card fu-1">
+      <div class="result-msg" id="resultMsg"></div>
+      <p class="section-sub">Sample Identification</p>
+      <form id="airForm" onsubmit="submitForm(event)">
+        <div class="form-group">
+          <label class="form-label">Sample ID *</label>
+          <input type="text" name="sampleID" class="form-control" placeholder="e.g. WS-2024-001" required>
         </div>
+        <div class="divider"></div>
+        <p class="section-sub">Air Quality Measurements</p>
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">Particulate Matter (PM) *</label><div style="position:relative"><input type="number" step="0.01" min="0" name="pm" class="form-control" placeholder="35.0" required><span class="param-unit">µg/m³</span></div></div>
+          <div class="form-group"><label class="form-label">Sulphur Dioxide (SO₂) *</label><div style="position:relative"><input type="number" step="0.001" min="0" name="so2" class="form-control" placeholder="0.03" required><span class="param-unit">ppm</span></div></div>
+          <div class="form-group"><label class="form-label">Nitrogen Dioxide (NO₂) *</label><div style="position:relative"><input type="number" step="0.001" min="0" name="no2" class="form-control" placeholder="0.05" required><span class="param-unit">ppm</span></div></div>
+          <div class="form-group"><label class="form-label">Carbon Monoxide (CO) *</label><div style="position:relative"><input type="number" step="0.01" min="0" name="co" class="form-control" placeholder="1.0" required><span class="param-unit">ppm</span></div></div>
+          <div class="form-group"><label class="form-label">Ozone (O₃) *</label><div style="position:relative"><input type="number" step="0.001" min="0" name="o3" class="form-control" placeholder="0.07" required><span class="param-unit">ppm</span></div></div>
+          <div class="form-group"><label class="form-label">Lead *</label><div style="position:relative"><input type="number" step="0.0001" min="0" name="lead" class="form-control" placeholder="0.001" required><span class="param-unit">µg/m³</span></div></div>
+          <div class="form-group" style="grid-column:1/-1"><label class="form-label">Volatile Organic Compounds (VOCs) *</label><div style="position:relative"><input type="number" step="0.01" min="0" name="vocs" class="form-control" placeholder="0.5" required><span class="param-unit">ppm</span></div></div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="submitBtn"><span>💾 Save Data</span><span class="spinner" style="display:none;width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite"></span></button>
+          <button type="reset" class="btn btn-ghost">↺ Reset</button>
+          <a href="/fwater" class="btn btn-ghost">← Dashboard</a>
+        </div>
+      </form>
+      <div class="tips-box">
+        <h4>📌 Air Quality Standards (WHO 2021)</h4>
+        <ul>
+          <li>PM2.5 annual mean limit: 5 µg/m³ (WHO); PM10: 15 µg/m³.</li>
+          <li>O₃ 8-hour average should not exceed 0.07 ppm (EPA standard).</li>
+          <li>Lead in air: &lt; 0.5 µg/m³ quarterly average (WHO guideline).</li>
+        </ul>
+      </div>
     </div>
+  </div>
+</div>
 
-    <script>
-        function goBackHome() {
-            window.location.href = '/fwater';
-        }
-
-        // Clear all error messages
-        function clearErrors() {
-            document.querySelectorAll('.error-message').forEach(el => {
-                el.style.display = 'none';
-                el.textContent = '';
-            });
-            document.getElementById('form-error').style.display = 'none';
-        }
-
-        // Show error for a specific field
-        function showError(fieldId, message) {
-            const field = document.getElementById(fieldId);
-            const errorElement = document.getElementById(`${fieldId}-error`);
-            
-            field.classList.add('border-red-500');
-            errorElement.textContent = message;
-            errorElement.style.display = 'block';
-        }
-
-        // Validate form inputs
-        function validateForm() {
-            let isValid = true;
-            clearErrors();
-
-            // Validate all required fields
-            const requiredFields = [
-                'sampleID', 'pm', 'so2', 'no2', 'co', 'o3', 'lead', 'vocs'
-            ];
-
-            requiredFields.forEach(fieldId => {
-                const value = document.getElementById(fieldId).value.trim();
-                if (!value) {
-                    showError(fieldId, 'This field is required');
-                    isValid = false;
-                }
-            });
-
-            // Validate numeric fields are positive
-            const numericFields = ['pm', 'so2', 'no2', 'co', 'o3', 'lead', 'vocs'];
-            numericFields.forEach(fieldId => {
-                const value = parseFloat(document.getElementById(fieldId).value);
-                if (value < 0) {
-                    showError(fieldId, 'Value must be positive');
-                    isValid = false;
-                }
-            });
-
-            return isValid;
-        }
-
-        // Handle form submission
-        async function saveFormData(event) {
-            event.preventDefault();
-            
-            if (!validateForm()) {
-                return;
-            }
-
-            // Set loading state
-            const submitBtn = document.getElementById('submit-btn');
-            const submitText = document.getElementById('submit-text');
-            const spinner = document.getElementById('submit-spinner');
-            
-            submitBtn.disabled = true;
-            submitText.textContent = 'Saving...';
-            spinner.style.display = 'inline-block';
-
-            try {
-                // Prepare form data
-                const formData = {
-                    sampleID: document.getElementById('sampleID').value.trim(),
-                    pm: parseFloat(document.getElementById('pm').value),
-                    so2: parseFloat(document.getElementById('so2').value),
-                    no2: parseFloat(document.getElementById('no2').value),
-                    co: parseFloat(document.getElementById('co').value),
-                    o3: parseFloat(document.getElementById('o3').value),
-                    lead: parseFloat(document.getElementById('lead').value),
-                    vocs: parseFloat(document.getElementById('vocs').value)
-                };
-
-                // Submit to server
-                const response = await fetch('/air', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.message || 'Server error occurred');
-                }
-
-                // Handle successful submission
-                if (data.success) {
-                    alert('Data saved successfully!');
-                    document.getElementById('air-quality-parameters-form').reset();
-                    window.location.href = '/fwater';
-                } else {
-                    // Handle server-side validation errors
-                    if (data.errors) {
-                        Object.entries(data.errors).forEach(([field, message]) => {
-                            showError(field, message);
-                        });
-                    } else {
-                        throw new Error(data.message || 'Unknown error occurred');
-                    }
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('form-error').textContent = error.message;
-                document.getElementById('form-error').style.display = 'block';
-            } finally {
-                // Reset button state
-                submitBtn.disabled = false;
-                submitText.textContent = 'Save Data';
-                spinner.style.display = 'none';
-            }
-        }
-    </script>
+<footer class="footer"><p>© 2025 <strong>AquaGuard</strong> — Water Pollution Analysis System</p></footer>
+<script>
+  window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>10));
+  async function submitForm(e){
+    e.preventDefault();
+    const form=e.target,btn=document.getElementById('submitBtn'),msg=document.getElementById('resultMsg');
+    btn.disabled=true;btn.querySelector('span').style.display='none';btn.querySelector('.spinner').style.display='block';msg.style.display='none';
+    try{
+      const res=await fetch('/air',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(form)))});
+      const r=await res.json();
+      if(res.ok){msg.className='result-msg success';msg.innerHTML='✅ Air quality data saved!';msg.style.display='block';form.reset();setTimeout(()=>msg.style.display='none',3500);}
+      else{msg.className='result-msg error';msg.innerHTML='⚠️ '+(r.message||'Error.');msg.style.display='block';}
+    }catch(err){msg.className='result-msg error';msg.innerHTML='⚠️ Network error.';msg.style.display='block';}
+    finally{btn.disabled=false;btn.querySelector('span').style.display='';btn.querySelector('.spinner').style.display='none';}
+  }
+</script>
 </body>
 </html>

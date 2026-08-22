@@ -1,79 +1,81 @@
+// routes/air.js
 const express = require('express');
 const router = express.Router();
-const AirQualityData = require('../models/AirQualityData'); // Ensure correct model import
+const supabase = require('../config/database');
 
-// POST route to save air quality parameters
+// In-memory fallback cache when Supabase is unreachable or using placeholder credentials
+const fallbackAirData = [];
+
+// POST — Save air quality parameters
 router.post('/', async (req, res) => {
-    try {
-        // Extract and validate required fields
-        const { sampleID, pm, so2, no2, co, o3, lead, vocs } = req.body;
-        
-        // Basic validation
-        if (!sampleID || !pm || !so2 || !no2 || !co || !o3 || !lead || !vocs) {
-            return res.status(400).json({ 
-                success: false,
-                message: 'All fields are required' 
-            });
-        }
+    const { sampleID, pm, so2, no2, co, o3, lead, vocs } = req.body;
 
-        // Create new document with parsed numbers
-        const airQualityData = new AirQualityData({ 
-            sampleID,
-            pm: parseFloat(pm),
-            so2: parseFloat(so2),
-            no2: parseFloat(no2),
-            co: parseFloat(co),
-            o3: parseFloat(o3),
-            lead: parseFloat(lead),
-            vocs: parseFloat(vocs)
+    if (!sampleID || !pm || !so2 || !no2 || !co || !o3 || !lead || !vocs) {
+        return res.status(400).json({
+            success: false,
+            message: 'All fields are required'
         });
+    }
 
-        // Save to database
-        await airQualityData.save();
+    const newRecord = {
+        id: Date.now(),
+        sample_id: sampleID,
+        pm: parseFloat(pm) || 0,
+        so2: parseFloat(so2) || 0,
+        no2: parseFloat(no2) || 0,
+        co: parseFloat(co) || 0,
+        o3: parseFloat(o3) || 0,
+        lead: parseFloat(lead) || 0,
+        vocs: parseFloat(vocs) || 0,
+        created_at: new Date().toISOString()
+    };
 
-        // Successful response
-        res.status(201).json({
+    try {
+        const { data, error } = await supabase
+            .from('air_quality_data')
+            .insert([{
+                sample_id: sampleID,
+                pm: newRecord.pm,
+                so2: newRecord.so2,
+                no2: newRecord.no2,
+                co: newRecord.co,
+                o3: newRecord.o3,
+                lead: newRecord.lead,
+                vocs: newRecord.vocs
+            }]);
+
+        if (error) throw error;
+
+        return res.status(201).json({
             success: true,
             message: 'Air quality data saved successfully',
-            data: airQualityData
+            data
         });
-
     } catch (error) {
-        console.error("Error saving air quality data:", error);
-        
-        // Handle validation errors
-        if (error.name === 'ValidationError') {
-            const messages = Object.values(error.errors).map(val => val.message);
-            return res.status(400).json({
-                success: false,
-                messages
-            });
-        }
-
-        // Handle duplicate sampleID
-        if (error.code === 11000) {
-            return res.status(400).json({
-                success: false,
-                message: 'Sample ID already exists'
-            });
-        }
-
-        // Handle other errors
-        res.status(500).json({ 
-            success: false,
-            message: 'Server error occurred while saving data'
+        console.warn('⚠️ Supabase air_quality_data insert failed. Using local in-memory store:', error.message || error);
+        fallbackAirData.unshift(newRecord);
+        return res.status(201).json({
+            success: true,
+            message: 'Air quality data saved locally (in-memory mode)',
+            data: [newRecord]
         });
     }
 });
 
-// GET route to retrieve and display air quality data
-router.get('/', async (req, res) => { 
+// GET — Retrieve and display air quality data
+router.get('/', async (req, res) => {
     try {
-        const airData = await AirQualityData.find(); // Fetch data from MongoDB
-        res.render('adi', { airData }); // Pass airData (not airQualityData) to match EJS file
+        const { data: airData, error } = await supabase
+            .from('air_quality_data')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        res.render('adi', { airData: airData && airData.length > 0 ? airData : fallbackAirData });
     } catch (error) {
-        console.error("Error fetching air quality data:", error);
-        res.status(500).send("Error fetching air quality data.");
+        console.warn('⚠️ Supabase air_quality_data query failed, falling back to local memory store:', error.message || error);
+        res.render('adi', { airData: fallbackAirData });
     }
 });
 

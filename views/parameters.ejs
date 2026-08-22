@@ -1,106 +1,262 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Water Quality Parameters</title>
-    <link rel="stylesheet" href="/styles/parameters.css">
-    
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Water Quality Parameters — AquaGuard</title>
+  <meta name="description" content="Explore all water quality parameters monitored by AquaGuard — from ammonia to turbidity, pH, dissolved oxygen, and more.">
+  <link rel="stylesheet" href="/styles/global.css">
+  <style>
+    /* ── PAGE HERO ── */
+    .params-hero {
+      position: relative;
+      padding: calc(var(--nav-h) + 4rem) 2rem 3.5rem;
+      text-align: center;
+      background: linear-gradient(160deg, #040f23 0%, #0a2547 55%, #001635 100%);
+      overflow: hidden;
+    }
+    .params-hero::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,180,216,0.08), transparent 65%);
+      pointer-events: none;
+    }
+    .params-hero .orb {
+      position: absolute; border-radius: 50%; filter: blur(70px); pointer-events: none;
+      animation: float 7s ease-in-out infinite;
+    }
+    .params-hero .orb1 { width: 320px; height: 320px; background: rgba(0,180,216,0.1); top: -60px; left: -80px; animation-delay: 0s; }
+    .params-hero .orb2 { width: 200px; height: 200px; background: rgba(72,202,228,0.07); bottom: -40px; right: -60px; animation-delay: 3s; }
+    .params-hero-inner { position: relative; z-index: 2; max-width: 640px; margin: 0 auto; }
+    .params-hero h1 { font-size: clamp(1.9rem, 5vw, 3rem); font-weight: 800; margin: 1rem 0 0.75rem; }
+    .params-hero p { color: var(--muted); font-size: 1rem; line-height: 1.7; }
+    .params-hero-wave { position: absolute; bottom: 0; left: 0; width: 100%; z-index: 1; }
+    .params-hero-wave svg { display: block; }
+
+    /* ── SEARCH ── */
+    .search-wrap {
+      max-width: 480px; margin: -1.5rem auto 0; position: relative; z-index: 10;
+    }
+    .search-input {
+      width: 100%; padding: 0.85rem 1rem 0.85rem 3rem;
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 50px; color: var(--white); font-size: 0.92rem;
+      outline: none; font-family: inherit; transition: all 0.25s;
+    }
+    .search-input::placeholder { color: var(--muted); opacity: 0.7; }
+    .search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,180,216,0.15); }
+    .search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); font-size: 1rem; pointer-events: none; }
+
+    /* ── PARAMS SECTION ── */
+    .params-section { padding: 4rem 2rem 5rem; }
+    .params-container { max-width: 1200px; margin: 0 auto; }
+
+    /* ── FILTER TABS ── */
+    .filter-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-bottom: 2.5rem; }
+    .filter-tab {
+      padding: 0.45rem 1.1rem; border-radius: 50px; font-size: 0.8rem; font-weight: 600;
+      border: 1.5px solid var(--border); background: transparent; color: var(--muted);
+      cursor: pointer; transition: all 0.2s; font-family: inherit;
+    }
+    .filter-tab:hover { color: var(--accent); border-color: var(--accent); }
+    .filter-tab.active { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #fff; border-color: transparent; box-shadow: 0 4px 12px rgba(0,180,216,0.3); }
+
+    /* ── PARAM GRID ── */
+    .param-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 1.25rem; }
+    .param-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+      padding: 1.5rem; text-decoration: none; display: flex; flex-direction: column; gap: 0.75rem;
+      transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .param-card::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(0,180,216,0.04), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .param-card:hover { border-color: var(--border-h); box-shadow: var(--glow); transform: translateY(-5px); }
+    .param-card:hover::before { opacity: 1; }
+    .param-icon-wrap {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: rgba(0,180,216,0.12); display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
+    }
+    .param-card h3 { font-size: 1rem; font-weight: 700; color: var(--white); margin: 0; }
+    .param-card p { font-size: 0.8rem; color: var(--muted); line-height: 1.6; flex: 1; margin: 0; }
+    .param-card .param-arrow { align-self: flex-end; font-size: 0.8rem; font-weight: 700; color: var(--accent); opacity: 0; transform: translateX(-4px); transition: all 0.2s; }
+    .param-card:hover .param-arrow { opacity: 1; transform: translateX(0); }
+
+    /* hidden card for search */
+    .param-card.hidden { display: none; }
+
+    /* ── NO RESULTS ── */
+    .no-results { text-align: center; padding: 3rem; color: var(--muted); display: none; }
+    .no-results.show { display: block; }
+  </style>
 </head>
 <body>
 
-    <!-- Back to Home Button -->
-    <div class="back-button-container">
-        <button class="back-button" onclick="goBackHome()">&#8592; Back to Home</button>
+<!-- ── NAVBAR ── -->
+<nav class="navbar scrolled" id="navbar">
+  <a href="/fwater" class="nav-brand">
+    <div class="nav-logo">💧</div>
+    <span class="nav-name">Aqua<span>Guard</span></span>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li class="nav-dd">
+      <button>Data Entry</button>
+      <div class="dd-menu">
+        <a href="/physical">🧪 Physical</a>
+        <a href="/chemical">⚗️ Chemical</a>
+        <a href="/biological">🦠 Biological</a>
+        <a href="/environmental">🌿 Environmental</a>
+        <a href="/air">💨 Air Quality</a>
+      </div>
+    </li>
+    <li class="nav-dd">
+      <a href="#">WQI Calculators</a>
+      <div class="dd-menu">
+        <a href="/w6swqi">Simple WQI</a>
+        <a href="/w4nsfwqi">NSF-WQI</a>
+        <a href="/w5wawqi">WA-WQI</a>
+        <a href="/w1ccmewqi">CCME-WQI</a>
+        <a href="/w3iwqi">Irrigation-WQI</a>
+        <a href="/w2gwqi">Ground-WQI</a>
+        <a href="/w7delphiwqi">DELPHI-WQI</a>
+        <a href="/w8minewqi">Mine-WQI</a>
+      </div>
+    </li>
+    <li><a href="/treatment">Treatment</a></li>
+    <li><a href="/AQI">AQI</a></li>
+    <li><a href="/parameters" style="color:var(--accent)">Parameters</a></li>
+    <li><a href="/information">Data Info</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="params-hero">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="params-hero-inner fu">
+    <span class="badge badge-cyan" style="margin-bottom:1rem">📊 21 Parameters</span>
+    <h1>Water Quality <span class="g-text">Parameters</span></h1>
+    <p>Explore all measurable water quality indicators used for comprehensive environmental monitoring and pollution assessment.</p>
+  </div>
+  <div class="params-hero-wave">
+    <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,30 C240,60 480,0 720,30 C960,60 1200,0 1440,30 L1440,60 L0,60 Z" fill="#0a192f"/>
+    </svg>
+  </div>
+</div>
+
+<!-- ── SEARCH ── -->
+<div style="background:var(--bg);padding:0 2rem;padding-top:2.5rem">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" class="search-input" placeholder="Search parameters..." oninput="filterCards()">
+  </div>
+</div>
+
+<!-- ── PARAMETERS SECTION ── -->
+<section class="params-section">
+  <div class="params-container">
+
+    <!-- Filter tabs -->
+    <div class="filter-tabs" id="filterTabs">
+      <button class="filter-tab active" data-filter="all" onclick="setFilter(this,'all')">All (21)</button>
+      <button class="filter-tab" data-filter="chemical" onclick="setFilter(this,'chemical')">Chemical</button>
+      <button class="filter-tab" data-filter="physical" onclick="setFilter(this,'physical')">Physical</button>
+      <button class="filter-tab" data-filter="biological" onclick="setFilter(this,'biological')">Biological</button>
+      <button class="filter-tab" data-filter="optical" onclick="setFilter(this,'optical')">Optical</button>
+      <button class="filter-tab" data-filter="environmental" onclick="setFilter(this,'environmental')">Environmental</button>
     </div>
 
-    <div class="container">
-        <header>
-            <h1>Water Quality Parameters</h1>
-            <p>Explore key water quality indicators used for environmental monitoring.</p>
-            <button id="themeToggle">🌙 Dark Mode</button>
-        </header>
-            <div class="grid">
-                <% const parameters = [
-                    { title: "Ammonia & Ammonium", desc: "Measures nitrogen levels as ammonia or ammonium.",  link: "/p1ammonia" },
-                    { title: "BOD", desc: "Biochemical Oxygen Demand measures dissolved oxygen usage.",   link: "/p2bod" },
-                    { title: "Blue-Green Algae", desc: "Commonly known as cyanobacteria in water.", image: "/images/algae.jpg", link: "/p3algae" },
-                    { title: "CDOM & fDOM", desc: "Measures dissolved organic matter.", image: "/images/cdom.jpg", link: "/p4cdom" },
-                    { title: "Chloride", desc: "A major component in minerals and oceans.", image: "/images/chloride.jpg", link: "/p5chloride" },
-                    { title: "Chlorophyll", desc: "Enables photosynthesis in plants and algae.", image: "/images/chlorophyll.jpg", link: "/p6chlorophyll" },
-                    { title: "Conductivity", desc: "Determines water's ability to conduct electricity.", image: "/images/conductivity.jpg", link: "/p7conductivity" },
-                    { title: "Cyanide", desc: "Found in the environment due to industrial processes.", image: "/images/cyanide.jpg", link: "/p8cyanide" },
-                    { title: "Depth", desc: "Fundamental for understanding aquatic habitats, depth measurement influences water pressure, light penetration, and ecological conditions.", image: "/images/ammonia.jpg", link: "/p9depth" },
-                    { title: "Dissolved Oxygen", desc: "Essential for aquatic life, dissolved oxygen levels reflect water quality and are crucial for maintaining healthy ecosystems.", image: "/images/bod.jpg", link: "/p10do" },
-                    { title: "Life Science Parameters", desc: "Includes measurements like glucose, lactose, and sucrose. These parameters are measured in clinical, industrial, and research applications.", image: "/images/algae.jpg", link: "/p11lsp" },
-                    { title: "Nitrate", desc: "Indicates nutrient levels and potential pollution from sources like agricultural runoff, affecting aquatic life and water quality.", image: "/images/cdom.jpg", link: "/p12nitrate" },
-                    { title: "ORP-Redox", desc: "Determine the oxidizing or reducing potential of a water sample. It’s essential for water treatment and quality assessments.", image: "/images/chloride.jpg", link: "/p13or" },
-                    { title: "pH", desc: "Enables photosynthesis in plants and algae.", image: "/images/chlorophyll.jpg", link: "/p14ph" },
-                    { title: "Phosphorus", desc: "Measures a key nutrient that—in excess—can lead to detrimental algal blooms and eutrophication in water bodies.", image: "/images/conductivity.jpg", link: "/p15phosphorus" },
-                    { title: "Rhodamine", desc: "A fluorescent dye is used as a tracer for studying water flow and pollutant dispersion in hydrological research.", image: "/images/cyanide.jpg", link: "/p16rhodamine" },
-                    { title: "Temperature", desc: "A critical factor affecting water chemistry and biological activities. One of the most fundamental parameters in environmental monitoring.", image: "/images/bod.jpg", link: "/p17temp" },
-                    { title: "Total Organic Carbon", desc: "Total Organic Carbon measures the total amount of carbon in organic compounds within water, indicating pollution levels and water treatment efficiency.", image: "/images/algae.jpg", link: "/p18toc" },
-                    { title: "Turbidity", desc: "Measures the cloudiness of water caused by suspended particles, indicating water quality and impacting aquatic life and usability.", image: "/images/cdom.jpg", link: "/p19turbidity" },
-                    { title: "Water Level", desc: "Measures the volume of water in bodies like rivers and lakes. Critical for managing flood risks and studying ecological impacts", image: "/images/chloride.jpg", link: "/p20waterlevel" },
-                    { title: "Colorimetry & Photometry", desc: "Methods used to determine water chemical concentrations by measuring light absorption and color. Requires that reagent(s) be added to a sample.", image: "/images/chlorophyll.jpg", link: "/p21cp" }
-                    
-                   
-                ]; %>
-                
-                <% parameters.forEach(param => { %>
-                    <div class="card">
-                        <a href="<%= param.link %>">
-                        
-                            <h2><%= param.title %></h2>
+    <!-- Grid -->
+    <div class="param-grid" id="paramGrid">
 
-                        </a>
-                        <p><%= param.desc %></p>
-                    </div>
-                <% }); %>
-            
-        </div>
+      <% const parameters = [
+        { title: "Ammonia & Ammonium", icon: "🧪", desc: "Measures nitrogen levels as ammonia or ammonium — key indicator of organic pollution and agricultural runoff.", link: "/p1ammonia", cat: "chemical" },
+        { title: "BOD", icon: "⚗️", desc: "Biochemical Oxygen Demand measures the amount of dissolved oxygen consumed by biological activity in water.", link: "/p2bod", cat: "chemical" },
+        { title: "Blue-Green Algae", icon: "🦠", desc: "Cyanobacteria in water bodies — excessive growth indicates nutrient pollution and poses health risks.", link: "/p3algae", cat: "biological" },
+        { title: "CDOM & fDOM", icon: "🌊", desc: "Chromophoric and fluorescent dissolved organic matter — indicators of organic contamination levels.", link: "/p4cdom", cat: "optical" },
+        { title: "Chloride", icon: "🧂", desc: "A major anion in water, elevated levels indicate saltwater intrusion, road salt runoff, or sewage contamination.", link: "/p5chloride", cat: "chemical" },
+        { title: "Chlorophyll", icon: "🌿", desc: "Pigment enabling photosynthesis in algae. High levels suggest algal blooms and eutrophication.", link: "/p6chlorophyll", cat: "optical" },
+        { title: "Conductivity", icon: "⚡", desc: "Measures water's ability to conduct electricity — reflects dissolved ions and overall mineral content.", link: "/p7conductivity", cat: "physical" },
+        { title: "Cyanide", icon: "☠️", desc: "Highly toxic industrial pollutant found in mining and electroplating wastewater; lethal to aquatic life.", link: "/p8cyanide", cat: "chemical" },
+        { title: "Depth", icon: "📏", desc: "Measures water column depth — influences pressure, light penetration, temperature stratification, and ecology.", link: "/p9depth", cat: "physical" },
+        { title: "Dissolved Oxygen", icon: "💨", desc: "Essential for aquatic life. Low DO indicates organic pollution or algal bloom crash conditions.", link: "/p10do", cat: "chemical" },
+        { title: "Life Science Parameters", icon: "🔬", desc: "Includes glucose, lactose, and sucrose — measured in clinical, industrial, and research applications.", link: "/p11lsp", cat: "biological" },
+        { title: "Nitrate", icon: "🌾", desc: "Elevated nitrate from agricultural runoff leads to eutrophication and is harmful at high concentrations.", link: "/p12nitrate", cat: "chemical" },
+        { title: "ORP / Redox", icon: "⚖️", desc: "Oxidation-Reduction Potential indicates water's oxidizing or reducing capacity — critical for treatment.", link: "/p13or", cat: "chemical" },
+        { title: "pH", icon: "🧬", desc: "Fundamental measure of acidity/alkalinity. Values outside 6.5–8.5 are harmful to most aquatic species.", link: "/p14ph", cat: "physical" },
+        { title: "Phosphorus", icon: "💊", desc: "Excess phosphorus causes harmful algal blooms and eutrophication — major water quality concern.", link: "/p15phosphorus", cat: "chemical" },
+        { title: "Rhodamine", icon: "🔴", desc: "Fluorescent tracer dye used to track water flow and pollutant dispersion in hydrological studies.", link: "/p16rhodamine", cat: "optical" },
+        { title: "Temperature", icon: "🌡️", desc: "Critical factor affecting water chemistry, dissolved oxygen levels, biological activity, and aquatic health.", link: "/p17temp", cat: "physical" },
+        { title: "Total Organic Carbon", icon: "♻️", desc: "Measures total carbon in organic compounds — indicates contamination level and treatment efficiency.", link: "/p18toc", cat: "chemical" },
+        { title: "Turbidity", icon: "🌫️", desc: "Cloudiness from suspended particles — reduces light penetration, affects aquatic life and water usability.", link: "/p19turbidity", cat: "physical" },
+        { title: "Water Level", icon: "📊", desc: "Volume measurement in rivers and lakes — critical for flood management and ecological monitoring.", link: "/p20waterlevel", cat: "environmental" },
+        { title: "Colorimetry & Photometry", icon: "🎨", desc: "Measures chemical concentrations via light absorption. Reagents are added to samples to produce color.", link: "/p21cp", cat: "optical" }
+      ]; %>
+
+      <% parameters.forEach((param, i) => { %>
+        <a href="<%= param.link %>" class="param-card fu" data-cat="<%= param.cat %>" data-title="<%= param.title.toLowerCase() %>" style="<%= 'animation-delay:' + ((i % 6) * 0.07) + 's' %>">
+          <div class="param-icon-wrap"><%= param.icon %></div>
+          <div>
+            <h3><%= param.title %></h3>
+            <p><%= param.desc %></p>
+          </div>
+          <span class="param-arrow">Explore →</span>
+        </a>
+      <% }); %>
+    </div>
+
+    <div class="no-results" id="noResults">
+      <div style="font-size:3rem;margin-bottom:1rem">🔍</div>
+      <p>No parameters found matching your search.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer class="footer">
+  <p>© 2025 <strong>AquaGuard</strong> — Water Pollution Analysis System &nbsp;·&nbsp; Made with ♥ for a cleaner planet &nbsp;·&nbsp; <a href="/fwater">← Dashboard</a></p>
+</footer>
 
 <script>
-    function goBackHome() {
-    window.location.href = 'fwater'; //  home page
-}
+  window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10));
 
-document.addEventListener("DOMContentLoaded", () => {
-    // Dark Mode Toggle
-    const themeToggle = document.getElementById("themeToggle");
-    const body = document.body;
+  let activeFilter = 'all';
 
-    themeToggle.addEventListener("click", () => {
-        body.classList.toggle("dark-mode");
+  function setFilter(btn, filter) {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = filter;
+    filterCards();
+  }
 
-        // Save preference in local storage
-        if (body.classList.contains("dark-mode")) {
-            localStorage.setItem("theme", "dark");
-        } else {
-            localStorage.setItem("theme", "light");
-        }
-    });
-
-    // Load theme from local storage
-    if (localStorage.getItem("theme") === "dark") {
-        body.classList.add("dark-mode");
-    }
-
-    // Hover effect for cards
-    const cards = document.querySelectorAll(".card");
+  function filterCards() {
+    const q = document.getElementById('searchInput').value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.param-card');
+    let visible = 0;
     cards.forEach(card => {
-        card.addEventListener("mouseenter", () => {
-            card.style.transform = "scale(1.05)";
-            card.style.transition = "0.3s";
-        });
-
-        card.addEventListener("mouseleave", () => {
-            card.style.transform = "scale(1)";
-        });
+      const matchCat = activeFilter === 'all' || card.dataset.cat === activeFilter;
+      const matchSearch = !q || card.dataset.title.includes(q) || card.querySelector('p').textContent.toLowerCase().includes(q);
+      if (matchCat && matchSearch) {
+        card.classList.remove('hidden');
+        visible++;
+      } else {
+        card.classList.add('hidden');
+      }
     });
-});
-
+    document.getElementById('noResults').classList.toggle('show', visible === 0);
+  }
 </script>
-    
 </body>
 </html>

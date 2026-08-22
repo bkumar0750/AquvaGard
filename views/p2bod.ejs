@@ -1,238 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOD - Biochemical Oxygen Demand</title>
-    <style>
-        :root {
-            --primary: #2F4F4F;
-            --primary-light: #3a5f5f;
-            --secondary: #778899;
-            --accent: #20B2AA;
-            --light-bg: #f5f5f5;
-            --dark-text: #2d3748;
-            --border-color: #e0e0e0;
-            --white: #ffffff;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biochemical Oxygen Demand (BOD) — AquaGuard Parameter Guide</title>
+  <meta name="description" content="Comprehensive analysis of Biochemical Oxygen Demand (BOD5), organic water pollution, aquatic impact, and testing procedures.">
+  <link rel="stylesheet" href="/styles/global.css">
+  <style>
+    .param-page { padding: calc(var(--nav-h) + 2.5rem) 1.5rem 5rem; min-height: 100vh; }
+    .param-container { max-width: 900px; margin: 0 auto; }
+    .param-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+      padding: 2.5rem; box-shadow: var(--shadow); position: relative; overflow: hidden;
+    }
+    .param-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--purple)); }
+    
+    .param-meta { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0 2rem; }
+    .meta-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--r); padding: 0.85rem 1.25rem; flex: 1; min-width: 180px; }
+    .meta-lbl { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .meta-val { font-size: 1.2rem; font-weight: 700; color: var(--accent); font-family: 'Roboto Mono', monospace; }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--light-bg);
-            color: var(--dark-text);
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 30px;
-            background: var(--white);
-            border-radius: 10px;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            color: var(--primary);
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 2.2rem;
-            border-bottom: 2px solid var(--accent);
-            padding-bottom: 10px;
-        }
-
-        p {
-            margin-bottom: 20px;
-            font-size: 1.1rem;
-        }
-
-        .info-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: #eaf2ff;
-            border-left: 4px solid var(--primary);
-            border-radius: 0 5px 5px 0;
-            transition: all 0.3s ease;
-        }
-
-        .info-section p:last-child {
-            margin-bottom: 0;
-        }
-
-        .btn {
-            display: block;
-            margin: 25px auto;
-            padding: 12px 25px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .btn:hover {
-            background-color: var(--primary-light);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-
-        /* Back button */
-        .back-button-container {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-        }
-
-        .back-button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .back-button:hover {
-            background-color: var(--primary-light);
-            transform: translateX(-3px);
-        }
-
-        /* Highlight important terms */
-        .highlight {
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .container {
-                margin: 15px;
-                padding: 20px;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .back-button-container {
-                position: relative;
-                top: auto;
-                left: auto;
-                margin-bottom: 15px;
-            }
-            
-            .back-button {
-                position: relative;
-                margin: 0 auto 20px;
-            }
-        }
-    </style>
+    .content-sec { line-height: 1.8; color: var(--light); margin-bottom: 1.5rem; }
+    .content-sec h2 { font-size: 1.25rem; color: var(--white); margin: 1.5rem 0 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+  </style>
 </head>
 <body>
-    <!-- Back to Home Button -->
-    <div class="back-button-container">
-        <button class="back-button" onclick="goBackHome()">&#8592; Back to Parameters</button>
-    </div>
+<nav class="navbar scrolled" id="navbar">
+  <a href="/fwater" class="nav-brand"><div class="nav-logo">💧</div><span class="nav-name">Aqua<span>Guard</span></span></a>
+  <ul class="nav-links" id="navLinks">
+    <li class="nav-dd"><button>Data Entry</button><div class="dd-menu"><a href="/physical">🧪 Physical</a><a href="/chemical">⚗️ Chemical</a><a href="/biological">🦠 Biological</a><a href="/environmental">🌿 Environmental</a><a href="/air">💨 Air Quality</a></div></li>
+    <li class="nav-dd"><a href="#">WQI</a><div class="dd-menu"><a href="/w6swqi">Simple WQI</a><a href="/w4nsfwqi">NSF-WQI</a><a href="/w5wawqi">WA-WQI</a><a href="/w1ccmewqi">CCME-WQI</a></div></li>
+    <li><a href="/treatment">Treatment</a></li><li><a href="/AQI">AQI</a></li><li><a href="/parameters" style="color:var(--accent)">Parameters</a></li><li><a href="/information">Data Info</a></li>
+  </ul>
+  <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')"><span></span><span></span><span></span></button>
+</nav>
 
-    <div class="container">
-        <h1>Biochemical Oxygen Demand (BOD)</h1>
-        <p>
-            <span class="highlight">Biochemical oxygen demand (BOD)</span> is a chemical procedure for determining the amount of dissolved oxygen needed by aerobic biological organisms in a body of water to break down organic material present in a given water sample at certain temperature over a specific time period.
-        </p>
-        <p>
-            While not a precise quantitative test, BOD is widely used as an indication of the organic quality of water. It is most commonly expressed in milligrams of oxygen consumed per liter of sample during 5 days (BOD<sub>5</sub>) of incubation at 20°C and serves as a robust surrogate for the degree of organic pollution in water.
-        </p>
-        <p>
-            Biological oxygen demand directly affects the amount of dissolved oxygen in rivers and streams. The rate of oxygen consumption is affected by several variables:
-        </p>
+<div class="param-page">
+  <div class="param-container">
+    <a href="/parameters" class="btn btn-ghost" style="margin-bottom:1.5rem">← Back to Parameters Directory</a>
+
+    <div class="param-card fu">
+      <span class="badge badge-purple">Biological / Chemical Parameter</span>
+      <h1 style="font-size:2.2rem;font-weight:800;color:var(--white);margin-top:0.5rem">Biochemical Oxygen Demand (BOD)</h1>
+      
+      <div class="param-meta">
+        <div class="meta-box"><div class="meta-lbl">Standard Test</div><div class="meta-val">BOD₅ (20°C, 5 Days)</div></div>
+        <div class="meta-box"><div class="meta-lbl">Pristine River</div><div class="meta-val">&lt; 1 mg/L</div></div>
+        <div class="meta-box"><div class="meta-lbl">Raw Sewage</div><div class="meta-val">200 - 600 mg/L</div></div>
+      </div>
+
+      <div class="content-sec">
+        <h2>Overview</h2>
+        <p>Biochemical Oxygen Demand (BOD) represents the amount of dissolved oxygen consumed by aerobic microorganisms to decompose organic material in water over a specified incubation period (typically 5 days at 20°C).</p>
+        
+        <h2>Environmental Significance</h2>
+        <p>A higher BOD level indicates a greater amount of organic matter present in the water body. As microorganisms rapidly decompose organic waste (from municipal sewage, agricultural runoff, or industrial effluents), available dissolved oxygen drops rapidly, suffocating fish and aquatic organisms.</p>
+        
+        <h2>Common Pollution Sources</h2>
         <ul>
-            <li>Temperature</li>
-            <li>pH levels</li>
-            <li>Presence of specific microorganisms</li>
-            <li>Type of organic and inorganic material in the water</li>
+          <li>Domestic and municipal sewage discharges</li>
+          <li>Food processing plant and brewery effluents</li>
+          <li>Agricultural runoff containing livestock manure</li>
+          <li>Pulp and paper mill waste</li>
         </ul>
-        <p>
-            The greater the BOD value, the more rapidly oxygen is depleted in the water. This means less oxygen is available to higher forms of aquatic life. The consequences of high BOD are the same as those for low dissolved oxygen: aquatic organisms become stressed, suffocate, and die.
-        </p>
-        
-        <button class="btn" onclick="toggleInfo()">Show Technical Details</button>
-        
-        <div class="info-section" id="info" style="display: none;">
-            <h2>Measurement and Analysis</h2>
-            <p>
-                Measuring biochemical oxygen demand requires taking two measurements:
-            </p>
-            <ol>
-                <li>Initial dissolved oxygen measurement (taken immediately)</li>
-                <li>Final dissolved oxygen measurement (after 5 days of lab incubation)</li>
-            </ol>
-            <p>
-                The difference between these measurements represents the amount of oxygen consumed by microorganisms to break down the organic matter present in the sample during the incubation period.
-            </p>
-            
-            <h2>Common Sources of BOD</h2>
-            <p>Sources of biochemical oxygen demand include:</p>
-            <ul>
-                <li>Topsoil, leaves and woody debris</li>
-                <li>Animal manure</li>
-                <li>Effluents from pulp/paper mills, wastewater plants, feedlots, and food-processing plants</li>
-                <li>Failing septic systems</li>
-                <li>Urban stormwater runoff</li>
-            </ul>
-            
-            <h2>Troubleshooting BOD Measurements</h2>
-            <p>
-                When encountering problems with BOD values, consider these factors:
-            </p>
-            <ul>
-                <li><span class="highlight">Calibration:</span> Calibrate instruments once daily before readings. Ensure no water droplets on probe tip and use a clean, water-saturated environment.</li>
-                <li><span class="highlight">Probe Care:</span> For polarographic sensors, maintain fresh electrolyte and membranes. For optical sensors, periodically check the paint layer on the sensor cap.</li>
-                <li><span class="highlight">Warm-Up Time:</span> Polarographic probes require 5-15 minutes warm-up before use.</li>
-            </ul>
-            
-            <h2>Special Considerations</h2>
-            <p>
-                Different strategies are employed for specific sample types:
-            </p>
-            <ul>
-                <li>Varying dilutions and diluent seeding</li>
-                <li>Using nitrification inhibitors to distinguish between carbonaceous and nitrogenous demand</li>
-                <li>Special handling for toxic and chlorinated samples</li>
-            </ul>
-            <p>
-                When properly used, the BOD test provides reliable wastewater characterization. While newer methods offer quicker estimates, the standard 5-day test remains the regulatory benchmark.
-            </p>
-        </div>
-    </div>
-    <script>
-        function goBackHome() {
-            window.location.href = 'parameters';
-        }
+      </div>
 
-        function toggleInfo() {
-            const info = document.getElementById("info");
-            const button = document.querySelector(".btn");
-            
-            if (info.style.display === "none") {
-                info.style.display = "block";
-                button.textContent = "Hide Technical Details";
-            } else {
-                info.style.display = "none";
-                button.textContent = "Show Technical Details";
-            }
-        }
-    </script>
+      <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;margin-top:2rem">
+        <h3 style="color:var(--accent);font-size:1.1rem;margin-bottom:0.5rem">🧪 Testing & Measurement</h3>
+        <p style="font-size:0.9rem;color:var(--muted)">BOD₅ is measured by calculating the difference between initial dissolved oxygen and dissolved oxygen remaining after 5 days of sealed dark incubation at 20°C in standard BOD bottles.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer"><p>© 2025 <strong>AquaGuard</strong> — Water Quality Parameter Guide</p></footer>
+
+<script>
+  window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10));
+</script>
 </body>
 </html>

@@ -1,275 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Water Depth Measurement</title>
-    <style>
-        :root {
-            --primary: #2F4F4F;
-            --primary-light: #3a5f5f;
-            --secondary: #778899;
-            --accent: #20B2AA;
-            --light-bg: #f5f5f5;
-            --dark-text: #2d3748;
-            --border-color: #e0e0e0;
-            --white: #ffffff;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--light-bg);
-            color: var(--dark-text);
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 30px;
-            background: var(--white);
-            border-radius: 10px;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            color: var(--primary);
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 2.2rem;
-            border-bottom: 2px solid var(--accent);
-            padding-bottom: 10px;
-        }
-
-        p {
-            margin-bottom: 20px;
-            font-size: 1.1rem;
-        }
-
-        .info-section {
-            margin-top: 30px;
-            padding: 20px;
-            background: #e3f2fd;
-            border-left: 4px solid var(--primary);
-            border-radius: 0 5px 5px 0;
-            transition: all 0.3s ease;
-        }
-
-        .info-section p:last-child {
-            margin-bottom: 0;
-        }
-
-        .btn {
-            display: block;
-            margin: 25px auto;
-            padding: 12px 25px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .btn:hover {
-            background-color: var(--primary-light);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-
-        /* Back button */
-        .back-button-container {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-        }
-
-        .back-button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .back-button:hover {
-            background-color: var(--primary-light);
-            transform: translateX(-3px);
-        }
-
-        /* Highlight important terms */
-        .highlight {
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .feature-list {
-            margin: 20px 0;
-            padding-left: 20px;
-        }
-
-        .feature-list li {
-            margin-bottom: 10px;
-        }
-
-        .definition-box {
-            background-color: #e1f5fe;
-            border-left: 4px solid var(--accent);
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 0 5px 5px 0;
-        }
-
-        .definition-title {
-            font-weight: bold;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-
-        .sensor-image {
-            width: 100%;
-            max-width: 500px;
-            margin: 20px auto;
-            display: block;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-        }
-
-        .formula {
-            font-family: 'Courier New', monospace;
-            background-color: #f5f5f5;
-            padding: 8px 12px;
-            border-radius: 4px;
-            display: inline-block;
-            margin: 10px 0;
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .container {
-                margin: 15px;
-                padding: 20px;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .back-button-container {
-                position: relative;
-                top: auto;
-                left: auto;
-                margin-bottom: 15px;
-            }
-            
-            .back-button {
-                position: relative;
-                margin: 0 auto 20px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Water Depth & Hydrostatic Pressure — AquaGuard Parameter Guide</title>
+  <meta name="description" content="Guide to hydrostatic water depth measurement, pressure sensor calibration, and oceanographic profiling.">
+  <link rel="stylesheet" href="/styles/global.css">
+  <style>
+    .param-page { padding: calc(var(--nav-h) + 2.5rem) 1.5rem 5rem; min-height: 100vh; }
+    .param-container { max-width: 900px; margin: 0 auto; }
+    .param-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+      padding: 2.5rem; box-shadow: var(--shadow); position: relative; overflow: hidden;
+    }
+    .param-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), #9b72ff); }
+    .param-meta { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0 2rem; }
+    .meta-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--r); padding: 0.85rem 1.25rem; flex: 1; min-width: 180px; }
+    .meta-lbl { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .meta-val { font-size: 1.2rem; font-weight: 700; color: var(--accent); font-family: 'Roboto Mono', monospace; }
+    .content-sec { line-height: 1.8; color: var(--light); margin-bottom: 1.5rem; }
+    .content-sec h2 { font-size: 1.25rem; color: var(--white); margin: 1.5rem 0 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+  </style>
 </head>
 <body>
-    <!-- Back to Home Button -->
-    <div class="back-button-container">
-        <button class="back-button" onclick="goBackHome()">&#8592; Back to Parameters</button>
+<nav class="navbar scrolled" id="navbar">
+  <a href="/fwater" class="nav-brand"><div class="nav-logo">💧</div><span class="nav-name">Aqua<span>Guard</span></span></a>
+  <ul class="nav-links" id="navLinks">
+    <li class="nav-dd"><button>Data Entry</button><div class="dd-menu"><a href="/physical">🧪 Physical</a><a href="/chemical">⚗️ Chemical</a><a href="/biological">🦠 Biological</a><a href="/environmental">🌿 Environmental</a><a href="/air">💨 Air Quality</a></div></li>
+    <li class="nav-dd"><a href="#">WQI</a><div class="dd-menu"><a href="/w6swqi">Simple WQI</a><a href="/w4nsfwqi">NSF-WQI</a><a href="/w5wawqi">WA-WQI</a><a href="/w1ccmewqi">CCME-WQI</a></div></li>
+    <li><a href="/treatment">Treatment</a></li><li><a href="/AQI">AQI</a></li><li><a href="/parameters" style="color:var(--accent)">Parameters</a></li><li><a href="/information">Data Info</a></li>
+  </ul>
+  <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="param-page">
+  <div class="param-container">
+    <a href="/parameters" class="btn btn-ghost" style="margin-bottom:1.5rem">← Back to Parameters Directory</a>
+    <div class="param-card fu">
+      <span class="badge badge-purple">Physical / Hydrological Parameter</span>
+      <h1 style="font-size:2.2rem;font-weight:800;color:var(--white);margin-top:0.5rem">Water Depth</h1>
+      <div class="param-meta">
+        <div class="meta-box"><div class="meta-lbl">Standard Unit</div><div class="meta-val">Meters (m)</div></div>
+        <div class="meta-box"><div class="meta-lbl">Sensor Technology</div><div class="meta-val">Piezoresistive Pressure</div></div>
+        <div class="meta-box"><div class="meta-lbl">Pressure Gradient</div><div class="meta-val">~ 1 dbar / meter</div></div>
+      </div>
+      <div class="content-sec">
+        <h2>Overview</h2>
+        <p>Water depth measurement is crucial for depth-profile sampling, vertical stratification analysis (thermoclines, pycnoclines), groundwater aquifer monitoring, and bathymetric mapping.</p>
+        <h2>Hydrostatic Calculation</h2>
+        <p>Depth is calculated using hydrostatic pressure: <span style="font-family:'Roboto Mono',monospace;color:var(--accent)">P = ρ · g · h</span>, adjusted for atmospheric pressure and water density variations due to salinity and temperature.</p>
+      </div>
     </div>
-
-    <div class="container">
-        <h1>Water Depth Measurement</h1>
-        
-        <div class="definition-box">
-            <div class="definition-title">Depth Measurement</div>
-            <p>The determination of water column height using pressure sensors that measure the hydrostatic pressure exerted by the water above the sensor.</p>
-        </div>
-
-        <p>Accurate depth measurement is fundamental for hydrological studies, flood monitoring, navigation, and ecological research in aquatic environments.</p>
-
-        <button class="btn" onclick="toggleInfo()">Show Measurement Details</button>
-        
-        <div class="info-section" id="moreInfo" style="display: none;">
-            <h2>Measurement Principles</h2>
-            <ul class="feature-list">
-                <li><span class="highlight">Pressure-based measurement:</span> Uses non-vented strain gauge transducers to measure hydrostatic pressure</li>
-                <li><span class="highlight">Differential measurement:</span> One side exposed to water pressure, the other to a vacuum reference</li>
-                <li><span class="highlight">Depth calculation:</span> Derived from pressure difference using the formula:
-                    <div class="formula">Depth = (P<sub>water</sub> - P<sub>atm</sub>) / (ρ × g)</div>
-                    where ρ is water density and g is gravitational acceleration
-                </li>
-            </ul>
-
-            <img src="images/depth-sensor.jpg" alt="Depth measurement sensor" class="sensor-image">
-
-            <h2>Sensor Types</h2>
-            <ul class="feature-list">
-                <li><span class="highlight">Strain gauge sensors:</span> Most common, using piezoresistive technology</li>
-                <li><span class="highlight">Capacitive sensors:</span> For high-accuracy applications</li>
-                <li><span class="highlight">Vented vs. non-vented:</span>
-                    <ul>
-                        <li>Non-vented requires barometric compensation</li>
-                        <li>Vented uses a vented cable to automatically compensate</li>
-                    </ul>
-                </li>
-            </ul>
-
-            <h2>Environmental Factors</h2>
-            <ul class="feature-list">
-                <li><span class="highlight">Water density variations:</span> Affected by temperature and salinity (requires compensation)</li>
-                <li><span class="highlight">Barometric pressure:</span> Significant for non-vented sensors (1 mbar ≈ 1 cm water column)</li>
-                <li><span class="highlight">Temperature effects:</span> On both water density and sensor electronics</li>
-                <li><span class="highlight">Waves and turbulence:</span> Can cause measurement fluctuations</li>
-            </ul>
-
-            <h2>Calibration and Maintenance</h2>
-            <ul class="feature-list">
-                <li><span class="highlight">Zero calibration:</span> Performed in air to compensate for atmospheric pressure</li>
-                <li><span class="highlight">Span calibration:</span> Using known water columns or pressure standards</li>
-                <li><span class="highlight">Compensation:</span> For temperature and salinity effects on water density</li>
-                <li><span class="highlight">Maintenance:</span> Regular cleaning to prevent biofouling and sediment accumulation</li>
-            </ul>
-
-            <h2>Applications</h2>
-            <ul class="feature-list">
-                <li>Hydrological monitoring (rivers, lakes, reservoirs)</li>
-                <li>Flood warning systems</li>
-                <li>Oceanographic and coastal research</li>
-                <li>Wastewater treatment process control</li>
-                <li>Navigation and dredging operations</li>
-                <li>Ecological habitat studies</li>
-            </ul>
-        </div>
-    </div>
-
-    <script>
-        function goBackHome() {
-            window.location.href = 'parameters';
-        }
-
-        function toggleInfo() {
-            const info = document.getElementById("moreInfo");
-            const button = document.querySelector(".btn");
-            
-            if (info.style.display === "none") {
-                info.style.display = "block";
-                button.textContent = "Hide Measurement Details";
-            } else {
-                info.style.display = "none";
-                button.textContent = "Show Measurement Details";
-            }
-        }
-    </script>
+  </div>
+</div>
+<footer class="footer"><p>© 2025 <strong>AquaGuard</strong> — Water Quality Parameter Guide</p></footer>
+<script>window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10));</script>
 </body>
 </html>

@@ -1,338 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Colorimetry & Photometry Parameters</title>
-    <style>
-        :root {
-            --primary: #2F4F4F;
-            --primary-light: #3a5f5f;
-            --secondary: #778899;
-            --accent: #20B2AA;
-            --light-bg: #f5f5f5;
-            --dark-text: #2d3748;
-            --border-color: #e0e0e0;
-            --white: #ffffff;
-            --warning: #d9534f;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--light-bg);
-            color: var(--dark-text);
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 30px;
-            background: var(--white);
-            border-radius: 10px;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            color: var(--primary);
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 2.2rem;
-            border-bottom: 2px solid var(--accent);
-            padding-bottom: 10px;
-        }
-
-        h2 {
-            color: var(--primary-light);
-            margin-top: 30px;
-            font-size: 1.8rem;
-        }
-
-        h3 {
-            color: var(--primary);
-            margin-top: 25px;
-            font-size: 1.4rem;
-        }
-
-        p {
-            margin-bottom: 20px;
-            font-size: 1.1rem;
-        }
-
-        .info-section {
-            display: none;
-            margin-top: 30px;
-            padding: 20px;
-            background: #e8f5e9;
-            border-left: 4px solid var(--primary);
-            border-radius: 0 5px 5px 0;
-            transition: all 0.3s ease;
-        }
-
-        .btn {
-            display: block;
-            margin: 25px auto;
-            padding: 12px 25px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .btn:hover {
-            background-color: var(--primary-light);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-
-        /* Back button */
-        .back-button-container {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-        }
-
-        .back-button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .back-button:hover {
-            background-color: var(--primary-light);
-            transform: translateX(-3px);
-        }
-
-        /* Highlight important terms */
-        .highlight {
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .feature-list {
-            margin: 20px 0;
-            padding-left: 20px;
-        }
-
-        .feature-list li {
-            margin-bottom: 10px;
-        }
-
-        .definition-box {
-            background-color: #e0f2f1;
-            border-left: 4px solid var(--accent);
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 0 5px 5px 0;
-        }
-
-        .definition-title {
-            font-weight: bold;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-
-        .product-card {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border-left: 4px solid var(--accent);
-        }
-
-        .product-title {
-            font-weight: bold;
-            color: var(--primary);
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-        }
-
-        .product-image {
-            width: 100%;
-            max-width: 500px;
-            margin: 20px auto;
-            display: block;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-        }
-
-        .spec-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-
-        .spec-table th, .spec-table td {
-            border: 1px solid var(--border-color);
-            padding: 8px 12px;
-            text-align: left;
-        }
-
-        .spec-table th {
-            background-color: var(--light-bg);
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .container {
-                margin: 15px;
-                padding: 20px;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .back-button-container {
-                position: relative;
-                top: auto;
-                left: auto;
-                margin-bottom: 15px;
-            }
-            
-            .back-button {
-                position: relative;
-                margin: 0 auto 20px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comprehensive Parameters Guide — AquaGuard</title>
+  <meta name="description" content="Master index and overview of all 21 physical, chemical, and biological water quality parameters in AquaGuard.">
+  <link rel="stylesheet" href="/styles/global.css">
+  <style>
+    .param-page { padding: calc(var(--nav-h) + 2.5rem) 1.5rem 5rem; min-height: 100vh; }
+    .param-container { max-width: 1000px; margin: 0 auto; }
+    .param-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+      padding: 2.5rem; box-shadow: var(--shadow); position: relative; overflow: hidden;
+    }
+    .param-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--green), var(--purple)); }
+    .param-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 2rem; }
+    .p-item {
+      background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: var(--r);
+      padding: 1.25rem; transition: var(--t); text-decoration: none; display: block;
+    }
+    .p-item:hover { border-color: var(--accent); transform: translateY(-3px); background: rgba(0,242,254,0.04); }
+    .p-title { font-weight: 700; color: var(--white); font-size: 1.05rem; margin-bottom: 0.3rem; }
+    .p-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+  </style>
 </head>
 <body>
-    <!-- Back to Home Button -->
-    <div class="back-button-container">
-        <button class="back-button" onclick="goBackHome()">&#8592; Back to Parameters</button>
+<nav class="navbar scrolled" id="navbar">
+  <a href="/fwater" class="nav-brand"><div class="nav-logo">💧</div><span class="nav-name">Aqua<span>Guard</span></span></a>
+  <ul class="nav-links" id="navLinks">
+    <li class="nav-dd"><button>Data Entry</button><div class="dd-menu"><a href="/physical">🧪 Physical</a><a href="/chemical">⚗️ Chemical</a><a href="/biological">🦠 Biological</a><a href="/environmental">🌿 Environmental</a><a href="/air">💨 Air Quality</a></div></li>
+    <li class="nav-dd"><a href="#">WQI</a><div class="dd-menu"><a href="/w6swqi">Simple WQI</a><a href="/w4nsfwqi">NSF-WQI</a><a href="/w5wawqi">WA-WQI</a><a href="/w1ccmewqi">CCME-WQI</a></div></li>
+    <li><a href="/treatment">Treatment</a></li><li><a href="/AQI">AQI</a></li><li><a href="/parameters" style="color:var(--accent)">Parameters</a></li><li><a href="/information">Data Info</a></li>
+  </ul>
+  <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="param-page">
+  <div class="param-container">
+    <div class="param-card fu">
+      <span class="badge badge-cyan">Comprehensive Index</span>
+      <h1 style="font-size:2.2rem;font-weight:800;color:var(--white);margin-top:0.5rem">Master Water Parameters Matrix</h1>
+      <p style="color:var(--muted);margin-top:0.5rem">Select any parameter below to inspect detailed chemistry, environmental impacts, WHO/EPA standard limits, and measurement technologies.</p>
+
+      <div class="param-grid">
+        <a href="/p1ammonia" class="p-item"><div class="p-title">1. Ammonia & Ammonium</div><div class="p-desc">NH₃ / NH₄⁺ nutrient & aquatic toxicity limits</div></a>
+        <a href="/p2bod" class="p-item"><div class="p-title">2. BOD (Biochemical Demand)</div><div class="p-desc">Organic oxygen consumption over 5 days at 20°C</div></a>
+        <a href="/p3algae" class="p-item"><div class="p-title">3. Blue-Green Algae</div><div class="p-desc">Cyanobacteria & microcystin toxin dynamics</div></a>
+        <a href="/p4cdom" class="p-item"><div class="p-title">4. CDOM & fDOM</div><div class="p-desc">Dissolved organic matter UV/fluorescence tracking</div></a>
+        <a href="/p5chloride" class="p-item"><div class="p-title">5. Chloride (Cl⁻)</div><div class="p-desc">Inorganic anion, salinity & de-icing salt runoff</div></a>
+        <a href="/p6chlorophyll" class="p-item"><div class="p-title">6. Chlorophyll-a</div><div class="p-desc">Primary phytoplankton biomass & trophic indicator</div></a>
+        <a href="/p7conductivity" class="p-item"><div class="p-title">7. Electrical Conductivity</div><div class="p-desc">Specific conductance & dissolved ion concentration</div></a>
+        <a href="/p8cyanide" class="p-item"><div class="p-title">8. Cyanide (CN⁻)</div><div class="p-desc">Extremely toxic industrial anion & cellular poison</div></a>
+        <a href="/p9depth" class="p-item"><div class="p-title">9. Water Depth</div><div class="p-desc">Hydrostatic pressure & depth-profiling sensors</div></a>
+        <a href="/p10do" class="p-item"><div class="p-title">10. Dissolved Oxygen (DO)</div><div class="p-desc">Essential dissolved O₂ for aquatic ecosystem survival</div></a>
+        <a href="/p11lsp" class="p-item"><div class="p-title">11. LTC Multi-Sensor</div><div class="p-desc">Level, Temperature & Conductivity logging suites</div></a>
+        <a href="/p12nitrate" class="p-item"><div class="p-title">12. Nitrate (NO₃⁻)</div><div class="p-desc">Agricultural fertilizer nutrient & blue baby syndrome</div></a>
+        <a href="/p13or" class="p-item"><div class="p-title">13. Oil & Grease</div><div class="p-desc">Petroleum hydrocarbons & film re-aeration inhibition</div></a>
+        <a href="/p14ph" class="p-item"><div class="p-title">14. pH Scale</div><div class="p-desc">Fundamental hydrogen ion activity (-log[H⁺])</div></a>
+        <a href="/p15phosphorus" class="p-item"><div class="p-title">15. Total Phosphorus</div><div class="p-desc">Primary limiting freshwater nutrient & eutrophication</div></a>
+        <a href="/p16rhodamine" class="p-item"><div class="p-title">16. Rhodamine WT</div><div class="p-desc">Fluorescent dye for stream transport & time-of-travel</div></a>
+        <a href="/p17temp" class="p-item"><div class="p-title">17. Water Temperature</div><div class="p-desc">Physical master parameter & thermal discharge limits</div></a>
+        <a href="/p18toc" class="p-item"><div class="p-title">18. Total Organic Carbon</div><div class="p-desc">Quantitative organic molecules via HTCO combustion</div></a>
+        <a href="/p19turbidity" class="p-item"><div class="p-title">19. Turbidity (NTU)</div><div class="p-desc">Suspended solids & nephelometric 90° light scattering</div></a>
+        <a href="/p20waterlevel" class="p-item"><div class="p-title">20. Water Level & Stage</div><div class="p-desc">Surface stage height & flood early warning telemetry</div></a>
+      </div>
     </div>
-
-    <div class="container">
-        <h1>Colorimetry & Photometry Parameters</h1>
-        
-        <div class="definition-box">
-            <div class="definition-title">Colorimetric Analysis</div>
-            <p>A measurement technique that determines the concentration of colored compounds in solution by measuring light absorbance at specific wavelengths. This method is widely used for water quality testing of various parameters.</p>
-        </div>
-
-        <p>Colorimeters and photometers provide rapid, field-deployable solutions for water quality monitoring with reagents available in tablet, powder, and liquid forms.</p>
-
-        <button class="btn" onclick="toggleInfo()">Show Product Details</button>
-        
-        <div class="info-section" id="moreInfo">
-            <div class="product-card">
-                <div class="product-title">YSI Reagent Systems</div>
-                <ul class="feature-list">
-                    <li><span class="highlight">Superior powder packs:</span> 37% larger than competitors with easy-to-open design</li>
-                    <li><span class="highlight">Variety of formats:</span> Tablet, powder, and liquid reagents available</li>
-                    <li><span class="highlight">EPA-approved methods:</span> Many reagents follow standardized protocols</li>
-                    <li><span class="highlight">Cross-compatibility:</span> Some reagents work with other manufacturers' instruments</li>
-                </ul>
-                <img src="ysi-reagents.jpg" alt="YSI reagent packs" class="product-image">
-            </div>
-
-            <div class="product-card">
-                <div class="product-title">pHotoFlex Colorimeters</div>
-                <ul class="feature-list">
-                    <li><span class="highlight">Multiparameter capability:</span> Measure multiple water quality parameters</li>
-                    <li><span class="highlight">Rugged design:</span> Waterproof and field-ready construction</li>
-                    <li><span class="highlight">Advanced optics:</span> High-precision light measurement system</li>
-                    <li><span class="highlight">Versatile applications:</span> Suitable for both lab and field testing</li>
-                </ul>
-                
-                <table class="spec-table">
-                    <tr>
-                        <th>Model</th>
-                        <th>Parameters</th>
-                        <th>Wavelength Range</th>
-                    </tr>
-                    <tr>
-                        <td>pHotoFlex Standard</td>
-                        <td>Up to 15 parameters</td>
-                        <td>400-700 nm</td>
-                    </tr>
-                    <tr>
-                        <td>pHotoFlex Turb</td>
-                        <td>Turbidity specific</td>
-                        <td>860 nm</td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="product-card">
-                <div class="product-title">Single-Parameter Colorimeters</div>
-                <ul class="feature-list">
-                    <li><span class="highlight">Dedicated measurement:</span> Optimized for specific parameters</li>
-                    <li><span class="highlight">Simplified operation:</span> Easy-to-use for routine testing</li>
-                    <li><span class="highlight">Cost-effective:</span> Affordable solution for targeted measurements</li>
-                </ul>
-                
-                <div class="product-card">
-                    <div class="product-title">YSI 900 Chlorine Colorimeter</div>
-                    <ul class="feature-list">
-                        <li>Measures free and total chlorine</li>
-                        <li>Range: 0-4 mg/L</li>
-                        <li>Resolution: 0.01 mg/L</li>
-                        <li>DPD method</li>
-                    </ul>
-                </div>
-                
-                <div class="product-card">
-                    <div class="product-title">YSI 910 COD Colorimeter</div>
-                    <ul class="feature-list">
-                        <li>Chemical Oxygen Demand measurement</li>
-                        <li>Range: 0-1500 mg/L</li>
-                        <li>Dichromate method</li>
-                        <li>Pre-programmed curves</li>
-                    </ul>
-                </div>
-                
-                <img src="single-parameter-colorimeters.jpg" alt="YSI single parameter colorimeters" class="product-image">
-            </div>
-
-            <div class="product-card">
-                <div class="product-title">Measurement Parameters</div>
-                <ul class="feature-list">
-                    <li><span class="highlight">Nutrients:</span> Nitrate, Nitrite, Ammonia, Phosphate</li>
-                    <li><span class="highlight">Oxidation:</span> COD, BOD, Chlorine</li>
-                    <li><span class="highlight">Metals:</span> Iron, Copper, Zinc</li>
-                    <li><span class="highlight">Other:</span> pH, Alkalinity, Hardness</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function goBackHome() {
-            window.location.href = 'parameters';
-        }
-
-        function toggleInfo() {
-            const info = document.getElementById("moreInfo");
-            const button = document.querySelector(".btn");
-            
-            if (info.style.display === "none") {
-                info.style.display = "block";
-                button.textContent = "Hide Product Details";
-            } else {
-                info.style.display = "none";
-                button.textContent = "Show Product Details";
-            }
-        }
-    </script>
+  </div>
+</div>
+<footer class="footer"><p>© 2025 <strong>AquaGuard</strong> — Water Quality Parameter Guide</p></footer>
+<script>window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10));</script>
 </body>
 </html>

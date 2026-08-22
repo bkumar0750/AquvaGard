@@ -1,623 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NSF-WQI Calculator | AquaGuard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <style>
-        :root {
-            --primary: #2F4F4F;
-            --secondary: #FFD700;
-            --accent: #00B4D8;
-            --light: #F8F9FA;
-            --dark: #212529;
-        }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            overflow-x: hidden;
-            position: relative;
-        }
-        
-        /* Floating particles */
-        .particle {
-            position: absolute;
-            background: rgba(47, 79, 79, 0.1);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: -1;
-            animation: float linear infinite;
-        }
-        
-        @keyframes float {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-1000px) rotate(720deg);
-                opacity: 0;
-            }
-        }
-        
-        /* Main container */
-        .container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            width: 70%;
-            max-width: 900px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-            border-radius: 20px;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
-            animation: fadeInUp 0.8s ease-out;
-        }
-        
-        .container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-        }
-        
-        .container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 100%;
-            background: linear-gradient(45deg, transparent 65%, rgba(0, 123, 255, 0.1) 100%);
-            transform: rotate(30deg);
-            z-index: -1;
-            animation: shine 8s infinite linear;
-        }
-        
-        @keyframes shine {
-            0% {
-                transform: rotate(30deg) translate(-10%, -10%);
-            }
-            100% {
-                transform: rotate(30deg) translate(10%, 10%);
-            }
-        }
-        
-        h2 {
-            text-align: center;
-            color: var(--primary);
-            font-size: 28px;
-            margin-bottom: 15px;
-            position: relative;
-            display: inline-block;
-            width: 100%;
-        }
-        
-        h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent), var(--primary));
-            border-radius: 2px;
-        }
-        
-        /* Table styling */
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin: 30px 0;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            animation: fadeIn 0.8s ease-out;
-        }
-        
-        th, td {
-            padding: 15px;
-            text-align: left;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-        
-        th {
-            background: linear-gradient(135deg, var(--primary) 0%, #3a7d7d 100%);
-            color: white;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 15px;
-        }
-        
-        tr:nth-child(even) {
-            background-color: rgba(178, 235, 242, 0.2);
-        }
-        
-        tr:hover td {
-            background-color: rgba(178, 235, 242, 0.4);
-            transform: translateX(5px);
-        }
-        
-        /* Input styling */
-        input {
-            width: 90%;
-            padding: 12px 15px;
-            border: 2px solid #b2ebf2;
-            border-radius: 8px;
-            transition: all 0.3s;
-            font-size: 15px;
-            background-color: rgba(255, 255, 255, 0.8);
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
-        }
-        
-        input:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(44, 93, 93, 0.2);
-            background-color: white;
-        }
-        
-        /* Button styling */
-        .button-container {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 30px;
-            gap: 20px;
-        }
-        
-        button {
-            padding: 14px 25px;
-            font-size: 16px;
-            border: none;
-            cursor: pointer;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.4s cubic-bezier(0.165, 0.885, 0.32, 1.275);
-            letter-spacing: 0.5px;
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        button::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(rgba(255, 255, 255, 0.2), transparent);
-            transform: translateY(-100%);
-            transition: transform 0.4s cubic-bezier(0.165, 0.885, 0.32, 1.275);
-        }
-        
-        button:hover::after {
-            transform: translateY(0);
-        }
-        
-        #resetBtn {
-            background: linear-gradient(135deg, #dc3545 0%, #e35d6a 100%);
-            color: white;
-        }
-        
-        #calculateBtn {
-            background: linear-gradient(135deg, #28a745 0%, #5cb85c 100%);
-            color: white;
-        }
-        
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        button:active {
-            transform: translateY(1px);
-        }
-        
-        /* Result styling */
-        #result {
-            margin-top: 30px;
-            padding: 20px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 248, 255, 0.9) 100%);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: all 0.5s ease;
-            opacity: 0;
-            height: 0;
-            overflow: hidden;
-        }
-        
-        #result.show {
-            opacity: 1;
-            height: auto;
-            padding: 20px;
-            margin-top: 30px;
-        }
-        
-        .result-value {
-            font-size: 32px;
-            font-weight: 700;
-            margin: 10px 0;
-            display: inline-block;
-            padding: 10px 20px;
-            border-radius: 50px;
-            background: linear-gradient(135deg, rgba(178, 235, 242, 0.3) 0%, rgba(128, 222, 234, 0.3) 100%);
-        }
-        
-        .result-quality {
-            font-size: 24px;
-            font-weight: 600;
-            margin-top: 10px;
-            padding: 8px 20px;
-            border-radius: 50px;
-            display: inline-block;
-        }
-        
-        /* Back button */
-        .back-button-container {
-            position: fixed;
-            top: 30px;
-            left: 30px;
-            z-index: 100;
-        }
-        
-        .back-button {
-            background: linear-gradient(135deg, var(--primary) 0%, #3a7d7d 100%);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 50px;
-            transition: all 0.4s cubic-bezier(0.165, 0.885, 0.32, 1.275);
-            font-weight: 500;
-            box-shadow: 0 4px 10px rgba(47, 79, 79, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .back-button:hover {
-            transform: translateX(-5px) scale(1.05);
-            box-shadow: 0 8px 20px rgba(47, 79, 79, 0.4);
-        }
-        
-        /* Water wave animation */
-        .water-wave {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-        
-            width: 100%;
-            height: 100px;
-            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="%232F4F4F" opacity=".25"/><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" fill="%232F4F4F" opacity=".5"/><path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="%232F4F4F"/></svg>');
-            background-size: cover;
-            animation: wave 15s linear infinite;
-            z-index: -1;
-        }
-        
-        @keyframes wave {
-            0% { background-position-x: 0; }
-            100% { background-position-x: 1200px; }
-        }
-        
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .container {
-                width: 90%;
-                padding: 25px;
-            }
-            
-            table {
-                display: block;
-                overflow-x: auto;
-            }
-            
-            .button-container {
-                flex-direction: column;
-            }
-            
-            .back-button-container {
-                top: 15px;
-                left: 15px;
-            }
-        }
-        
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NSF Water Quality Index (NSF-WQI) — AquaGuard</title>
+  <meta name="description" content="Calculate water quality using the National Sanitation Foundation (NSF-WQI) 9-parameter methodology.">
+  <link rel="stylesheet" href="/styles/global.css">
+  <style>
+    .wqi-page { padding: calc(var(--nav-h) + 2.5rem) 1.5rem 5rem; min-height: 100vh; }
+    .wqi-container { max-width: 900px; margin: 0 auto; }
+    .wqi-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+      padding: 2.25rem; box-shadow: var(--shadow); position: relative; overflow: hidden;
+    }
+    .wqi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #9b72ff, var(--accent)); }
+    .wqi-header { text-align: center; margin-bottom: 2rem; }
+    .wqi-header h1 { font-size: 1.8rem; font-weight: 800; color: var(--white); margin-top: 0.5rem; }
+
+    table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; font-size: 0.9rem; }
+    th, td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); text-align: left; }
+    th { background: rgba(155,114,255,0.1); color: #9b72ff; font-weight: 700; text-transform: uppercase; font-size: 0.73rem; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .result-box {
+      display: none; text-align: center; background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+      border-radius: var(--r); padding: 1.75rem; margin-top: 2rem;
+    }
+    .result-score { font-size: 3rem; font-weight: 800; margin: 0.5rem 0; font-family: 'Roboto Mono', monospace; }
+    .result-badge { display: inline-block; padding: 0.4rem 1.25rem; border-radius: 50px; font-weight: 700; font-size: 0.95rem; }
+  </style>
 </head>
 <body>
-    <!-- Floating particles -->
-    <div id="particles"></div>
-    
-    <!-- Back to Home Button -->
-    <div class="back-button-container animate__animated animate__fadeInLeft">
-        <button class="back-button" onclick="goBackHome()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-            </svg>
-            Back to Home
-        </button>
+<nav class="navbar scrolled" id="navbar">
+  <a href="/fwater" class="nav-brand"><div class="nav-logo">💧</div><span class="nav-name">Aqua<span>Guard</span></span></a>
+  <ul class="nav-links" id="navLinks">
+    <li class="nav-dd"><button>Data Entry</button><div class="dd-menu"><a href="/physical">🧪 Physical</a><a href="/chemical">⚗️ Chemical</a><a href="/biological">🦠 Biological</a><a href="/environmental">🌿 Environmental</a><a href="/air">💨 Air Quality</a></div></li>
+    <li class="nav-dd"><a href="#">WQI</a><div class="dd-menu"><a href="/w6swqi">Simple WQI</a><a href="/w4nsfwqi" style="color:var(--accent)">NSF-WQI</a><a href="/w5wawqi">WA-WQI</a><a href="/w1ccmewqi">CCME-WQI</a></div></li>
+    <li><a href="/treatment">Treatment</a></li><li><a href="/AQI">AQI</a></li><li><a href="/parameters">Parameters</a></li><li><a href="/information">Data Info</a></li>
+  </ul>
+  <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="wqi-page">
+  <div class="wqi-container">
+    <div class="wqi-card fu">
+      <div class="wqi-header">
+        <span class="badge badge-cyan" style="background:rgba(155,114,255,0.12);color:#9b72ff;border-color:rgba(155,114,255,0.3)">🏛️ Standard Method</span>
+        <h1>NSF Water Quality Index (NSF-WQI)</h1>
+      </div>
+
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Dissolved Oxygen (DO) — mg/L</td><td><input class="form-control" type="number" id="do" placeholder="e.g. 8.5" min="0" step="0.1"></td></tr>
+          <tr><td>Fecal Coliform — CFU/100mL</td><td><input class="form-control" type="number" id="fc" placeholder="e.g. 20" min="0"></td></tr>
+          <tr><td>pH Level (0-14)</td><td><input class="form-control" type="number" id="ph" placeholder="e.g. 7.4" min="0" max="14" step="0.1"></td></tr>
+          <tr><td>BOD — mg/L</td><td><input class="form-control" type="number" id="bod" placeholder="e.g. 2.1" min="0" step="0.1"></td></tr>
+          <tr><td>Nitrates — mg/L</td><td><input class="form-control" type="number" id="nitrates" placeholder="e.g. 5.0" min="0" step="0.1"></td></tr>
+          <tr><td>Total Phosphates — mg/L</td><td><input class="form-control" type="number" id="phosphates" placeholder="e.g. 0.3" min="0" step="0.1"></td></tr>
+          <tr><td>Turbidity — NTU</td><td><input class="form-control" type="number" id="turbidity" placeholder="e.g. 4.2" min="0" step="0.1"></td></tr>
+          <tr><td>Total Solids — mg/L</td><td><input class="form-control" type="number" id="solids" placeholder="e.g. 150" min="0" step="0.1"></td></tr>
+          <tr><td>Water Temperature — °C</td><td><input class="form-control" type="number" id="temp" placeholder="e.g. 22.0" min="-20" max="50" step="0.1"></td></tr>
+        </tbody>
+      </table>
+
+      <div style="display:flex;gap:1rem;justify-content:center">
+        <button class="btn btn-ghost" onclick="resetForm()">Reset</button>
+        <button class="btn btn-primary" onclick="calculateWQI()">⚡ Calculate NSF-WQI</button>
+      </div>
+
+      <div class="result-box" id="result"></div>
     </div>
+  </div>
+</div>
 
-    <div class="container animate__animated animate__fadeInUp">
-        <h2>NSF Water Quality Index Calculator</h2>
-        <p class="text-gray-600 mb-6 text-center">Calculate water quality using the National Sanitation Foundation method</p>
-        
-        <table>
-            <thead>
-                <tr>
-                    <th>Parameter</th>
-                    <th>Value</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Dissolved Oxygen (DO) - mg/L</td>
-                    <td><input type="number" id="do" placeholder="Enter DO value" min="0" step="0.1"></td>
-                </tr>
-                <tr>
-                    <td>Fecal Coliform - colonies/100mL</td>
-                    <td><input type="number" id="fc" placeholder="Enter FC value" min="0"></td>
-                </tr>
-                <tr>
-                    <td>pH</td>
-                    <td><input type="number" id="ph" placeholder="Enter pH value (0-14)" min="0" max="14" step="0.1"></td>
-                </tr>
-                <tr>
-                    <td>Biochemical Oxygen Demand (BOD) - mg/L</td>
-                    <td><input type="number" id="bod" placeholder="Enter BOD value" min="0" step="0.1"></td>
-                </tr>
-                <tr>
-                    <td>Nitrates - mg/L</td>
-                    <td><input type="number" id="nitrates" placeholder="Enter nitrates value" min="0" step="0.1"></td>
-                </tr>
-                <tr>
-                    <td>Total Phosphates - mg/L</td>
-                    <td><input type="number" id="phosphates" placeholder="Enter phosphates value" min="0" step="0.1"></td>
-                </tr>
-                <tr>
-                    <td>Turbidity - NTU</td>
-                    <td><input type="number" id="turbidity" placeholder="Enter turbidity value" min="0" step="0.1"></td>
-                </tr>
-                <tr>
-                    <td>Total Solids - mg/L</td>
-                    <td><input type="number" id="solids" placeholder="Enter solids value" min="0" step="0.1"></td>
-                </tr>
-                <tr>
-                    <td>Water Temperature - °C</td>
-                    <td><input type="number" id="temp" placeholder="Enter temperature" min="-20" max="50" step="0.1"></td>
-                </tr>
-            </tbody>
-        </table>
+<footer class="footer"><p>© 2025 <strong>AquaGuard</strong> — NSF Water Quality Index System</p></footer>
 
-        <div class="button-container">
-            <button id="resetBtn" onclick="resetForm()">Reset</button>
-            <button id="calculateBtn" onclick="calculateWQI()">Calculate WQI</button>
-        </div>
+<script>
+  window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10));
 
-        <div id="result"></div>
-    </div>
-    
-    <!-- Water wave at bottom -->
-    <div class="water-wave"></div>
+  function resetForm() {
+    ['do','fc','ph','bod','nitrates','phosphates','turbidity','solids','temp'].forEach(id => document.getElementById(id).value = '');
+    const res = document.getElementById("result"); res.style.display = 'none'; res.innerHTML = '';
+  }
 
-    <script>
-        // Create floating particles
-        function createParticles() {
-            const container = document.getElementById('particles');
-            const colors = ['rgba(47, 79, 79, 0.1)', 'rgba(178, 235, 242, 0.1)', 'rgba(128, 222, 234, 0.1)'];
-            
-            for (let i = 0; i < 30; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                particle.style.left = Math.random() * 100 + 'vw';
-                particle.style.bottom = -Math.random() * 100 + 'px';
-                particle.style.width = Math.random() * 15 + 5 + 'px';
-                particle.style.height = particle.style.width;
-                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.animationDuration = Math.random() * 20 + 10 + 's';
-                particle.style.animationDelay = Math.random() * 10 + 's';
-                container.appendChild(particle);
-            }
-        }
+  function calculateSubIndex(val, min, max) {
+    if (val <= min) return 100;
+    if (val >= max) return 0;
+    return 100 - ((val - min) / (max - min)) * 100;
+  }
 
-        function goBackHome() {
-            // Add animation before redirecting
-            document.querySelector('.container').classList.add('animate__animated', 'animate__fadeOutDown');
-            setTimeout(() => {
-                window.location.href = 'fwater';
-            }, 500);
-        }
+  function calculateWQI() {
+    const doV = parseFloat(document.getElementById("do").value) || 0;
+    const fcV = parseFloat(document.getElementById("fc").value) || 0;
+    const phV = parseFloat(document.getElementById("ph").value) || 7;
+    const bodV = parseFloat(document.getElementById("bod").value) || 0;
+    const nitV = parseFloat(document.getElementById("nitrates").value) || 0;
+    const phoV = parseFloat(document.getElementById("phosphates").value) || 0;
+    const turV = parseFloat(document.getElementById("turbidity").value) || 0;
+    const solV = parseFloat(document.getElementById("solids").value) || 0;
+    const tmpV = parseFloat(document.getElementById("temp").value) || 20;
 
-        // Calculate sub-index for each parameter
-        function calculateSubIndex(value, min, max, curve) {
-            if (value <= min) return 100;
-            if (value >= max) return 0;
-            
-            if (curve === 'linear') {
-                return 100 - ((value - min) / (max - min)) * 100;
-            } else if (curve === 'logarithmic') {
-                // Logarithmic curve implementation
-                const normalized = (value - min) / (max - min);
-                return 100 * (1 - Math.log10(1 + 9 * normalized));
-            }
-            return 0;
-        }
+    const subs = [
+      calculateSubIndex(doV, 14, 0),
+      calculateSubIndex(fcV, 0, 1000),
+      calculateSubIndex(Math.abs(phV - 7.5), 0, 6.5),
+      calculateSubIndex(bodV, 0, 30),
+      calculateSubIndex(nitV, 0, 100),
+      calculateSubIndex(phoV, 0, 10),
+      calculateSubIndex(turV, 0, 100),
+      calculateSubIndex(solV, 0, 500),
+      calculateSubIndex(Math.abs(tmpV - 20), 0, 30)
+    ];
 
-        function calculateWQI() {
-            // Get all input values
-            const doValue = parseFloat(document.getElementById("do").value) || 0;
-            const fcValue = parseFloat(document.getElementById("fc").value) || 0;
-            const phValue = parseFloat(document.getElementById("ph").value) || 0;
-            const bodValue = parseFloat(document.getElementById("bod").value) || 0;
-            const nitratesValue = parseFloat(document.getElementById("nitrates").value) || 0;
-            const phosphatesValue = parseFloat(document.getElementById("phosphates").value) || 0;
-            const turbidityValue = parseFloat(document.getElementById("turbidity").value) || 0;
-            const solidsValue = parseFloat(document.getElementById("solids").value) || 0;
-            const tempValue = parseFloat(document.getElementById("temp").value) || 0;
+    const weights = [0.17, 0.16, 0.11, 0.11, 0.10, 0.10, 0.08, 0.07, 0.10];
+    let wqi = 0;
+    for (let i = 0; i < weights.length; i++) wqi += subs[i] * weights[i];
 
-            // Validate inputs
-            const errors = [];
-            if (phValue < 0 || phValue > 14) errors.push("pH must be between 0-14");
-            if (tempValue < -20 || tempValue > 50) errors.push("Temperature must be between -20°C to 50°C");
-            
-            if (errors.length > 0) {
-                alert("Please correct the following errors:\n\n" + errors.join("\n"));
-                return;
-            }
+    let q = "Good", c = "var(--green)";
+    if (wqi >= 90) { q = "Excellent"; c = "var(--green)"; }
+    else if (wqi >= 70) { q = "Good"; c = "var(--accent)"; }
+    else if (wqi >= 50) { q = "Medium"; c = "#ffd166"; }
+    else if (wqi >= 25) { q = "Bad"; c = "var(--warn)"; }
+    else { q = "Very Bad"; c = "var(--danger)"; }
 
-            // Calculate sub-indices (simplified for example)
-            const doIndex = calculateSubIndex(doValue, 14, 0, 'linear');
-            const fcIndex = calculateSubIndex(fcValue, 0, 10000, 'logarithmic');
-            const phIndex = calculateSubIndex(Math.abs(phValue - 7.5), 0, 6.5, 'linear');
-            const bodIndex = calculateSubIndex(bodValue, 0, 30, 'linear');
-            const nitratesIndex = calculateSubIndex(nitratesValue, 0, 100, 'linear');
-            const phosphatesIndex = calculateSubIndex(phosphatesValue, 0, 10, 'linear');
-            const turbidityIndex = calculateSubIndex(turbidityValue, 0, 100, 'linear');
-            const solidsIndex = calculateSubIndex(solidsValue, 0, 500, 'linear');
-            const tempIndex = calculateSubIndex(Math.abs(tempValue - 20), 0, 30, 'linear');
-
-            // NSF weights
-            const weights = [0.17, 0.16, 0.11, 0.11, 0.10, 0.10, 0.08, 0.07, 0.10];
-            const subIndices = [doIndex, fcIndex, phIndex, bodIndex, nitratesIndex, phosphatesIndex, turbidityIndex, solidsIndex, tempIndex];
-            
-            // Calculate weighted sum
-            let weightedSum = 0;
-            for (let i = 0; i < weights.length; i++) {
-                weightedSum += subIndices[i] * weights[i];
-            }
-            
-            const wqi = weightedSum.toFixed(2);
-            
-            let quality = "";
-            let qualityColor = "";
-            
-            if (wqi >= 90) {
-                quality = "Excellent";
-                qualityColor = "#28a745";
-            } else if (wqi >= 70) {
-                quality = "Good";
-                qualityColor = "#5cb85c";
-            } else if (wqi >= 50) {
-                quality = "Moderate";
-                qualityColor = "#ffc107";
-            } else {
-                quality = "Poor";
-                qualityColor = "#dc3545";
-            }
-
-            const resultElement = document.getElementById("result");
-            resultElement.innerHTML = `
-                <h3 class="text-center mb-4">NSF Water Quality Index Result</h3>
-                <div class="result-value text-center" style="color: ${qualityColor}">${wqi}</div>
-                <div class="result-quality text-center" style="background: ${qualityColor + '20'}; color: ${qualityColor}">
-                    ${quality} Water Quality
-                </div>
-                <p class="text-center mt-4 text-gray-600">
-                    Based on National Sanitation Foundation methodology
-                </p>
-            `;
-            
-            // Show result with animation
-            setTimeout(() => {
-                resultElement.classList.add('show');
-                resultElement.classList.add('animate__animated', 'animate__fadeInUp');
-            }, 100);
-            
-            // Save to database (optional)
-            saveToDatabase({
-                do: doValue,
-                fc: fcValue,
-                ph: phValue,
-                bod: bodValue,
-                nitrates: nitratesValue,
-                phosphates: phosphatesValue,
-                turbidity: turbidityValue,
-                solids: solidsValue,
-                temp: tempValue,
-                wqi: wqi,
-                quality: quality
-            });
-        }
-
-        function saveToDatabase(data) {
-            // Here you would typically send data to your backend
-            // Example using fetch API:
-            /*
-            fetch('/api/nsf-wqi', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-            */
-        }
-
-        function resetForm() {
-            document.getElementById("do").value = "";
-            document.getElementById("fc").value = "";
-            document.getElementById("ph").value = "";
-            document.getElementById("bod").value = "";
-            document.getElementById("nitrates").value = "";
-            document.getElementById("phosphates").value = "";
-            document.getElementById("turbidity").value = "";
-            document.getElementById("solids").value = "";
-            document.getElementById("temp").value = "";
-            
-            const resultElement = document.getElementById("result");
-            resultElement.classList.remove('show');
-            resultElement.innerHTML = "";
-        }
-
-        // Initialize particles when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            createParticles();
-            
-            // Add input validation
-            const inputs = document.querySelectorAll('input[type="number"]');
-            inputs.forEach(input => {
-                input.addEventListener('blur', () => {
-                    const value = parseFloat(input.value);
-                    if (isNaN(value)) return;
-                    
-                    if (input.hasAttribute('min') && value < parseFloat(input.min)) {
-                        input.value = input.min;
-                    }
-                    if (input.hasAttribute('max') && value > parseFloat(input.max)) {
-                        input.value = input.max;
-                    }
-                });
-            });
-        });
-    </script>
+    const res = document.getElementById("result");
+    res.style.display = 'block';
+    res.innerHTML = `
+      <div style="font-size:0.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em">NSF Water Quality Score</div>
+      <div class="result-score" style="color:${c}">${wqi.toFixed(2)}</div>
+      <div class="result-badge" style="background:${c}20;color:${c};border:1px solid ${c}">${q} Water Quality</div>
+    `;
+  }
+</script>
 </body>
 </html>

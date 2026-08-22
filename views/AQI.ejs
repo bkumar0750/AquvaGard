@@ -1,550 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Air Quality Index Calculator</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary: #2F4F4F;
-            --primary-light: #3a5f5f;
-            --secondary: #778899;
-            --accent: #20B2AA;
-            --light-bg: #f5f5f5;
-            --dark-text: #2d3748;
-            --border-color: #e0e0e0;
-            --white: #ffffff;
-            --warning: #d9534f;
-            --good: #00e400;
-            --moderate: #ffff00;
-            --unhealthy-sg: #ff7e00;
-            --unhealthy: #ff0000;
-            --very-unhealthy: #8f3f97;
-            --hazardous: #7e0023;
-        }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, var(--light-bg) 0%, var(--secondary) 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            overflow-x: hidden;
-            position: relative;
-            color: var(--dark-text);
-        }
-        
-        /* Floating particles */
-        .particle {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: -1;
-            animation: float linear infinite;
-        }
-        
-        @keyframes float {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-1000px) rotate(720deg);
-                opacity: 0;
-            }
-        }
-        
-        .container {
-            max-width: 800px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-            animation: fadeInUp 0.8s ease-out;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.4s, box-shadow 0.4s;
-            border: 1px solid var(--border-color);
-        }
-        
-        .container:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-        }
-        
-        .container::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 100%;
-            background: linear-gradient(45deg, transparent 65%, rgba(32, 178, 170, 0.1) 100%);
-            transform: rotate(30deg);
-            z-index: -1;
-            animation: shine 8s infinite linear;
-        }
-        
-        @keyframes shine {
-            0% {
-                transform: rotate(30deg) translate(-10%, -10%);
-            }
-            100% {
-                transform: rotate(30deg) translate(10%, 10%);
-            }
-        }
-        
-        h2 {
-            text-align: center;
-            margin-bottom: 25px;
-            color: var(--primary);
-            font-weight: 600;
-            position: relative;
-            display: inline-block;
-            width: 100%;
-        }
-        
-        h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent), var(--primary));
-            border-radius: 2px;
-        }
-        
-        .form-control, .form-select {
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px 15px;
-            transition: all 0.3s;
-            background-color: rgba(255, 255, 255, 0.8);
-        }
-        
-        .form-control:focus, .form-select:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 0.25rem rgba(32, 178, 170, 0.25);
-            background-color: var(--white);
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            border: none;
-            border-radius: 8px;
-            padding: 12px;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            transition: all 0.3s;
-            box-shadow: 0 4px 10px rgba(32, 178, 170, 0.3);
-            color: var(--white);
-        }
-        
-        .btn-primary:hover {
-            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 15px rgba(32, 178, 170, 0.4);
-        }
-        
-        .btn-primary:active {
-            transform: translateY(0);
-        }
-        
-        hr {
-            margin: 25px 0;
-            border-top: 2px dashed var(--border-color);
-        }
-        
-        .aqi-box {
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            font-weight: bold;
-            color: white;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            font-size: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .aqi-box::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(rgba(255, 255, 255, 0.2), transparent);
-            transform: translateY(-100%);
-            transition: transform 0.4s;
-        }
-        
-        .aqi-box:hover::after {
-            transform: translateY(0);
-        }
-        
-        .aqi-box.good { background: linear-gradient(135deg, var(--good) 0%, #00c900 100%); }
-        .aqi-box.moderate { background: linear-gradient(135deg, var(--moderate) 0%, #e6e600 100%); color: var(--dark-text); }
-        .aqi-box.unhealthy-sg { background: linear-gradient(135deg, var(--unhealthy-sg) 0%, #e67300 100%); }
-        .aqi-box.unhealthy { background: linear-gradient(135deg, var(--unhealthy) 0%, #e60000 100%); }
-        .aqi-box.very-unhealthy { background: linear-gradient(135deg, var(--very-unhealthy) 0%, #7e368f 100%); }
-        .aqi-box.hazardous { background: linear-gradient(135deg, var(--hazardous) 0%, #6e0020 100%); }
-        
-        .info-box {
-            border: 2px solid var(--border-color);
-            padding: 15px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.7);
-            transition: all 0.3s;
-            margin-bottom: 15px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-        }
-        
-        .info-box:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-            background: var(--white);
-            border-color: var(--accent);
-        }
-        
-        .info-box strong {
-            color: var(--primary);
-            font-weight: 600;
-        }
-        
-        .back-button-container {
-            position: fixed;
-            top: 25px;
-            left: 25px;
-            z-index: 1000;
-        }
-        
-        .back-button {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-            color: var(--white);
-            border: none;
-            padding: 12px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 50px;
-            transition: all 0.3s;
-            font-weight: 500;
-            box-shadow: 0 4px 10px rgba(32, 178, 170, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .back-button:hover {
-            transform: translateX(-5px) scale(1.05);
-            box-shadow: 0 8px 20px rgba(32, 178, 170, 0.4);
-        }
-        
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .container {
-                max-width: 95%;
-                padding: 20px;
-            }
-            
-            .back-button-container {
-                top: 15px;
-                left: 15px;
-            }
-        }
-        
-        /* AQI meter animation */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        .pulse-animation {
-            animation: pulse 1.5s infinite;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Air Quality Index (AQI) Calculator — AquaGuard</title>
+  <meta name="description" content="Calculate real-time Air Quality Index (AQI) for PM2.5, PM10, CO, SO2, O3, NO2 with health advisory statements.">
+  <link rel="stylesheet" href="/styles/global.css">
+  <style>
+    /* ── HERO ── */
+    .aqi-hero {
+      position: relative;
+      padding: calc(var(--nav-h) + 3.5rem) 2rem 3rem;
+      background: linear-gradient(160deg, #040f23 0%, #0a2547 60%, #001635 100%);
+      overflow: hidden; text-align: center;
+    }
+    .aqi-hero .orb { position: absolute; border-radius: 50%; filter: blur(60px); pointer-events: none; animation: float 7s ease-in-out infinite; }
+    .aqi-hero .orb1 { width: 260px; height: 260px; background: rgba(0,180,216,0.1); top: -40px; right: 10%; animation-delay: 0s; }
+    .aqi-hero .orb2 { width: 180px; height: 180px; background: rgba(72,202,228,0.07); bottom: -20px; left: 5%; animation-delay: 2.5s; }
+    .aqi-hero-inner { position: relative; z-index: 2; max-width: 650px; margin: 0 auto; }
+    .aqi-hero h1 { font-size: clamp(1.8rem, 4.5vw, 2.75rem); font-weight: 800; margin: 0.75rem 0 0.6rem; }
+    .aqi-hero p { color: var(--muted); font-size: 0.95rem; line-height: 1.6; }
+    .aqi-hero-wave { position: absolute; bottom: 0; left: 0; width: 100%; z-index: 1; }
+    .aqi-hero-wave svg { display: block; }
 
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: var(--light-bg);
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 4px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-light);
-        }
-    </style>
+    /* ── CALCULATOR LAYOUT ── */
+    .aqi-page { padding: 3rem 1.5rem 5rem; }
+    .aqi-container { max-width: 800px; margin: 0 auto; }
+
+    .aqi-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+      padding: 2.25rem; box-shadow: var(--shadow); position: relative; overflow: hidden;
+    }
+    .aqi-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+    }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem; }
+    @media(max-width: 560px) { .form-row { grid-template-columns: 1fr; } }
+
+    /* ── RESULT BOX ── */
+    .aqi-result-wrap {
+      margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border);
+    }
+    .aqi-display {
+      padding: 1.75rem; border-radius: var(--r); text-align: center; font-weight: 800;
+      color: var(--white); font-size: 2rem; margin-bottom: 1.5rem; font-family: 'Roboto Mono', monospace;
+      transition: all 0.4s ease; background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .aqi-display.good           { background: linear-gradient(135deg, #06d6a0, #00b48a); color: #04241a; box-shadow: 0 0 30px rgba(6,214,160,0.35); }
+    .aqi-display.moderate       { background: linear-gradient(135deg, #ffd166, #e6b800); color: #3b2c00; box-shadow: 0 0 30px rgba(255,209,102,0.35); }
+    .aqi-display.unhealthy-sg   { background: linear-gradient(135deg, #ff9f1c, #e67e00); color: #fff; box-shadow: 0 0 30px rgba(255,159,28,0.35); }
+    .aqi-display.unhealthy      { background: linear-gradient(135deg, #ef476f, #d62828); color: #fff; box-shadow: 0 0 30px rgba(239,71,111,0.35); }
+    .aqi-display.very-unhealthy { background: linear-gradient(135deg, #9b5de5, #7209b7); color: #fff; box-shadow: 0 0 30px rgba(155,93,229,0.35); }
+    .aqi-display.hazardous      { background: linear-gradient(135deg, #800f2f, #4a0e17); color: #fff; box-shadow: 0 0 30px rgba(128,15,47,0.35); }
+
+    .aqi-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media(max-width: 600px) { .aqi-info-grid { grid-template-columns: 1fr; } }
+    .aqi-info-card {
+      background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--r);
+      padding: 1.1rem; transition: all 0.3s;
+    }
+    .aqi-info-card:hover { border-color: var(--border-h); background: rgba(255,255,255,0.05); }
+    .aqi-info-label { font-size: 0.73rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.4rem; }
+    .aqi-info-val { font-size: 0.88rem; color: var(--text); line-height: 1.5; }
+
+    /* select dropdown dark styling */
+    select.form-control { background-color: #112240; }
+    select.form-control option { background-color: #112240; color: var(--white); }
+  </style>
 </head>
 <body>
-    <!-- Back to Home Button -->
-    <div class="back-button-container">
-        <button class="back-button" onclick="goBackHome()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
-            </svg>
-            Back to Home
-        </button>
-    </div>
 
-    <div class="container animate__animated animate__fadeInUp">
-        <h2 class="animate__animated animate__fadeIn">🌍 Air Quality Index Calculator</h2>
-        <form id="aqiForm">
-            <div class="mb-4">
-                <label for="pollutant" class="form-label">Select Pollutant</label>
-                <select class="form-select animate__animated animate__fadeIn" id="pollutant">
-                    <option value="">-- Select Pollutant --</option>
-                    <option value="PM2.5">PM2.5 (µg/m³)</option>
-                    <option value="PM10">PM10 (µg/m³)</option>
-                    <option value="CO">CO (ppm)</option>
-                    <option value="SO2">SO₂ (ppb)</option>
-                    <option value="O3">O₃ (ppb)</option>
-                    <option value="NO2">NO₂ (ppb)</option>
-                </select>
-            </div>
-            <div class="mb-4">
-                <label for="concentration" class="form-label">Enter Concentration Value</label>
-                <input type="number" class="form-control animate__animated animate__fadeIn" id="concentration" placeholder="Enter value">
-            </div>
-            <button type="button" class="btn btn-primary animate__animated animate__fadeIn" onclick="calculateAQI()">
-                Calculate AQI
-            </button>
-        </form>
-        <hr class="animate__animated animate__fadeIn">
-        <div id="result">
-            <div id="aqiBox" class="aqi-box">AQI: --</div>
-            <div class="info-box animate__animated animate__fadeIn">
-                <strong>Air Quality Category:</strong> <span id="aqiCategory">--</span>
-            </div>
-            <div class="info-box animate__animated animate__fadeIn">
-                <strong>Affected Groups:</strong> <span id="sensitiveGroups">--</span>
-            </div>
-            <div class="info-box animate__animated animate__fadeIn">
-                <strong>Health Effects:</strong> <span id="healthEffects">--</span>
-            </div>
-            <div class="info-box animate__animated animate__fadeIn">
-                <strong>Recommended Actions:</strong> <span id="cautionaryStatements">--</span>
-            </div>
+<!-- ── NAVBAR ── -->
+<nav class="navbar scrolled" id="navbar">
+  <a href="/fwater" class="nav-brand">
+    <div class="nav-logo">💧</div>
+    <span class="nav-name">Aqua<span>Guard</span></span>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li class="nav-dd">
+      <button>Data Entry</button>
+      <div class="dd-menu">
+        <a href="/physical">🧪 Physical</a>
+        <a href="/chemical">⚗️ Chemical</a>
+        <a href="/biological">🦠 Biological</a>
+        <a href="/environmental">🌿 Environmental</a>
+        <a href="/air">💨 Air Quality</a>
+      </div>
+    </li>
+    <li class="nav-dd">
+      <a href="#">WQI Calculators</a>
+      <div class="dd-menu">
+        <a href="/w6swqi">Simple WQI</a>
+        <a href="/w4nsfwqi">NSF-WQI</a>
+        <a href="/w5wawqi">WA-WQI</a>
+        <a href="/w1ccmewqi">CCME-WQI</a>
+        <a href="/w3iwqi">Irrigation-WQI</a>
+        <a href="/w2gwqi">Ground-WQI</a>
+      </div>
+    </li>
+    <li><a href="/treatment">Treatment</a></li>
+    <li><a href="/AQI" style="color:var(--accent)">AQI</a></li>
+    <li><a href="/parameters">Parameters</a></li>
+    <li><a href="/information">Data Info</a></li>
+  </ul>
+  <button class="nav-toggle" id="navToggle" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="aqi-hero">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="aqi-hero-inner fu">
+    <span class="badge badge-warn" style="margin-bottom:0.75rem">🌍 US EPA Standard</span>
+    <h1>Air Quality Index <span class="g-text">Calculator</span></h1>
+    <p>Calculate precise Air Quality Index (AQI) values for criteria pollutants and view official health risk advisories.</p>
+  </div>
+  <div class="aqi-hero-wave">
+    <svg viewBox="0 0 1440 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,25 C240,50 480,0 720,25 C960,50 1200,0 1440,25 L1440,50 L0,50 Z" fill="#0a192f"/>
+    </svg>
+  </div>
+</div>
+
+<div class="aqi-page">
+  <div class="aqi-container">
+    <div class="aqi-card fu-1">
+      <form id="aqiForm" onsubmit="calculateAQI(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Target Pollutant *</label>
+            <select class="form-control" id="pollutant" required>
+              <option value="">-- Select Pollutant --</option>
+              <option value="PM2.5">PM2.5 (Fine Particulates, µg/m³)</option>
+              <option value="PM10">PM10 (Coarse Particulates, µg/m³)</option>
+              <option value="CO">CO (Carbon Monoxide, ppm)</option>
+              <option value="SO2">SO₂ (Sulfur Dioxide, ppb)</option>
+              <option value="O3">O₃ (Ozone 8-hr, ppb)</option>
+              <option value="NO2">NO₂ (Nitrogen Dioxide, ppb)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Concentration Value *</label>
+            <input type="number" step="0.01" min="0" class="form-control" id="concentration" placeholder="e.g. 35.4" required>
+          </div>
         </div>
+
+        <button type="submit" class="btn btn-primary btn-lg" style="width:100%">⚡ Calculate AQI</button>
+      </form>
+
+      <!-- RESULTS -->
+      <div class="aqi-result-wrap" id="resultWrap" style="display:none">
+        <div id="aqiDisplay" class="aqi-display">AQI: --</div>
+
+        <div class="aqi-info-grid">
+          <div class="aqi-info-card">
+            <div class="aqi-info-label">AQI Category</div>
+            <div class="aqi-info-val" id="aqiCategory" style="font-weight:700;font-size:1rem">—</div>
+          </div>
+          <div class="aqi-info-card">
+            <div class="aqi-info-label">Sensitive Population</div>
+            <div class="aqi-info-val" id="sensitiveGroups">—</div>
+          </div>
+          <div class="aqi-info-card">
+            <div class="aqi-info-label">Health Effects</div>
+            <div class="aqi-info-val" id="healthEffects">—</div>
+          </div>
+          <div class="aqi-info-card">
+            <div class="aqi-info-label">Cautionary Actions</div>
+            <div class="aqi-info-val" id="cautionaryStatements">—</div>
+          </div>
+        </div>
+      </div>
+
     </div>
+  </div>
+</div>
 
-    <script>
-        // Create floating particles
-        function createParticles() {
-            const colors = ['rgba(255, 255, 255, 0.6)', 'rgba(200, 230, 255, 0.5)', 'rgba(230, 240, 255, 0.4)'];
-            for (let i = 0; i < 30; i++) {
-                const particle = document.createElement('div');
-                particle.classList.add('particle');
-                particle.style.left = Math.random() * 100 + 'vw';
-                particle.style.bottom = -Math.random() * 100 + 'px';
-                particle.style.width = Math.random() * 20 + 5 + 'px';
-                particle.style.height = particle.style.width;
-                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.animationDuration = Math.random() * 20 + 10 + 's';
-                particle.style.animationDelay = Math.random() * 10 + 's';
-                document.body.appendChild(particle);
-            }
-        }
+<footer class="footer">
+  <p>© 2025 <strong>AquaGuard</strong> — Water & Air Pollution Analysis Platform &nbsp;·&nbsp; <a href="/fwater">← Dashboard</a></p>
+</footer>
 
-        // Initialize particles
-        window.onload = function() {
-            createParticles();
-        };
+<script>
+  window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10));
 
-        function goBackHome() {
-            // Add animation before redirecting
-            document.querySelector('.container').classList.add('animate__animated', 'animate__fadeOutDown');
-            setTimeout(() => {
-                window.location.href = 'fwater';
-            }, 500);
-        }
+  function calculateAQI(e) {
+    e.preventDefault();
+    const concentration = parseFloat(document.getElementById('concentration').value);
+    const pollutant = document.getElementById('pollutant').value;
 
-        function calculateAQI() {
-            const concentration = parseFloat(document.getElementById('concentration').value);
-            const pollutant = document.getElementById('pollutant').value;
-            let aqi = 0;
-            let category = "Unknown";
-            let sensitiveGroups = "None";
-            let healthEffects = "None";
-            let cautionaryStatements = "None";
-            let aqiClass = "aqi-box";
+    if (!pollutant || isNaN(concentration)) return;
 
-            if (!pollutant || isNaN(concentration)) {
-                alert("Please select a pollutant and enter a valid concentration value.");
-                return;
-            }
+    let aqi = 0;
+    if (pollutant === "PM2.5") {
+      if (concentration <= 12) aqi = linearScale(concentration, 0, 12, 0, 50);
+      else if (concentration <= 35.4) aqi = linearScale(concentration, 12.1, 35.4, 51, 100);
+      else if (concentration <= 55.4) aqi = linearScale(concentration, 35.5, 55.4, 101, 150);
+      else if (concentration <= 150.4) aqi = linearScale(concentration, 55.5, 150.4, 151, 200);
+      else if (concentration <= 250.4) aqi = linearScale(concentration, 150.5, 250.4, 201, 300);
+      else aqi = linearScale(concentration, 250.5, 500.4, 301, 500);
+    } else if (pollutant === "PM10") {
+      if (concentration <= 54) aqi = linearScale(concentration, 0, 54, 0, 50);
+      else if (concentration <= 154) aqi = linearScale(concentration, 55, 154, 51, 100);
+      else if (concentration <= 254) aqi = linearScale(concentration, 155, 254, 101, 150);
+      else if (concentration <= 354) aqi = linearScale(concentration, 255, 354, 151, 200);
+      else if (concentration <= 424) aqi = linearScale(concentration, 355, 424, 201, 300);
+      else aqi = linearScale(concentration, 425, 604, 301, 500);
+    } else if (pollutant === "CO") {
+      if (concentration <= 4.4) aqi = linearScale(concentration, 0, 4.4, 0, 50);
+      else if (concentration <= 9.4) aqi = linearScale(concentration, 4.5, 9.4, 51, 100);
+      else if (concentration <= 12.4) aqi = linearScale(concentration, 9.5, 12.4, 101, 150);
+      else if (concentration <= 15.4) aqi = linearScale(concentration, 12.5, 15.4, 151, 200);
+      else if (concentration <= 30.4) aqi = linearScale(concentration, 15.5, 30.4, 201, 300);
+      else aqi = linearScale(concentration, 30.5, 50.4, 301, 500);
+    } else if (pollutant === "SO2") {
+      if (concentration <= 35) aqi = linearScale(concentration, 0, 35, 0, 50);
+      else if (concentration <= 75) aqi = linearScale(concentration, 36, 75, 51, 100);
+      else if (concentration <= 185) aqi = linearScale(concentration, 76, 185, 101, 150);
+      else if (concentration <= 304) aqi = linearScale(concentration, 186, 304, 151, 200);
+      else aqi = linearScale(concentration, 305, 604, 201, 300);
+    } else if (pollutant === "O3") {
+      if (concentration <= 54) aqi = linearScale(concentration, 0, 54, 0, 50);
+      else if (concentration <= 70) aqi = linearScale(concentration, 55, 70, 51, 100);
+      else if (concentration <= 85) aqi = linearScale(concentration, 71, 85, 101, 150);
+      else if (concentration <= 105) aqi = linearScale(concentration, 86, 105, 151, 200);
+      else aqi = linearScale(concentration, 106, 200, 201, 300);
+    } else if (pollutant === "NO2") {
+      if (concentration <= 53) aqi = linearScale(concentration, 0, 53, 0, 50);
+      else if (concentration <= 100) aqi = linearScale(concentration, 54, 100, 51, 100);
+      else if (concentration <= 360) aqi = linearScale(concentration, 101, 360, 101, 150);
+      else if (concentration <= 649) aqi = linearScale(concentration, 361, 649, 151, 200);
+      else aqi = linearScale(concentration, 650, 1249, 201, 300);
+    }
 
-            // More accurate AQI calculations based on EPA standards
-            if (pollutant === "PM2.5") {
-                if (concentration <= 12) {
-                    aqi = linearScale(concentration, 0, 12, 0, 50);
-                } else if (concentration <= 35.4) {
-                    aqi = linearScale(concentration, 12.1, 35.4, 51, 100);
-                } else if (concentration <= 55.4) {
-                    aqi = linearScale(concentration, 35.5, 55.4, 101, 150);
-                } else if (concentration <= 150.4) {
-                    aqi = linearScale(concentration, 55.5, 150.4, 151, 200);
-                } else if (concentration <= 250.4) {
-                    aqi = linearScale(concentration, 150.5, 250.4, 201, 300);
-                } else {
-                    aqi = linearScale(concentration, 250.5, 500.4, 301, 500);
-                }
-            } else if (pollutant === "PM10") {
-                if (concentration <= 54) {
-                    aqi = linearScale(concentration, 0, 54, 0, 50);
-                } else if (concentration <= 154) {
-                    aqi = linearScale(concentration, 55, 154, 51, 100);
-                } else if (concentration <= 254) {
-                    aqi = linearScale(concentration, 155, 254, 101, 150);
-                } else if (concentration <= 354) {
-                    aqi = linearScale(concentration, 255, 354, 151, 200);
-                } else if (concentration <= 424) {
-                    aqi = linearScale(concentration, 355, 424, 201, 300);
-                } else {
-                    aqi = linearScale(concentration, 425, 604, 301, 500);
-                }
-            } else if (pollutant === "CO") {
-                // CO in ppm
-                if (concentration <= 4.4) {
-                    aqi = linearScale(concentration, 0, 4.4, 0, 50);
-                } else if (concentration <= 9.4) {
-                    aqi = linearScale(concentration, 4.5, 9.4, 51, 100);
-                } else if (concentration <= 12.4) {
-                    aqi = linearScale(concentration, 9.5, 12.4, 101, 150);
-                } else if (concentration <= 15.4) {
-                    aqi = linearScale(concentration, 12.5, 15.4, 151, 200);
-                } else if (concentration <= 30.4) {
-                    aqi = linearScale(concentration, 15.5, 30.4, 201, 300);
-                } else {
-                    aqi = linearScale(concentration, 30.5, 50.4, 301, 500);
-                }
-            } else if (pollutant === "SO2") {
-                // SO2 in ppb
-                if (concentration <= 35) {
-                    aqi = linearScale(concentration, 0, 35, 0, 50);
-                } else if (concentration <= 75) {
-                    aqi = linearScale(concentration, 36, 75, 51, 100);
-                } else if (concentration <= 185) {
-                    aqi = linearScale(concentration, 76, 185, 101, 150);
-                } else if (concentration <= 304) {
-                    aqi = linearScale(concentration, 186, 304, 151, 200);
-                } else {
-                    aqi = linearScale(concentration, 305, 604, 201, 300);
-                }
-            } else if (pollutant === "O3") {
-                // O3 in ppb (8-hour average)
-                if (concentration <= 54) {
-                    aqi = linearScale(concentration, 0, 54, 0, 50);
-                } else if (concentration <= 70) {
-                    aqi = linearScale(concentration, 55, 70, 51, 100);
-                } else if (concentration <= 85) {
-                    aqi = linearScale(concentration, 71, 85, 101, 150);
-                } else if (concentration <= 105) {
-                    aqi = linearScale(concentration, 86, 105, 151, 200);
-                } else {
-                    aqi = linearScale(concentration, 106, 200, 201, 300);
-                }
-            } else if (pollutant === "NO2") {
-                // NO2 in ppb
-                if (concentration <= 53) {
-                    aqi = linearScale(concentration, 0, 53, 0, 50);
-                } else if (concentration <= 100) {
-                    aqi = linearScale(concentration, 54, 100, 51, 100);
-                } else if (concentration <= 360) {
-                    aqi = linearScale(concentration, 101, 360, 101, 150);
-                } else if (concentration <= 649) {
-                    aqi = linearScale(concentration, 361, 649, 151, 200);
-                } else {
-                    aqi = linearScale(concentration, 650, 1249, 201, 300);
-                }
-            }
+    aqi = Math.round(aqi);
 
-            // Round AQI to nearest integer
-            aqi = Math.round(aqi);
+    let category = "", sensitive = "", health = "", caution = "", cls = "aqi-display";
+    if (aqi <= 50) {
+      category = "Good"; cls += " good";
+      sensitive = "None"; health = "Air quality is satisfactory with little or no risk.";
+      caution = "Enjoy normal outdoor activities.";
+    } else if (aqi <= 100) {
+      category = "Moderate"; cls += " moderate";
+      sensitive = "Unusually sensitive individuals";
+      health = "Acceptable air quality; minor risk for highly sensitive individuals.";
+      caution = "Unusually sensitive people should consider reducing prolonged outdoor exertion.";
+    } else if (aqi <= 150) {
+      category = "Unhealthy for Sensitive Groups"; cls += " unhealthy-sg";
+      sensitive = "People with heart/lung disease, children, older adults";
+      health = "Sensitive groups may experience health effects. General public less likely affected.";
+      caution = "Sensitive groups should reduce prolonged or heavy outdoor exertion.";
+    } else if (aqi <= 200) {
+      category = "Unhealthy"; cls += " unhealthy";
+      sensitive = "Everyone, especially sensitive groups";
+      health = "Everyone may begin to experience health effects; sensitive groups more serious effects.";
+      caution = "Everyone should reduce prolonged or heavy outdoor exertion.";
+    } else if (aqi <= 300) {
+      category = "Very Unhealthy"; cls += " very-unhealthy";
+      sensitive = "Everyone"; health = "Health alert: risk of health effects increased for everyone.";
+      caution = "Avoid prolonged outdoor exertion. Sensitive groups stay indoors.";
+    } else {
+      category = "Hazardous"; cls += " hazardous";
+      sensitive = "Everyone"; health = "Health warning of emergency conditions: entire population affected.";
+      caution = "Avoid all outdoor exertion; stay indoors with air filtration.";
+    }
 
-            // AQI categories and effects
-            if (aqi <= 50) {
-                category = "Good";
-                aqiClass += " good";
-                sensitiveGroups = "None";
-                healthEffects = "Air quality is satisfactory with little to no risk.";
-                cautionaryStatements = "Enjoy outdoor activities!";
-            } else if (aqi <= 100) {
-                category = "Moderate";
-                aqiClass += " moderate";
-                sensitiveGroups = "People unusually sensitive to air pollution";
-                healthEffects = "Acceptable quality, but there may be moderate health concern for very few people.";
-                cautionaryStatements = "Unusually sensitive people should consider reducing prolonged outdoor exertion.";
-            } else if (aqi <= 150) {
-                category = "Unhealthy for Sensitive Groups";
-                aqiClass += " unhealthy-sg";
-                sensitiveGroups = "People with heart or lung disease, older adults, children and teenagers";
-                healthEffects = "General public not likely affected but sensitive groups may experience symptoms.";
-                cautionaryStatements = "Sensitive groups should reduce prolonged outdoor exertion.";
-            } else if (aqi <= 200) {
-                category = "Unhealthy";
-                aqiClass += " unhealthy";
-                sensitiveGroups = "Everyone, especially sensitive groups";
-                healthEffects = "Increased likelihood of adverse effects and aggravation of heart or lung disease.";
-                cautionaryStatements = "Sensitive groups should avoid prolonged outdoor exertion; everyone else should limit prolonged exertion.";
-            } else if (aqi <= 300) {
-                category = "Very Unhealthy";
-                aqiClass += " very-unhealthy";
-                sensitiveGroups = "Everyone";
-                healthEffects = "Significant increased risk of respiratory effects in general population.";
-                cautionaryStatements = "Sensitive groups should avoid all outdoor exertion; everyone else should limit outdoor exertion.";
-            } else {
-                category = "Hazardous";
-                aqiClass += " hazardous";
-                sensitiveGroups = "Everyone";
-                healthEffects = "Emergency conditions with serious risk of respiratory effects for entire population.";
-                cautionaryStatements = "Everyone should avoid all outdoor exertion and stay indoors when possible.";
-            }
+    const disp = document.getElementById('aqiDisplay');
+    disp.className = cls;
+    disp.textContent = `AQI: ${aqi} — ${category}`;
+    document.getElementById('aqiCategory').textContent = category;
+    document.getElementById('sensitiveGroups').textContent = sensitive;
+    document.getElementById('healthEffects').textContent = health;
+    document.getElementById('cautionaryStatements').textContent = caution;
 
-            // Update the UI with animations
-            const aqiBox = document.getElementById('aqiBox');
-            aqiBox.textContent = `AQI: ${aqi}`;
-            aqiBox.className = aqiClass + " pulse-animation";
-            
-            // Remove pulse animation after 3 seconds
-            setTimeout(() => {
-                aqiBox.classList.remove("pulse-animation");
-            }, 3000);
+    document.getElementById('resultWrap').style.display = 'block';
+    document.getElementById('resultWrap').scrollIntoView({ behavior: 'smooth' });
+  }
 
-            document.getElementById('aqiCategory').textContent = category;
-            document.getElementById('sensitiveGroups').textContent = sensitiveGroups;
-            document.getElementById('healthEffects').textContent = healthEffects;
-            document.getElementById('cautionaryStatements').textContent = cautionaryStatements;
-
-            // Animate the result boxes
-            const infoBoxes = document.querySelectorAll('.info-box');
-            infoBoxes.forEach((box, index) => {
-                box.classList.add('animate__fadeInUp');
-                box.style.animationDelay = `${index * 0.1 + 0.3}s`;
-            });
-        }
-
-        // Helper function for linear AQI calculation
-        function linearScale(value, valueLow, valueHigh, aqiLow, aqiHigh) {
-            return ((aqiHigh - aqiLow) / (valueHigh - valueLow)) * (value - valueLow) + aqiLow;
-        }
-    </script>
+  function linearScale(value, valueLow, valueHigh, aqiLow, aqiHigh) {
+    return ((aqiHigh - aqiLow) / (valueHigh - valueLow)) * (value - valueLow) + aqiLow;
+  }
+</script>
 </body>
 </html>

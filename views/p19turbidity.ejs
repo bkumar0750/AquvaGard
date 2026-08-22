@@ -1,303 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Water Quality Parameters</title>
-    <style>
-        :root {
-            --primary: #2F4F4F;
-            --primary-light: #3a5f5f;
-            --secondary: #778899;
-            --accent: #20B2AA;
-            --light-bg: #f5f5f5;
-            --dark-text: #2d3748;
-            --border-color: #e0e0e0;
-            --white: #ffffff;
-            --warning: #d9534f;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--light-bg);
-            color: var(--dark-text);
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 30px;
-            background: var(--white);
-            border-radius: 10px;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            color: var(--primary);
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 2.2rem;
-            border-bottom: 2px solid var(--accent);
-            padding-bottom: 10px;
-        }
-
-        h2 {
-            color: var(--primary-light);
-            margin-top: 30px;
-            font-size: 1.8rem;
-        }
-
-        h3 {
-            color: var(--primary);
-            margin-top: 25px;
-            font-size: 1.4rem;
-        }
-
-        p {
-            margin-bottom: 20px;
-            font-size: 1.1rem;
-        }
-
-        .info-section {
-            display: none;
-            margin-top: 30px;
-            padding: 20px;
-            background: #e8f5e9;
-            border-left: 4px solid var(--primary);
-            border-radius: 0 5px 5px 0;
-            transition: all 0.3s ease;
-        }
-
-        .btn {
-            display: block;
-            margin: 25px auto;
-            padding: 12px 25px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .btn:hover {
-            background-color: var(--primary-light);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-
-        /* Back button */
-        .back-button-container {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-        }
-
-        .back-button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .back-button:hover {
-            background-color: var(--primary-light);
-            transform: translateX(-3px);
-        }
-
-        /* Highlight important terms */
-        .highlight {
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .chemical {
-            font-weight: bold;
-            color: var(--accent);
-            font-style: italic;
-        }
-
-        .feature-list {
-            margin: 20px 0;
-            padding-left: 20px;
-        }
-
-        .feature-list li {
-            margin-bottom: 10px;
-        }
-
-        .definition-box {
-            background-color: #e0f2f1;
-            border-left: 4px solid var(--accent);
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 0 5px 5px 0;
-        }
-
-        .definition-title {
-            font-weight: bold;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-
-        .parameter-card {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border-left: 4px solid var(--accent);
-        }
-
-        .parameter-title {
-            font-weight: bold;
-            color: var(--primary);
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-        }
-
-        .parameter-image {
-            width: 100%;
-            max-width: 500px;
-            margin: 20px auto;
-            display: block;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .container {
-                margin: 15px;
-                padding: 20px;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .back-button-container {
-                position: relative;
-                top: auto;
-                left: auto;
-                margin-bottom: 15px;
-            }
-            
-            .back-button {
-                position: relative;
-                margin: 0 auto 20px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Turbidity & Suspended Clarity — AquaGuard Parameter Guide</title>
+  <meta name="description" content="Guide to Turbidity measurement in NTU/FNU, nephelometric 90° light scattering, drinking water standards, and sediment transport.">
+  <link rel="stylesheet" href="/styles/global.css">
+  <style>
+    .param-page { padding: calc(var(--nav-h) + 2.5rem) 1.5rem 5rem; min-height: 100vh; }
+    .param-container { max-width: 900px; margin: 0 auto; }
+    .param-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+      padding: 2.5rem; box-shadow: var(--shadow); position: relative; overflow: hidden;
+    }
+    .param-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--cyan), var(--green)); }
+    .param-meta { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0 2rem; }
+    .meta-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--r); padding: 0.85rem 1.25rem; flex: 1; min-width: 180px; }
+    .meta-lbl { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .meta-val { font-size: 1.2rem; font-weight: 700; color: var(--cyan); font-family: 'Roboto Mono', monospace; }
+    .content-sec { line-height: 1.8; color: var(--light); margin-bottom: 1.5rem; }
+    .content-sec h2 { font-size: 1.25rem; color: var(--white); margin: 1.5rem 0 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+  </style>
 </head>
 <body>
-    <!-- Back to Home Button -->
-    <div class="back-button-container">
-        <button class="back-button" onclick="goBackHome()">&#8592; Back to Home</button>
+<nav class="navbar scrolled" id="navbar">
+  <a href="/fwater" class="nav-brand"><div class="nav-logo">💧</div><span class="nav-name">Aqua<span>Guard</span></span></a>
+  <ul class="nav-links" id="navLinks">
+    <li class="nav-dd"><button>Data Entry</button><div class="dd-menu"><a href="/physical">🧪 Physical</a><a href="/chemical">⚗️ Chemical</a><a href="/biological">🦠 Biological</a><a href="/environmental">🌿 Environmental</a><a href="/air">💨 Air Quality</a></div></li>
+    <li class="nav-dd"><a href="#">WQI</a><div class="dd-menu"><a href="/w6swqi">Simple WQI</a><a href="/w4nsfwqi">NSF-WQI</a><a href="/w5wawqi">WA-WQI</a><a href="/w1ccmewqi">CCME-WQI</a></div></li>
+    <li><a href="/treatment">Treatment</a></li><li><a href="/AQI">AQI</a></li><li><a href="/parameters" style="color:var(--accent)">Parameters</a></li><li><a href="/information">Data Info</a></li>
+  </ul>
+  <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="param-page">
+  <div class="param-container">
+    <a href="/parameters" class="btn btn-ghost" style="margin-bottom:1.5rem">← Back to Parameters Directory</a>
+    <div class="param-card fu">
+      <span class="badge badge-cyan">Physical Optical Parameter</span>
+      <h1 style="font-size:2.2rem;font-weight:800;color:var(--white);margin-top:0.5rem">Turbidity</h1>
+      <div class="param-meta">
+        <div class="meta-box"><div class="meta-lbl">Standard Unit</div><div class="meta-val">NTU / FNU</div></div>
+        <div class="meta-box"><div class="meta-lbl">EPA Drinking Limit</div><div class="meta-val">&lt; 0.3 NTU</div></div>
+        <div class="meta-box"><div class="meta-lbl">WHO Standard</div><div class="meta-val">&lt; 1.0 NTU</div></div>
+      </div>
+      <div class="content-sec">
+        <h2>Overview</h2>
+        <p>Turbidity is the cloudiness or haziness of a fluid caused by individual suspended solids (clay, silt, organic particles, algae) that are generally invisible to the naked eye. High turbidity shields pathogenic microbes from UV disinfection and chlorine contact.</p>
+        <h2>Nephelometric Measurement</h2>
+        <p>Nephelometers measure light scattered at a 90-degree angle from an incident beam passing through the sample. ISO 7027 standards specify an 860 nm near-infrared LED light source to avoid sample color interference.</p>
+      </div>
     </div>
-
-    <div class="container">
-        <h1>Water Quality Parameters</h1>
-        
-        <div class="definition-box">
-            <div class="definition-title">Key Water Quality Indicators</div>
-            <p>Essential parameters that provide critical information about water's chemical, physical, and biological characteristics, helping assess its suitability for various uses and ecosystem health.</p>
-        </div>
-
-        <p>Monitoring these parameters helps detect contamination, assess treatment effectiveness, and ensure regulatory compliance across different water systems.</p>
-
-        <button class="btn" onclick="toggleInfo()">Show Parameter Details</button>
-        
-        <div class="info-section" id="moreInfo">
-            <div class="parameter-card">
-                <div class="parameter-title">Total Organic Carbon (TOC)</div>
-                <ul class="feature-list">
-                    <li><span class="highlight">Definition:</span> Measures all organic carbon compounds in water</li>
-                    <li><span class="highlight">Importance:</span> Indicates organic contamination and treatment effectiveness</li>
-                    <li><span class="highlight">Measurement:</span> Combustion or wet chemical oxidation methods</li>
-                    <li><span class="highlight">Typical range:</span> 1-20 mg/L in natural waters</li>
-                </ul>
-                <img src="toc-measurement.jpg" alt="TOC analyzer in laboratory" class="parameter-image">
-            </div>
-
-            <div class="parameter-card">
-                <div class="parameter-title">Temperature</div>
-                <ul class="feature-list">
-                    <li><span class="highlight">Definition:</span> Measure of water's thermal energy</li>
-                    <li><span class="highlight">Importance:</span> Affects oxygen levels, chemical reactions, and aquatic life</li>
-                    <li><span class="highlight">Measurement:</span> Thermistors, RTDs, or infrared sensors</li>
-                    <li><span class="highlight">Typical range:</span> 0-30°C in most natural waters</li>
-                </ul>
-                <img src="temperature-sensor.jpg" alt="Water temperature measurement" class="parameter-image">
-            </div>
-
-            <div class="parameter-card">
-                <div class="parameter-title">Turbidity</div>
-                <ul class="feature-list">
-                    <li><span class="highlight">Definition:</span> Measure of water clarity/cloudiness</li>
-                    <li><span class="highlight">Importance:</span> Indicates suspended particles and potential contamination</li>
-                    <li><span class="highlight">Measurement:</span> Nephelometric turbidity units (NTU) using light scattering</li>
-                    <li><span class="highlight">Typical range:</span> 0-50 NTU in surface waters</li>
-                </ul>
-                <img src="turbidity-measurement.jpg" alt="Turbidity measurement in water" class="parameter-image">
-            </div>
-
-            <div class="parameter-card">
-                <div class="parameter-title">Rhodamine</div>
-                <ul class="feature-list">
-                    <li><span class="highlight">Definition:</span> Fluorescent dye tracer</li>
-                    <li><span class="highlight">Importance:</span> Used for flow studies and pollution tracing</li>
-                    <li><span class="highlight">Measurement:</span> Fluorometers detecting specific wavelengths</li>
-                    <li><span class="highlight">Typical use:</span> 0.1-10 ppm concentration in hydrological studies</li>
-                </ul>
-                <img src="rhodamine-tracer.jpg" alt="Rhodamine tracer study" class="parameter-image">
-            </div>
-
-            <div class="parameter-card">
-                <div class="parameter-title">Phosphorus</div>
-                <ul class="feature-list">
-                    <li><span class="highlight">Definition:</span> Essential nutrient existing as phosphates</li>
-                    <li><span class="highlight">Importance:</span> Key factor in eutrophication and algal blooms</li>
-                    <li><span class="highlight">Measurement:</span> Colorimetric molybdenum blue method</li>
-                    <li><span class="highlight">Typical range:</span> 0.01-0.03 mg/L in natural waters</li>
-                </ul>
-                <img src="phosphorus-test.jpg" alt="Phosphorus water testing" class="parameter-image">
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function goBackHome() {
-            window.location.href = 'parameters';
-        }
-
-        function toggleInfo() {
-            const info = document.getElementById("moreInfo");
-            const button = document.querySelector(".btn");
-            
-            if (info.style.display === "none") {
-                info.style.display = "block";
-                button.textContent = "Hide Parameter Details";
-            } else {
-                info.style.display = "none";
-                button.textContent = "Show Parameter Details";
-            }
-        }
-    </script>
+  </div>
+</div>
+<footer class="footer"><p>© 2025 <strong>AquaGuard</strong> — Water Quality Parameter Guide</p></footer>
+<script>window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10));</script>
 </body>
 </html>

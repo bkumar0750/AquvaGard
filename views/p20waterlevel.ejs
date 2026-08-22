@@ -1,358 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Water Level Measurement</title>
-    <style>
-        :root {
-            --primary: #2F4F4F;
-            --primary-light: #3a5f5f;
-            --secondary: #778899;
-            --accent: #20B2AA;
-            --light-bg: #f5f5f5;
-            --dark-text: #2d3748;
-            --border-color: #e0e0e0;
-            --white: #ffffff;
-            --warning: #d9534f;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--light-bg);
-            color: var(--dark-text);
-            line-height: 1.6;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 30px;
-            background: var(--white);
-            border-radius: 10px;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            color: var(--primary);
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 2.2rem;
-            border-bottom: 2px solid var(--accent);
-            padding-bottom: 10px;
-        }
-
-        h2 {
-            color: var(--primary-light);
-            margin-top: 30px;
-            font-size: 1.8rem;
-        }
-
-        h3 {
-            color: var(--primary);
-            margin-top: 25px;
-            font-size: 1.4rem;
-        }
-
-        p {
-            margin-bottom: 20px;
-            font-size: 1.1rem;
-        }
-
-        .info-section {
-            display: none;
-            margin-top: 30px;
-            padding: 20px;
-            background: #e8f5e9;
-            border-left: 4px solid var(--primary);
-            border-radius: 0 5px 5px 0;
-            transition: all 0.3s ease;
-        }
-
-        .btn {
-            display: block;
-            margin: 25px auto;
-            padding: 12px 25px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .btn:hover {
-            background-color: var(--primary-light);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-        }
-
-        /* Back button */
-        .back-button-container {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1000;
-        }
-
-        .back-button {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .back-button:hover {
-            background-color: var(--primary-light);
-            transform: translateX(-3px);
-        }
-
-        /* Highlight important terms */
-        .highlight {
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .feature-list {
-            margin: 20px 0;
-            padding-left: 20px;
-        }
-
-        .feature-list li {
-            margin-bottom: 10px;
-        }
-
-        .definition-box {
-            background-color: #e0f2f1;
-            border-left: 4px solid var(--accent);
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 0 5px 5px 0;
-        }
-
-        .definition-title {
-            font-weight: bold;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-
-        .measurement-card {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border-left: 4px solid var(--accent);
-        }
-
-        .measurement-title {
-            font-weight: bold;
-            color: var(--primary);
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-        }
-
-        .measurement-image {
-            width: 100%;
-            max-width: 500px;
-            margin: 20px auto;
-            display: block;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-        }
-
-        .warning-box {
-            background-color: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 0 5px 5px 0;
-        }
-
-        .warning-title {
-            font-weight: bold;
-            color: #856404;
-            margin-bottom: 8px;
-        }
-
-        .spec-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-
-        .spec-table th, .spec-table td {
-            border: 1px solid var(--border-color);
-            padding: 8px 12px;
-            text-align: left;
-        }
-
-        .spec-table th {
-            background-color: var(--light-bg);
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .container {
-                margin: 15px;
-                padding: 20px;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .back-button-container {
-                position: relative;
-                top: auto;
-                left: auto;
-                margin-bottom: 15px;
-            }
-            
-            .back-button {
-                position: relative;
-                margin: 0 auto 20px;
-            }
-            
-            .spec-table {
-                font-size: 0.9rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Surface Water Level & Stage — AquaGuard Parameter Guide</title>
+  <meta name="description" content="Guide to surface water level, stream stage height, flood early warning telemetry, and radar stage measurement.">
+  <link rel="stylesheet" href="/styles/global.css">
+  <style>
+    .param-page { padding: calc(var(--nav-h) + 2.5rem) 1.5rem 5rem; min-height: 100vh; }
+    .param-container { max-width: 900px; margin: 0 auto; }
+    .param-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg);
+      padding: 2.5rem; box-shadow: var(--shadow); position: relative; overflow: hidden;
+    }
+    .param-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--purple)); }
+    .param-meta { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0 2rem; }
+    .meta-box { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: var(--r); padding: 0.85rem 1.25rem; flex: 1; min-width: 180px; }
+    .meta-lbl { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .meta-val { font-size: 1.2rem; font-weight: 700; color: var(--accent); font-family: 'Roboto Mono', monospace; }
+    .content-sec { line-height: 1.8; color: var(--light); margin-bottom: 1.5rem; }
+    .content-sec h2 { font-size: 1.25rem; color: var(--white); margin: 1.5rem 0 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+  </style>
 </head>
 <body>
-    <!-- Back to Home Button -->
-    <div class="back-button-container">
-        <button class="back-button" onclick="goBackHome()">&#8592; Back to Parameters</button>
+<nav class="navbar scrolled" id="navbar">
+  <a href="/fwater" class="nav-brand"><div class="nav-logo">💧</div><span class="nav-name">Aqua<span>Guard</span></span></a>
+  <ul class="nav-links" id="navLinks">
+    <li class="nav-dd"><button>Data Entry</button><div class="dd-menu"><a href="/physical">🧪 Physical</a><a href="/chemical">⚗️ Chemical</a><a href="/biological">🦠 Biological</a><a href="/environmental">🌿 Environmental</a><a href="/air">💨 Air Quality</a></div></li>
+    <li class="nav-dd"><a href="#">WQI</a><div class="dd-menu"><a href="/w6swqi">Simple WQI</a><a href="/w4nsfwqi">NSF-WQI</a><a href="/w5wawqi">WA-WQI</a><a href="/w1ccmewqi">CCME-WQI</a></div></li>
+    <li><a href="/treatment">Treatment</a></li><li><a href="/AQI">AQI</a></li><li><a href="/parameters" style="color:var(--accent)">Parameters</a></li><li><a href="/information">Data Info</a></li>
+  </ul>
+  <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')"><span></span><span></span><span></span></button>
+</nav>
+
+<div class="param-page">
+  <div class="param-container">
+    <a href="/parameters" class="btn btn-ghost" style="margin-bottom:1.5rem">← Back to Parameters Directory</a>
+    <div class="param-card fu">
+      <span class="badge badge-purple">Hydrological Parameter</span>
+      <h1 style="font-size:2.2rem;font-weight:800;color:var(--white);margin-top:0.5rem">Water Level & Stage</h1>
+      <div class="param-meta">
+        <div class="meta-box"><div class="meta-lbl">Standard Unit</div><div class="meta-val">Meters / Feet</div></div>
+        <div class="meta-box"><div class="meta-lbl">Telemetry Method</div><div class="meta-val">Non-contact Radar / Ultrasonic</div></div>
+        <div class="meta-box"><div class="meta-lbl">Key Application</div><div class="meta-val">Flood Early Warning</div></div>
+      </div>
+      <div class="content-sec">
+        <h2>Overview</h2>
+        <p>Water level or stream stage is the height of the water surface relative to a established datum elevation. Continuous stage telemetry is essential for streamflow rating curves, flood risk forecasting, and reservoir capacity management.</p>
+      </div>
     </div>
-
-    <div class="container">
-        <h1>Water Level Measurement</h1>
-        
-        <div class="definition-box">
-            <div class="definition-title">Water Level</div>
-            <p>The height of water in various contexts such as rivers, lakes, wells, and tanks. It is one of the most fundamental measurements in hydrology, climate monitoring, and industrial water management.</p>
-        </div>
-
-        <p>Accurate water level measurement is essential for flood prediction, drought monitoring, water resource management, and environmental protection.</p>
-
-        <button class="btn" onclick="toggleInfo()">Show Measurement Details</button>
-        
-        <div class="info-section" id="moreInfo">
-            <h2>Key Water Level Terms</h2>
-            <ul class="feature-list">
-                <li><span class="highlight">Water level:</span> The height of water above or below a reference point</li>
-                <li><span class="highlight">Depth:</span> The vertical distance from water surface to bottom</li>
-                <li><span class="highlight">Gage height:</span> Water level measurement in rivers and streams</li>
-                <li><span class="highlight">Tide gage:</span> Device for measuring sea level changes</li>
-                <li><span class="highlight">Elevation:</span> Water height above sea level</li>
-                <li><span class="highlight">Hydraulic head:</span> The energy potential of water at a specific point</li>
-            </ul>
-
-            <div class="measurement-card">
-                <div class="measurement-title">Measurement Techniques</div>
-                <ul class="feature-list">
-                    <li><span class="highlight">Pressure transducers:</span> Measure water pressure converted to water level</li>
-                    <li><span class="highlight">Ultrasonic sensors:</span> Use sound waves to determine distance to water surface</li>
-                    <li><span class="highlight">Radar sensors:</span> Microwave technology for non-contact measurement</li>
-                    <li><span class="highlight">Float gauges:</span> Mechanical systems using floating devices</li>
-                    <li><span class="highlight">Bubblers:</span> Measure pressure required to bubble air through a tube</li>
-                </ul>
-                
-                <table class="spec-table">
-                    <tr>
-                        <th>Method</th>
-                        <th>Accuracy</th>
-                        <th>Range</th>
-                        <th>Best For</th>
-                    </tr>
-                    <tr>
-                        <td>Pressure Transducer</td>
-                        <td>±0.1% FS</td>
-                        <td>0-100m</td>
-                        <td>Wells, tanks</td>
-                    </tr>
-                    <tr>
-                        <td>Ultrasonic</td>
-                        <td>±0.25%</td>
-                        <td>0.25-15m</td>
-                        <td>Open channels</td>
-                    </tr>
-                    <tr>
-                        <td>Radar</td>
-                        <td>±2mm</td>
-                        <td>0-70m</td>
-                        <td>Harsh environments</td>
-                    </tr>
-                </table>
-                
-                <img src="water-level-sensor.jpg" alt="Water level measurement equipment" class="measurement-image">
-            </div>
-
-            <div class="warning-box">
-                <div class="warning-title">Measurement Considerations</div>
-                <ul>
-                    <li><span class="highlight">Temperature compensation:</span> Needed for pressure sensors</li>
-                    <li><span class="highlight">Atmospheric pressure:</span> Affects absolute pressure measurements</li>
-                    <li><span class="highlight">Environmental factors:</span> Debris and waves can impact sensor accuracy</li>
-                    <li><span class="highlight">Installation:</span> Proper sensor placement is critical for reliable data</li>
-                </ul>
-            </div>
-
-            <div class="measurement-card">
-                <div class="measurement-title">Applications</div>
-                <ul class="feature-list">
-                    <li><span class="highlight">Flood monitoring:</span> Early warning systems for flood prediction</li>
-                    <li><span class="highlight">Groundwater monitoring:</span> Tracking aquifer levels and recharge rates</li>
-                    <li><span class="highlight">Reservoir management:</span> Optimizing water storage and release</li>
-                    <li><span class="highlight">Coastal studies:</span> Monitoring tides and storm surges</li>
-                    <li><span class="highlight">Industrial processes:</span> Tank level monitoring and control</li>
-                </ul>
-                <img src="water-level-applications.jpg" alt="Water level monitoring in river" class="measurement-image">
-            </div>
-
-            <div class="measurement-card">
-                <div class="measurement-title">Data Interpretation</div>
-                <ul class="feature-list">
-                    <li><span class="highlight">Stage-discharge relationships:</span> Convert water level to flow rate</li>
-                    <li><span class="highlight">Trend analysis:</span> Identify seasonal patterns and long-term changes</li>
-                    <li><span class="highlight">Event detection:</span> Recognize flood peaks or drought conditions</li>
-                    <li><span class="highlight">Data validation:</span> Check for sensor drift or fouling</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function goBackHome() {
-            window.location.href = 'parameters';
-        }
-
-        function toggleInfo() {
-            const info = document.getElementById("moreInfo");
-            const button = document.querySelector(".btn");
-            
-            if (info.style.display === "none") {
-                info.style.display = "block";
-                button.textContent = "Hide Measurement Details";
-            } else {
-                info.style.display = "none";
-                button.textContent = "Show Measurement Details";
-            }
-        }
-    </script>
+  </div>
+</div>
+<footer class="footer"><p>© 2025 <strong>AquaGuard</strong> — Water Quality Parameter Guide</p></footer>
+<script>window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10));</script>
 </body>
 </html>

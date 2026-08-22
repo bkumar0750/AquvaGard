@@ -1,23 +1,39 @@
+// routes/information.js
 const express = require('express');
 const router = express.Router();
-const PhysicalData = require('../models/PhysicalData');
-const ChemicalData = require('../models/ChemicalData');
-const BiologicalData = require('../models/BiologicalData');
-const AirQualityData = require('../models/AirQualityData');
-const EnvironmentalData = require('../models/EnvironmentalData');
+const supabase = require('../config/database');
 
+// GET /information/data — Return distinct sampleIDs from all tables
 router.get('/data', async (req, res) => {
     try {
-        const physical = await PhysicalData.find().distinct('someField');
-        const chemical = await ChemicalData.find().distinct('someField');
-        const biological = await BiologicalData.find().distinct('someField');
-        const air = await AirQualityData.find().distinct('someField');
-        const other = await EnvironmentalData.find().distinct('someField');
+        const [
+            { data: physical, error: e1 },
+            { data: chemical, error: e2 },
+            { data: biological, error: e3 },
+            { data: air, error: e4 },
+            { data: other, error: e5 }
+        ] = await Promise.all([
+            supabase.from('physical_data').select('sample_id'),
+            supabase.from('chemical_data').select('sample_id'),
+            supabase.from('biological_data').select('sample_id'),
+            supabase.from('air_quality_data').select('sample_id'),
+            supabase.from('environmental_data').select('sample_id')
+        ]);
 
-        res.json({ physical, chemical, biological, air, other });
+        if (e1 || e2 || e3 || e4 || e5) throw (e1 || e2 || e3 || e4 || e5);
+
+        const unique = arr => [...new Set((arr || []).map(r => r.sample_id))];
+
+        res.json({
+            physical: unique(physical),
+            chemical: unique(chemical),
+            biological: unique(biological),
+            air: unique(air),
+            other: unique(other)
+        });
     } catch (error) {
-        console.error("Error fetching data:", error);
-        res.status(500).json({ error: "Failed to fetch data" });
+        console.warn('⚠️ Supabase information query failed, returning empty samples:', error.message || error);
+        res.json({ physical: [], chemical: [], biological: [], air: [], other: [] });
     }
 });
 
